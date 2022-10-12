@@ -24,5 +24,14 @@ namespace ConsoleCMD
         {
             InitializeComponent();
         }
+
+        private void TB_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up)
+            {
+                e.Handled = true;
+            }
+            MessageBox.Show($"{e.Key}");
+        }
     }
 }
