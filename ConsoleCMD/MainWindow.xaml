@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConsoleCMD"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Black">
-    <Grid Background="Black">
-        <TextBox Name="TB" FontSize="14" Margin="5" Background="Black" Foreground="White" 
-                 BorderThickness="0" AcceptsReturn="True" KeyDown="TB_KeyDown"/>
+        Title="?" Height="600" Width="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Frame x:Name="MainFrame" Grid.Row="0" />
+        <TextBox Name="TB" Grid.Row="1" FontSize="14" Margin="5" Background="Black" Foreground="White" 
+                 BorderThickness="0" KeyDown="TB_KeyDown"/>
     </Grid>
 </Window>
