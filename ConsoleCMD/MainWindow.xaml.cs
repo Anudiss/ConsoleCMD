@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleCMD.Applications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,11 +29,23 @@ namespace ConsoleCMD
 
         private void TB_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Enter)
+            switch (e.Key)
             {
-                e.Handled = true;
-                return;
+                case Key.Enter:
+                    CommandsParse();
+                    break;
+                case Key.Tab:
+                    break;
             }
+        }
+
+        private void CommandHint()
+        {
+            
+        }
+
+        private void CommandsParse()
+        {
             string[] commands = TB.Text.Split(';');
             // command example: color red; 
             Regex commandRegex = new Regex(@"^(?<command>\w+)\s*(?<args>.+)?");
@@ -48,7 +61,16 @@ namespace ConsoleCMD
                 string[] args = null;
                 if (match.Groups["args"].Success)
                     args = match.Groups["args"].Value.Split(' ');
-                
+
+                Command cmd = Command.GetCommand(commandName);
+                try
+                {
+                    cmd.Execute(args);
+                }
+                catch (ArgumentException)
+                {
+                    TB.Text += $"\n{cmd.Usage}";
+                }
             }
         }
     }
