@@ -7,8 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <local:ArrayToStringConverter x:Key="ArrayToString"/>
+    </UserControl.Resources>
     <Grid Background="White">
-        <TextBox Background="White" TextWrapping="Wrap" SelectionBrush="Yellow" IsReadOnly="True" Margin="5"
-                 SelectionChanged="TextBox_SelectionChanged" Text="{Binding Path=Items, Converter=}"/>
+        <TextBox Background="White" TextWrapping="Wrap" SelectionBrush="Green" IsReadOnly="True" Margin="5"
+                 SelectionChanged="TextBox_SelectionChanged" Text="{Binding Path=Items, Converter=ArrayToString}"/>
     </Grid>
 </UserControl>

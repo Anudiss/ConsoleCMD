@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ArrayToStringConverter.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="DropdownMenu.xaml.cs">
       <DependentUpon>DropdownMenu.xaml</DependentUpon>

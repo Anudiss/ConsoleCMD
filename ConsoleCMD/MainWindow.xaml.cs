@@ -25,6 +25,11 @@ namespace ConsoleCMD
         public MainWindow()
         {
             InitializeComponent();
+
+            AddChild(new DropdownMenu()
+            {
+                Items = new[] { "Hello", "World" }
+            });
         }
 
         private void TB_KeyDown(object sender, KeyEventArgs e)
