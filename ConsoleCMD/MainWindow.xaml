@@ -5,17 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConsoleCMD"
         mc:Ignorable="d"
-        Title="Типа консоль" Height="600" Width="1000"
-        Loaded="Window_ContentRendered" FontSize="14">
-    <Grid Name="Grid">
+        Title="Система" Height="600" Width="1000" FontFamily="Times New Roman" FontSize="14"
+        Loaded="Window_Loaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid x:Name="Grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="427*"/>
-            <RowDefinition Height="132*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Frame x:Name="MainFrame" Grid.Row="0" />
-        <TextBox Name="TB" Grid.Row="1" Margin="5,5,5,5" Background="Black" Foreground="White" 
-                 BorderThickness="0" KeyDown="TB_KeyDown" TextWrapping="Wrap" Focusable="True" TextChanged="TB_TextChanged"/>
-        <TextBox Grid.Row="2" Name="StatusLine" Margin="5"/>
+        <Frame x:Name="MainFrame" Grid.Row="0" Margin="5"/>
+        <TextBox x:Name="TBConsole" Grid.Row="1" Padding="5" Margin="5,0,5,5"
+                 Background="{Binding Path=ConsoleBackgroundColor}" Foreground="{Binding Path=ConsoleForegroundColor}"
+                 FontFamily="Consolas" TextWrapping="Wrap" Focusable="True"
+                 KeyDown="TBConsole_KeyDown" TextChanged="TBConsole_TextChanged" VerticalScrollBarVisibility="Visible" />
+        <local:DropdownMenu x:Name="DDM"/>
+        <TextBox x:Name="StatusLine" Grid.Row="2" Margin="5,0,5,5"/>
     </Grid>
 </Window>

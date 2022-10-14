@@ -27,25 +27,8 @@ namespace ConsoleCMD
             set { SetValue(ItemsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Items.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(string[]), typeof(DropdownMenu), new PropertyMetadata(null));
-
-        public Point Position
-        {
-            get => Bounds.TopLeft;
-            set => Bounds = new Rect(value.X, value.Y, 0, 0);
-        }
-
-        public Rect Bounds
-        {
-            get { return (Rect)GetValue(RectangleProperty); }
-            set { SetValue(RectangleProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Rectangle.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RectangleProperty =
-            DependencyProperty.Register("Bounds", typeof(Rect), typeof(DropdownMenu), new PropertyMetadata(Rect.Empty));
 
         public int SelectedItemIndex
         {
@@ -61,26 +44,35 @@ namespace ConsoleCMD
             }
         }
 
+        public Point Position
+        {
+            get => Bounds.TopLeft;
+            set => Bounds = new Rect(value.X, value.Y, 0, 0);
+        }
+
+        public Rect Bounds
+        {
+            get { return (Rect)GetValue(RectangleProperty); }
+            set { SetValue(RectangleProperty, value); }
+        }
+
+        public static readonly DependencyProperty RectangleProperty =
+            DependencyProperty.Register("Bounds", typeof(Rect), typeof(DropdownMenu), new PropertyMetadata(Rect.Empty));
+
         public new double Width
         {
             get => LB.ActualWidth + SystemParameters.VerticalScrollBarWidth;
         }
 
-        public SelectionChangedEventHandler SelectionChanged;
-
         public DropdownMenu()
         {
             InitializeComponent();
-
-            SelectionChanged += (sender, args) => SelectionChanged?.Invoke(sender, args);
         }
 
         private void LB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ListBox listBox)
                 listBox.ScrollIntoView(listBox.SelectedItem);
-            if (sender is ListBoxItem listItem)
-                MessageBox.Show("asdwdasdawdasdawdasdawd");
         }
     }
 }

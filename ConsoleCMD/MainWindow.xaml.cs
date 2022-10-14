@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ConsoleCMD
 {
@@ -13,179 +14,196 @@ namespace ConsoleCMD
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DropdownMenu _dropdownMenu;
+        public static MainWindow AppWindow;
+
+        public Brush ConsoleBackgroundColor
+        {
+            get { return (Brush)GetValue(ConsoleBackgroundProperty); }
+            set { SetValue(ConsoleBackgroundProperty, value); }
+        }
+        public static readonly DependencyProperty ConsoleBackgroundProperty =
+            DependencyProperty.Register("ConsoleBackgroundColor", typeof(Brush), typeof(MainWindow), new PropertyMetadata(Brushes.Black));
+
+        public Brush ConsoleForegroundColor
+        {
+            get { return (Brush)GetValue(ConsoleForegroundProperty); }
+            set { SetValue(ConsoleForegroundProperty, value); }
+        }
+        public static readonly DependencyProperty ConsoleForegroundProperty =
+            DependencyProperty.Register("ConsoleForegroundColor", typeof(Brush), typeof(MainWindow), new PropertyMetadata(Brushes.White));
+
+        public static readonly string[] ConsoleSupportedColors =
+            typeof(Brushes).GetProperties()
+                            .Select(p => new { Name = p.Name, Brush = p.GetValue(null) as Brush })
+                            .ToArray()
+                            .Select(v => v.Name.ToLower())
+                            .ToArray();
 
         public MainWindow()
         {
             InitializeComponent();
+            AppWindow = this;
+
+            ConsoleBackgroundColor = Brushes.Black;
+            ConsoleForegroundColor = Brushes.White;
+
+            TBConsole.Focus();
         }
 
-        private void CreateDropdownMenu()
+        private void InitializeDropDownMenu()
         {
-            _dropdownMenu = new DropdownMenu()
-            {
-                MaxHeight = TB.ActualHeight,
-                PlacementTarget = TB
-            };
-
-            _dropdownMenu.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
-            {
-                MessageBox.Show((string)args.AddedItems[0]);
-            };
-            
+            DDM.MaxHeight = TBConsole.ActualHeight;
+            DDM.PlacementTarget = TBConsole;
         }
 
-        private void TB_KeyDown(object sender, KeyEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            bool shift = Keyboard.Modifiers == ModifierKeys.Shift;
-
-            switch (e.Key)
-            {
-                case Key.Enter:
-                    StatusLine.Text = "";
-                    if (_dropdownMenu.IsOpen)
-                        SubstituteCommand();
-                    else
-                        CommandsParse();
-
-                    _dropdownMenu.IsOpen = false;
-                    break;
-                case Key.Tab:
-                    StatusLine.Text = "";
-                    OpenDropdownMenu();
-                    if (_dropdownMenu.IsOpen)
-                        _dropdownMenu.SelectedItemIndex += shift ? -1 : 1;
-                    e.Handled = true;
-                    break;
-                case Key.Escape:
-                    StatusLine.Text = "";
-                    _dropdownMenu.IsOpen = false;
-                    break;
-            }
-        }
-
-        private void MoveDropdownMenu()
-        {
-            if (_dropdownMenu.IsOpen == false)
-                return;
-            Rect rect = TB.GetRectFromCharacterIndex(TB.CaretIndex);
-            if (rect.X + _dropdownMenu.Width >= Grid.ActualWidth)
-                _dropdownMenu.Position = new Point(Grid.ActualWidth - _dropdownMenu.Width + 8, 0);
-            else
-                _dropdownMenu.Position = new Point(rect.X, 0);
+            InitializeDropDownMenu();
         }
 
         private void OpenDropdownMenu()
         {
+            if (DDM.Items is null) return;
             LoadHints();
-            if (_dropdownMenu.Items == null)
-                return;
-            _dropdownMenu.IsOpen = true;
-            StatusLine.Text = "";
             MoveDropdownMenu();
+            DDM.IsOpen = true;
+            StatusLine.Text = "";
+        }
+
+        private void MoveDropdownMenu()
+        {
+            if (!DDM.IsOpen) return;
+            Rect rect = TBConsole.GetRectFromCharacterIndex(TBConsole.CaretIndex);
+            if (rect.X + DDM.Width >= Grid.ActualWidth)
+                DDM.Position = new Point(Grid.ActualWidth - DDM.Width + 6, 0);
+            else
+                DDM.Position = new Point(rect.X, 0);
+        }
+
+        private (int, string) GetEditingCommandWithArgs()
+        {
+            string[] commands = TBConsole.Text.Split(';');
+            int offset = 0;
+            for (int i = 0; i < commands.Length; i++)
+            {
+                int length = commands[i].Length;
+                if (TBConsole.CaretIndex >= offset && TBConsole.CaretIndex <= offset + length)
+                    return (offset, commands[i]);
+                offset += length + 1;
+            }
+            return (0, "");
+        }
+
+        private void SubstituteCommand()
+        {
+            (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
+
+            Match match = Command.CommandRegex.Match(editingCommandWithArgs);
+            if (!match.Success)
+            {
+                DDM.IsOpen = false;
+                return;
+            }
+
+            Group command = match.Groups["command"];
+
+            string selectedCommand = DDM.LB.SelectedValue as string,
+                saved = TBConsole.Text.Substring(0, index + command.Index);
+            TBConsole.Text = saved + Regex.Replace(TBConsole.Text, $"{saved}{command.Value}", selectedCommand);
+            TBConsole.SelectionStart = saved.Length + selectedCommand.Length + 1;
+        }
+
+        private string[] GetHints()
+        {
+            (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
+            Match match = Command.CommandRegex.Match(editingCommandWithArgs);
+            if (!match.Success)
+            {
+                DDM.IsOpen = false;
+                return null;
+            }
+            string command = match.Groups["command"].Value;
+            return Command.CommandNames.Keys.Where(keys => keys.Any(key => Regex.IsMatch(key, $"{command}.*")))
+                                            .Select(keys => keys.First()).ToArray();
         }
 
         private void LoadHints()
         {
             string[] hints = GetHints();
-            if (hints == null || hints.Length == 0)
+            if (hints is null || hints.Length == 0)
             {
-                _dropdownMenu.IsOpen = false;
+                DDM.IsOpen = false;
                 StatusLine.Text = $"Нет подсказок";
                 return;
             }
+            DDM.Items = hints;
             StatusLine.Text = "";
-            _dropdownMenu.Items = hints;
         }
 
-        private string[] GetHints()
+        private void TryParseAndExecuteCommands()
         {
-            (int index, string fullCommand) = GetEditingCommand();
-            Match match = Regex.Match(fullCommand, Command.Pattern);
-            if (match.Success == false)
-            {
-                _dropdownMenu.IsOpen = false;
-                return null;
-            }
-
-            string command = match.Groups["command"].Value;
-            return Command.CommandNames.Keys.Where(keys => keys.Any(key => Regex.IsMatch(key, $"{command}.*")))
-                                            .Select(keys => keys.First())
-                                            .ToArray();
-        }
-
-        private (int, string) GetEditingCommand()
-        {
-            string[] commands = TB.Text.Split(';');
-            int sum = 0;
-            int cursor = TB.CaretIndex;
-            for (int i = 0; i < commands.Length; i++)
-            {
-                int length = commands[i].Length;
-                if (cursor >= sum && cursor <= sum + length)
-                    return (sum, commands[i]);
-                sum += length + 1;
-            }
-            return default;
-        }
-
-        private void SubstituteCommand()
-        {
-            string command = _dropdownMenu.LB.SelectedValue as string;
-            (int index, string fullCommand) = GetEditingCommand();
-
-            Match match = Regex.Match(fullCommand, Command.Pattern);
-            if (match.Success == false)
-            {
-                _dropdownMenu.IsOpen = false;
-                return;
-            }
-
-            Group cmd = match.Groups["command"];
-            string save = TB.Text.Substring(0, index + cmd.Index);
-            TB.Text = save + Regex.Replace(TB.Text, $"{save}{cmd.Value}", command);
-            TB.SelectionStart = save.Length + command.Length + 1;
-        }
-
-        private void CommandsParse()
-        {
-            string[] commands = TB.Text.Split(';');
-            // command example: color red; 
-            Regex commandRegex = new Regex(Command.Pattern);
+            string[] commands = TBConsole.Text.Split(';');
             foreach (string command in commands)
             {
-                Match match = commandRegex.Match(command);
+                Match match = Command.CommandRegex.Match(command);
                 if (!match.Success)
                 {
-                    TB.Text += "Ошибка в команде.";
+                    MessageBox.Show("Такой команды не существует.");
                     break;
                 }
                 string commandName = match.Groups["command"].Value;
-                string[] args = null;
-                if (match.Groups["args"].Success)
-                    args = match.Groups["args"].Value.Split(' ');
-
-                Command cmd = Command.GetCommand(commandName);
-                try
+                if (!Command.IsCommandExist(commandName))
                 {
-                    cmd.Execute(args);
+                    MessageBox.Show("Такой команды не существует.");
+                    break;
                 }
-                catch (ArgumentException)
-                {
-                    TB.Text += $"\n{cmd.Usage}";
-                }
+                string[] args = match.Groups["args"].Success ? match.Groups["args"].Value.Split(';') : new string[] { };
+                ExecuteCommand(Command.GetCommand(commandName), args);
             }
         }
 
-        private void Window_ContentRendered(object sender, EventArgs e)
+        private void ExecuteCommand(Command command, string[] args)
         {
-            CreateDropdownMenu();
+            (Command.ReturnCode code, string output) = command.Execute(args);
+            if (code == Command.ReturnCode.Error)
+                output = $"Ошибка: {output}";
+            int prevSelectionStart = TBConsole.SelectionStart;
+            TBConsole.Text += $"\n{output}\n";
+            TBConsole.SelectionStart = prevSelectionStart + output.Length + 2;
         }
 
-        private void TB_TextChanged(object sender, TextChangedEventArgs e)
+        private void TBConsole_KeyDown(object sender, KeyEventArgs e)
+        {
+            bool isShiftPressed = Keyboard.Modifiers == ModifierKeys.Shift;
+
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    StatusLine.Text = "";
+                    if (DDM.IsOpen)
+                        SubstituteCommand();
+                    else
+                        TryParseAndExecuteCommands();
+                    DDM.IsOpen = false;
+                    break;
+                case Key.Tab:
+                    StatusLine.Text = "";
+                    OpenDropdownMenu();
+                    if (DDM.IsOpen)
+                        DDM.SelectedItemIndex += isShiftPressed ? -1 : 1;
+                    e.Handled = true;
+                    break;
+                case Key.Escape:
+                    StatusLine.Text = "";
+                    DDM.IsOpen = false;
+                    break;
+            }
+        }
+
+        private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
         {
             MoveDropdownMenu();
-            if (_dropdownMenu.IsOpen)
+            if (DDM.IsOpen)
                 LoadHints();
         }
     }
