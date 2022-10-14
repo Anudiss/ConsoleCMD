@@ -31,18 +31,40 @@ namespace ConsoleCMD
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(string[]), typeof(DropdownMenu), new PropertyMetadata(null));
 
-
-
-        public Thickness CustomMargin
+        public Point Position
         {
-            get { return (Thickness)GetValue(CustomMarginProperty); }
-            set { SetValue(CustomMarginProperty, value); }
+            get => Bounds.TopLeft;
+            set => Bounds = new Rect(value.X, value.Y, 0, 0);
         }
 
-        // Using a DependencyProperty as the backing store for CustomMargin.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CustomMarginProperty =
-            DependencyProperty.Register("CustomMargin", typeof(Thickness), typeof(DropdownMenu), new PropertyMetadata(default));
+        public Rect Bounds
+        {
+            get { return (Rect)GetValue(RectangleProperty); }
+            set { SetValue(RectangleProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for Rectangle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RectangleProperty =
+            DependencyProperty.Register("Bounds", typeof(Rect), typeof(DropdownMenu), new PropertyMetadata(Rect.Empty));
+
+        public int SelectedItemIndex
+        {
+            get => LB.SelectedIndex;
+            set
+            {
+                if (value > Items.Length - 1)
+                    LB.SelectedIndex = value % Items.Length;
+                else if (value < 0)
+                    LB.SelectedIndex = Items.Length + (value % Items.Length);
+                else
+                    LB.SelectedIndex = value;
+            }
+        }
+
+        public new double Width
+        {
+            get => LB.ActualWidth + SystemParameters.VerticalScrollBarWidth;
+        }
 
         public SelectionChangedEventHandler SelectionChanged;
 
@@ -50,9 +72,15 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            PlacementRectangle = new Rect();
-
             SelectionChanged += (sender, args) => SelectionChanged?.Invoke(sender, args);
+        }
+
+        private void LB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListBox listBox)
+                listBox.ScrollIntoView(listBox.SelectedItem);
+            if (sender is ListBoxItem listItem)
+                MessageBox.Show("asdwdasdawdasdawdasdawd");
         }
     }
 }

@@ -7,8 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             StaysOpen="True" Placement="Top" IsOpen="True">
+             StaysOpen="True" Placement="Top" IsOpen="False" PlacementRectangle="{Binding Path=Bounds}">
     <Grid Background="White">
-        <ListBox Name="LB" Background="White" Margin="{Binding Path=CustomMargin}" ItemsSource="{Binding Path=Items}" HorizontalAlignment="Left"/>
+        <ListBox Name="LB" Background="White" ItemsSource="{Binding Path=Items}" HorizontalAlignment="Left" IsSynchronizedWithCurrentItem="True"
+                 SelectionChanged="LB_SelectionChanged"/>
     </Grid>
 </Popup>
