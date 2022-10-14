@@ -1,5 +1,6 @@
 ﻿using ConsoleCMD.Applications;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +24,6 @@ namespace ConsoleCMD
         {
             _dropdownMenu = new DropdownMenu()
             {
-                Items = new[] { "Руддщ", "KASJdawkd", "2", "3", "42", "12", "1232", "4322", "532", "asdw2", "gasd2" },
                 MaxHeight = TB.ActualHeight,
                 PlacementTarget = TB
             };
@@ -42,6 +42,7 @@ namespace ConsoleCMD
             switch (e.Key)
             {
                 case Key.Enter:
+                    StatusLine.Text = "";
                     if (_dropdownMenu.IsOpen)
                         SubstituteCommand();
                     else
@@ -50,12 +51,14 @@ namespace ConsoleCMD
                     _dropdownMenu.IsOpen = false;
                     break;
                 case Key.Tab:
+                    StatusLine.Text = "";
                     OpenDropdownMenu();
                     if (_dropdownMenu.IsOpen)
                         _dropdownMenu.SelectedItemIndex += shift ? -1 : 1;
                     e.Handled = true;
                     break;
                 case Key.Escape:
+                    StatusLine.Text = "";
                     _dropdownMenu.IsOpen = false;
                     break;
             }
@@ -74,8 +77,41 @@ namespace ConsoleCMD
 
         private void OpenDropdownMenu()
         {
+            LoadHints();
+            if (_dropdownMenu.Items == null)
+                return;
             _dropdownMenu.IsOpen = true;
+            StatusLine.Text = "";
             MoveDropdownMenu();
+        }
+
+        private void LoadHints()
+        {
+            string[] hints = GetHints();
+            if (hints == null || hints.Length == 0)
+            {
+                _dropdownMenu.IsOpen = false;
+                StatusLine.Text = $"Нет подсказок";
+                return;
+            }
+            StatusLine.Text = "";
+            _dropdownMenu.Items = hints;
+        }
+
+        private string[] GetHints()
+        {
+            (int index, string fullCommand) = GetEditingCommand();
+            Match match = Regex.Match(fullCommand, Command.Pattern);
+            if (match.Success == false)
+            {
+                _dropdownMenu.IsOpen = false;
+                return null;
+            }
+
+            string command = match.Groups["command"].Value;
+            return Command.CommandNames.Keys.Where(keys => keys.Any(key => Regex.IsMatch(key, $"{command}.*")))
+                                            .Select(keys => keys.First())
+                                            .ToArray();
         }
 
         private (int, string) GetEditingCommand()
@@ -98,9 +134,12 @@ namespace ConsoleCMD
             string command = _dropdownMenu.LB.SelectedValue as string;
             (int index, string fullCommand) = GetEditingCommand();
 
-            Match match = Regex.Match(fullCommand, @"\s*(?<command>\w+)\s*(?<args>.+)?");
+            Match match = Regex.Match(fullCommand, Command.Pattern);
             if (match.Success == false)
+            {
+                _dropdownMenu.IsOpen = false;
                 return;
+            }
 
             Group cmd = match.Groups["command"];
             string save = TB.Text.Substring(0, index + cmd.Index);
@@ -112,7 +151,7 @@ namespace ConsoleCMD
         {
             string[] commands = TB.Text.Split(';');
             // command example: color red; 
-            Regex commandRegex = new Regex(@"^(?<command>\w+)\s*(?<args>.+)?");
+            Regex commandRegex = new Regex(Command.Pattern);
             foreach (string command in commands)
             {
                 Match match = commandRegex.Match(command);
@@ -146,6 +185,8 @@ namespace ConsoleCMD
         private void TB_TextChanged(object sender, TextChangedEventArgs e)
         {
             MoveDropdownMenu();
+            if (_dropdownMenu.IsOpen)
+                LoadHints();
         }
     }
 }

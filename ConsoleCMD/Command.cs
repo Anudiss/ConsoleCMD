@@ -25,7 +25,8 @@ namespace ConsoleCMD.Applications
 
             return CommandNames.First(keyPair => keyPair.Key.Contains(commandName)).Value;
         }
-            
+        public const string Pattern = @"\s*(?<command>\w+)\s*(?<args>.+)?";
+
         public delegate void CommandExecutor(string[] args);
         public delegate bool CommandValidator(string[] args);
 
