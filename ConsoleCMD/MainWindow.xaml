@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConsoleCMD"
         mc:Ignorable="d"
-        Title="?" Height="600" Width="1000">
-    <Grid>
+        Title="Типа консоль" Height="600" Width="1000">
+    <Grid Name="Grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Frame x:Name="MainFrame" Grid.Row="0" />
         <TextBox Name="TB" Grid.Row="1" FontSize="14" Margin="5" Background="Black" Foreground="White" 
-                 BorderThickness="0" KeyDown="TB_KeyDown"/>
+                 BorderThickness="0" KeyDown="TB_KeyDown" TextWrapping="Wrap"/>
     </Grid>
 </Window>

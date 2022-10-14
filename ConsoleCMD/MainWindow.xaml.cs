@@ -1,19 +1,11 @@
 ﻿using ConsoleCMD.Applications;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Media.TextFormatting;
 
 namespace ConsoleCMD
 {
@@ -22,24 +14,48 @@ namespace ConsoleCMD
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DropdownMenu _dropdownMenu;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
 
-            AddChild(new DropdownMenu()
+        private void CreateDropdownMenu()
+        {
+            _dropdownMenu = new DropdownMenu()
             {
-                Items = new[] { "Hello", "World" }
-            });
+                Items = new[] { "Руддщ", "aksdAWDJajsd", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2" },
+                MaxHeight = TB.ActualHeight,
+                PlacementTarget = TB
+            };
+
+            _dropdownMenu.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                MessageBox.Show((string)args.AddedItems[0]);
+            };
+            
         }
 
         private void TB_KeyDown(object sender, KeyEventArgs e)
         {
+            if (_dropdownMenu == null)
+                CreateDropdownMenu();
             switch (e.Key)
             {
                 case Key.Enter:
                     CommandsParse();
                     break;
                 case Key.Tab:
+                    Rect rect = TB.GetRectFromCharacterIndex(TB.CaretIndex);
+                    _dropdownMenu.CustomMargin = new Thickness
+                    {
+                        Left = rect.X,
+                        Bottom = 5
+                    };
+                    break;
+                case Key.Escape:
+                    _dropdownMenu.IsOpen = !_dropdownMenu.IsOpen;
                     break;
             }
         }
