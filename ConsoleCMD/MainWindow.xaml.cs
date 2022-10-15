@@ -40,6 +40,8 @@ namespace ConsoleCMD
                             .Select(v => v.Name.ToLower())
                             .ToArray();
 
+
+        private bool _commandExecuted = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -146,6 +148,7 @@ namespace ConsoleCMD
 
         private void TryParseAndExecuteCommands()
         {
+            _commandExecuted = true;
             string[] commands = TBConsole.Text.Split(';');
             foreach (string command in commands)
             {
@@ -179,6 +182,12 @@ namespace ConsoleCMD
         private void TBConsole_KeyDown(object sender, KeyEventArgs e)
         {
             bool isShiftPressed = Keyboard.Modifiers == ModifierKeys.Shift;
+            if (_commandExecuted)
+            {
+                _commandExecuted = false;
+                TBConsole.Text = "";
+                return;
+            }
 
             switch (e.Key)
             {
