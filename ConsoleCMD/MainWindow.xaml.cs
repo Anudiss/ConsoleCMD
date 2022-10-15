@@ -61,8 +61,14 @@ namespace ConsoleCMD
 
         private void OpenDropdownMenu()
         {
+            int selectedIndex = DDM.SelectedItemIndex;
             LoadHints();
-            if (DDM.Items is null) return;
+            if (DDM.Items is null)
+            {
+                DDM.SelectedItemIndex = 0;
+                return;
+            }
+            DDM.SelectedItemIndex = selectedIndex;
             MoveDropdownMenu();
             DDM.IsOpen = true;
             StatusLine.Text = "";
