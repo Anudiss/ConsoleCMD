@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ConsoleCMD"
         mc:Ignorable="d"
         Title="Система" Height="600" Width="1000" FontFamily="Times New Roman" FontSize="14"
-        Loaded="Window_Loaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Loaded="Window_Loaded" DataContext="{Binding RelativeSource={RelativeSource Self}}" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged">
     <Grid x:Name="Grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>

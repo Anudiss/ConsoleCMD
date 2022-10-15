@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -56,10 +57,7 @@ namespace ConsoleCMD
             DDM.PlacementTarget = TBConsole;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitializeDropDownMenu();
-        }
+        private void Window_Loaded(object sender, RoutedEventArgs e) => InitializeDropDownMenu();
 
         private void OpenDropdownMenu()
         {
@@ -206,5 +204,8 @@ namespace ConsoleCMD
             if (DDM.IsOpen)
                 LoadHints();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => MoveDropdownMenu();
+        private void Window_LocationChanged(object sender, EventArgs e) => MoveDropdownMenu();
     }
 }
