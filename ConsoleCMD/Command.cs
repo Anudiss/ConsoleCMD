@@ -81,6 +81,15 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => true,
                     executor: (args) => (ReturnCode.Success, string.Join(" ", args))
                 )
+            },
+            { new[] { "clearhistory", "clearh", "ch" },
+                new Command(
+                    description: "Отчищает историю ввода",
+                    usage: "clearhistory",
+                    invalidArgsMessage: "",
+                    argsValidator: (args) => true,
+                    executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Success, ""); }
+                )
             }
         };
 

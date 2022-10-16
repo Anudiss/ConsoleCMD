@@ -199,7 +199,17 @@ namespace ConsoleCMD
             TBConsole.SelectionStart = prevSelectionStart + output.Length + 2;
         }
 
-        private void TBConsole_KeyDown(object sender, KeyEventArgs e)
+        private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MoveDropdownMenu();
+            if (DDM.IsOpen)
+                LoadHints();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => MoveDropdownMenu();
+        private void Window_LocationChanged(object sender, EventArgs e) => MoveDropdownMenu();
+
+        private void TBConsole_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             bool isShiftPressed = Keyboard.Modifiers == ModifierKeys.Shift;
             if (_commandExecuted)
@@ -242,15 +252,5 @@ namespace ConsoleCMD
                     break;
             }
         }
-
-        private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            MoveDropdownMenu();
-            if (DDM.IsOpen)
-                LoadHints();
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => MoveDropdownMenu();
-        private void Window_LocationChanged(object sender, EventArgs e) => MoveDropdownMenu();
     }
 }

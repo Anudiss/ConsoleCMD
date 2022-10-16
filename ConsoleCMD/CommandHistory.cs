@@ -20,7 +20,7 @@ namespace ConsoleCMD
             private set
             {
                 _selectedLine = Math.Max(0, Math.Min(_history.Count - 1, value));
-                OnHistoryLineChanged?.Invoke(_history[_selectedLine]);
+                OnHistoryLineChanged?.Invoke(Current);
             }
         }
 
@@ -30,7 +30,7 @@ namespace ConsoleCMD
 
         public static void AddHistoryLine(string historyLine) => _history.Insert(1, historyLine);
         public static void SetCurrentHistoryLine(string historyLine) => _history[0] = historyLine;
-        public static void Clear() => _history.RemoveRange(1, _history.Count - 2);
+        public static void Clear() => _history.RemoveRange(1, _history.Count - 1);
         public static void Reset() => SelectedLine = 0;
     }
 }

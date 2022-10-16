@@ -17,7 +17,7 @@
         <TextBox x:Name="TBConsole" Grid.Row="1" Padding="5" Margin="5,0,5,5"
                  Background="{Binding Path=ConsoleBackgroundColor}" Foreground="{Binding Path=ConsoleForegroundColor}"
                  FontFamily="Consolas" TextWrapping="Wrap" Focusable="True"
-                 KeyDown="TBConsole_KeyDown" TextChanged="TBConsole_TextChanged" VerticalScrollBarVisibility="Visible" />
+                 PreviewKeyDown="TBConsole_PreviewKeyDown" TextChanged="TBConsole_TextChanged" VerticalScrollBarVisibility="Visible" />
         <local:DropdownMenu x:Name="DDM"/>
         <TextBox x:Name="StatusLine" Grid.Row="2" Margin="5,0,5,5" IsReadOnly="True"/>
     </Grid>
