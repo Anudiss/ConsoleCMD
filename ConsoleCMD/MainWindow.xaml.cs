@@ -1,5 +1,6 @@
 ﻿using ConsoleCMD.Applications;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -40,8 +41,18 @@ namespace ConsoleCMD
                             .Select(v => v.Name.ToLower())
                             .ToArray();
 
+        private void ConsoleWrite(string s)
+        {
+            int prevSelectionStart = TBConsole.SelectionStart;
+            TBConsole.Text += s;
+            TBConsole.SelectionStart = prevSelectionStart + s.Length + 2;
+        }
+        private void ConsoleWriteLine(string s) => ConsoleWrite($"{s}\n");
+        private void ConsoleClear() => TBConsole.Text = "";
+        private bool ConsoleIsEmpty() => String.IsNullOrWhiteSpace(TBConsole.Text);
 
         private bool _commandExecuted = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -65,7 +76,6 @@ namespace ConsoleCMD
             };
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) => InitializeDropDownMenu();
 
         private void OpenDropdownMenu()
         {
@@ -159,56 +169,66 @@ namespace ConsoleCMD
             StatusLine.Text = "";
         }
 
-        private void TryParseAndExecuteCommands()
+        private List<(string, string[])> ParseAndGetCommandsAndArgs()
         {
-            if (TBConsole.Text == string.Empty)
-                return;
-
-            _commandExecuted = true;
-
-            string[] commands = TBConsole.Text.Split(';');
-            if (commands.Last() == string.Empty)
-                commands = commands.Take(commands.Length - 1).ToArray();
+            string[] commandsWithArgs = TBConsole.Text.Split(';');
+            if (commandsWithArgs.Last() == string.Empty)
+                commandsWithArgs = commandsWithArgs.Take(commandsWithArgs.Length - 1).ToArray();
 
             CommandHistory.AddHistoryLine(TBConsole.Text);
             CommandHistory.Reset();
-            
-            foreach (string command in commands)
+
+            List<(string, string[])> commandsAndArgs = new List<(string, string[])>();
+            foreach (string command in commandsWithArgs)
             {
                 Match match = Command.CommandRegex.Match(command);
                 if (!match.Success)
                 {
-                    ConsoleWrite($"Ошибка: команды \"{command}\" не существует.\n");
+                    ConsoleWriteLine($"Ошибка: команды \"{command}\" не существует.");
                     continue;
                 }
                 string commandName = match.Groups["command"].Value;
                 if (!Command.IsCommandExist(commandName))
                 {
-                    ConsoleWrite($"Ошибка: команды \"{commandName}\" не существует.\n");
+                    ConsoleWriteLine($"Ошибка: команды \"{commandName}\" не существует.");
                     continue;
                 }
                 string[] commandArgs = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
-                ExecuteCommand(Command.GetCommand(commandName), commandArgs);
+                commandsAndArgs.Add((commandName, commandArgs));
             }
+            return commandsAndArgs.Count == 0 ? null : commandsAndArgs;
         }
 
         private void ExecuteCommand(Command command, string[] args)
         {
             (Command.ReturnCode code, string output) = command.Execute(args);
             if (code == Command.ReturnCode.Error)
-                output = $"Ошибка: {output}.\n";
-            if (output != String.Empty)
-                ConsoleWrite($"{output}\n");
+                ConsoleWriteLine("Ошибка: " + output);
+            else if (!String.IsNullOrWhiteSpace(output))
+                ConsoleWriteLine(output);
         }
 
-        private void ConsoleWrite(string s)
+        private void TryParseAndExecuteCommands()
         {
-            int prevSelectionStart = TBConsole.SelectionStart;
-            TBConsole.Text += s;
-            TBConsole.SelectionStart = prevSelectionStart + s.Length + 2;
+            if (String.IsNullOrWhiteSpace(TBConsole.Text))
+                ConsoleClear();
+            if (ConsoleIsEmpty())
+                return;
+
+            _commandExecuted = true;
+
+            List<(string, string[])> commandsAndArgs = ParseAndGetCommandsAndArgs();
+
+            if (commandsAndArgs is null)
+                return;
+
+            commandsAndArgs.ForEach(pair =>
+            {
+                Command command = Command.GetCommand(pair.Item1);
+                string[] args = pair.Item2;
+                ExecuteCommand(command, args);
+            });
         }
-        private void ConsoleWriteLine(string s) => ConsoleWrite($"{s}\n");
-        private void ConsoleClear() => TBConsole.Text = "";
 
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -217,6 +237,7 @@ namespace ConsoleCMD
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => MoveDropdownMenu();
+        private void Window_Loaded(object sender, RoutedEventArgs e) => InitializeDropDownMenu();
         private void Window_LocationChanged(object sender, EventArgs e) => MoveDropdownMenu();
 
         private void TBConsole_PreviewKeyDown(object sender, KeyEventArgs e)
