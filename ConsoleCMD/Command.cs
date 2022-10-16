@@ -16,7 +16,7 @@ namespace ConsoleCMD.Applications
             Success = 0, Error
         }
 
-        public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\w+)\s*(?<args>.+)?", RegexOptions.Compiled);
+        public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\w+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
 
         public static Dictionary<string[], Command> CommandNames = new Dictionary<string[], Command>
         {

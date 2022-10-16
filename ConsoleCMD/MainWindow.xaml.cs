@@ -179,7 +179,7 @@ namespace ConsoleCMD
                     MessageBox.Show("Такой команды не существует.");
                     break;
                 }
-                string[] args = match.Groups["args"].Success ? match.Groups["args"].Value.Split(';') : new string[] { };
+                string[] args = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
                 ExecuteCommand(Command.GetCommand(commandName), args);
             }
         }
