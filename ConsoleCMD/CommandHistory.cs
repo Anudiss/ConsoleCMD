@@ -30,6 +30,7 @@ namespace ConsoleCMD
             if (historyLine.Trim() == string.Empty)
                 return;
             _history.Insert(1, historyLine);
+            Reset();
         }
 
         public static void SetCurrentHistoryLine(string historyLine) => _history[0] = historyLine;

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -54,9 +55,18 @@ namespace ConsoleCMD
             get => LB.ActualWidth + SystemParameters.VerticalScrollBarWidth;
         }
 
-        public DropdownMenu()
+        public DropdownMenu(ConsoleComponent console)
         {
             InitializeComponent();
+
+            MaxHeight = console.ActualHeight;
+            PlacementTarget = console;
+
+            CommandHistory.OnHistoryLineChanged += (historyLine) =>
+            {
+                console.Clear();
+                console.Write(historyLine);
+            };
         }
 
         private void LB_SelectionChanged(object sender, SelectionChangedEventArgs e)

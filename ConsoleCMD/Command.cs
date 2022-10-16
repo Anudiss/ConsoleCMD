@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 
 namespace ConsoleCMD.Applications
@@ -35,12 +36,12 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!MainWindow.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        MainWindow.AppWindow.ConsoleBackgroundColor = brush;
+                        ConsoleComponent.Instance.ConsoleBackgroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
@@ -53,12 +54,12 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!MainWindow.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        MainWindow.AppWindow.ConsoleForegroundColor = brush;
+                        ConsoleComponent.Instance.ConsoleForegroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
