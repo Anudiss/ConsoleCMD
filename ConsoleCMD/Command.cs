@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 
 namespace ConsoleCMD.Applications
@@ -27,12 +23,7 @@ namespace ConsoleCMD.Applications
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => {
-                        string commandsList = "";
-                        foreach (string[] commandNames in CommandNames.Keys)
-                        {
-                            commandsList += commandNames[0] + "\n";
-                        }
-                        return (ReturnCode.Success, commandsList);
+                        return (ReturnCode.Success, string.Join("\n", CommandNames.Select(keyPair => $"{keyPair.Key[0]} {keyPair.Value.Description}")));
                     }
                 )
             },
@@ -44,7 +35,6 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        MessageBox.Show(color);
                         if (!MainWindow.ConsoleSupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет.");

@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -35,7 +34,7 @@ namespace ConsoleCMD
 
         public static readonly string[] ConsoleSupportedColors =
             typeof(Brushes).GetProperties()
-                            .Select(p => new { Name = p.Name, Brush = p.GetValue(null) as Brush })
+                            .Select(p => new { p.Name, Brush = p.GetValue(null) as Brush })
                             .ToArray()
                             .Select(v => v.Name.ToLower())
                             .ToArray();
@@ -170,13 +169,13 @@ namespace ConsoleCMD
                 Match match = Command.CommandRegex.Match(command);
                 if (!match.Success)
                 {
-                    MessageBox.Show("Такой команды не существует.");
+                    StatusLine.Text = "Такой команды не существует.";
                     break;
                 }
                 string commandName = match.Groups["command"].Value;
                 if (!Command.IsCommandExist(commandName))
                 {
-                    MessageBox.Show("Такой команды не существует.");
+                    StatusLine.Text = "Такой команды не существует.";
                     break;
                 }
                 string[] args = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
@@ -202,8 +201,7 @@ namespace ConsoleCMD
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
         {
             MoveDropdownMenu();
-            if (DDM.IsOpen)
-                LoadHints();
+            if (DDM.IsOpen) LoadHints();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => MoveDropdownMenu();
@@ -219,10 +217,15 @@ namespace ConsoleCMD
                 return;
             }
 
+            if (new[] { Key.Enter, Key.Tab, Key.Escape, Key.Up, Key.Down }.Contains(e.Key) == false)
+                return;
+
+            StatusLine.Text = "";
+            e.Handled = true;
+
             switch (e.Key)
             {
                 case Key.Enter:
-                    StatusLine.Text = "";
                     if (DDM.IsOpen)
                         SubstituteCommand();
                     else
@@ -230,27 +233,23 @@ namespace ConsoleCMD
                     DDM.IsOpen = false;
                     break;
                 case Key.Tab:
-                    StatusLine.Text = "";
                     if (DDM.IsOpen)
                         DDM.SelectedItemIndex += isShiftPressed ? -1 : 1;
                     OpenDropdownMenu();
-                    e.Handled = true;
                     break;
                 case Key.Escape:
-                    StatusLine.Text = "";
                     DDM.IsOpen = false;
                     break;
                 case Key.Up:
                     if (CommandHistory.SelectedLine == 0)
                         CommandHistory.SetCurrentHistoryLine(TBConsole.Text);
                     CommandHistory.MoveNext();
-                    e.Handled = true;
                     break;
                 case Key.Down:
                     CommandHistory.MovePrevious();
-                    e.Handled = true;
                     break;
             }
+
         }
     }
 }

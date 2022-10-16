@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 
 namespace ConsoleCMD
 {
@@ -28,7 +25,13 @@ namespace ConsoleCMD
         public static void MoveNext() => SelectedLine++;
         public static void MovePrevious() => SelectedLine--;
 
-        public static void AddHistoryLine(string historyLine) => _history.Insert(1, historyLine);
+        public static void AddHistoryLine(string historyLine)
+        {
+            if (historyLine.Trim() == string.Empty)
+                return;
+            _history.Insert(1, historyLine);
+        }
+
         public static void SetCurrentHistoryLine(string historyLine) => _history[0] = historyLine;
         public static void Clear() => _history.RemoveRange(1, _history.Count - 1);
         public static void Reset() => SelectedLine = 0;
