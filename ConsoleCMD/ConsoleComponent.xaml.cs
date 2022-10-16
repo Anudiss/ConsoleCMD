@@ -239,7 +239,14 @@ namespace ConsoleCMD
         private void ExecuteCommand(Command command, string[] args)
         {
             (Command.ReturnCode code, string output) = command.Execute(args);
-            if (code == Command.ReturnCode.Error)
+            if (code == Command.ReturnCode.Special)
+            {
+                if (output == "shutdown")
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+            else if (code == Command.ReturnCode.Error)
                 WriteLine("Ошибка: " + output);
             else if (!string.IsNullOrWhiteSpace(output))
                 WriteLine(output);

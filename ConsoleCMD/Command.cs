@@ -10,24 +10,24 @@ namespace ConsoleCMD.Applications
     {
         public enum ReturnCode
         {
-            Success = 0, Error
+            Special, Success, Error
         }
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
 
-
-        // TODO: добавить флаги
+        // Flags will be arguments, starting with -- or short -
+        // There are ReturnCode.Special. We can do side actions when get this code
 
         public static Dictionary<string[], Command> CommandNames = new Dictionary<string[], Command>
         {
             { new[] { "help", "h" },
                 new Command(
                     description: "Выводит список доступных команд",
-                    usage: "help\n",
+                    usage: "help",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => {
-                        return (ReturnCode.Success, string.Join("\n", CommandNames.Select(keyPair => $"{keyPair.Key[0]} {keyPair.Value.Description}")));
+                        return (ReturnCode.Success, string.Join("\n", CommandNames.Select(keyPair => $"{keyPair.Key[0]} - {keyPair.Value.Description}")));
                     }
                 )
             },
@@ -79,12 +79,21 @@ namespace ConsoleCMD.Applications
             { new[] { "clear_history", "clr_hist", "c_h" },
                 new Command(
                     description: "Очищает историю ввода",
-                    usage: "clearhistory",
+                    usage: "clear_history",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Success, ""); }
                 )
-            }
+            },
+            { new[] { "exit", "quit", "close", "shutdown" },
+                new Command(
+                    description: "Очищает историю ввода",
+                    usage: "clear_history",
+                    invalidArgsMessage: "",
+                    argsValidator: (args) => true,
+                    executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Special, "shutdown"); }
+                )
+            },
         };
 
         public static bool IsCommandExist(string commandName) =>
@@ -114,9 +123,9 @@ namespace ConsoleCMD.Applications
 
         public (ReturnCode, string) Execute(string[] args)
         {
-            if (args.Length > 0 && (args[0].ToLower() == "help" || args[0].ToLower() == "h"))
+            if (args.Length > 0 && (args.Contains("--help") || args.Contains("-h")))
             {
-                return (ReturnCode.Success, Usage);
+                return (ReturnCode.Success, Description + "\n" + Usage);
             }
             if (!ArgsValidator.Invoke(args))
                 return (ReturnCode.Error, InvalidArgsMessage);
