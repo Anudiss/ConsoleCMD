@@ -1,5 +1,6 @@
 ﻿using ConsoleCMD.Applications;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -160,26 +161,34 @@ namespace ConsoleCMD
 
         private void TryParseAndExecuteCommands()
         {
+            if (TBConsole.Text == string.Empty)
+                return;
+
             _commandExecuted = true;
+
             string[] commands = TBConsole.Text.Split(';');
+            if (commands.Last() == string.Empty)
+                commands = commands.Take(commands.Length - 1).ToArray();
+
             CommandHistory.AddHistoryLine(TBConsole.Text);
             CommandHistory.Reset();
+            
             foreach (string command in commands)
             {
                 Match match = Command.CommandRegex.Match(command);
                 if (!match.Success)
                 {
-                    StatusLine.Text = "Такой команды не существует.";
-                    break;
+                    ConsoleWrite($"Ошибка: команды \"{command}\" не существует.\n");
+                    continue;
                 }
                 string commandName = match.Groups["command"].Value;
                 if (!Command.IsCommandExist(commandName))
                 {
-                    StatusLine.Text = "Такой команды не существует.";
-                    break;
+                    ConsoleWrite($"Ошибка: команды \"{commandName}\" не существует.\n");
+                    continue;
                 }
-                string[] args = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
-                ExecuteCommand(Command.GetCommand(commandName), args);
+                string[] commandArgs = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
+                ExecuteCommand(Command.GetCommand(commandName), commandArgs);
             }
         }
 
@@ -187,16 +196,19 @@ namespace ConsoleCMD
         {
             (Command.ReturnCode code, string output) = command.Execute(args);
             if (code == Command.ReturnCode.Error)
-                output = $"Ошибка: {output}";
-            if (output.Trim() == string.Empty)
-            {
-                TBConsole.Text = "";
-                return;
-            }
-            int prevSelectionStart = TBConsole.SelectionStart;
-            TBConsole.Text += $"\n{output}";
-            TBConsole.SelectionStart = prevSelectionStart + output.Length + 2;
+                output = $"Ошибка: {output}.\n";
+            if (output != String.Empty)
+                ConsoleWrite($"{output}\n");
         }
+
+        private void ConsoleWrite(string s)
+        {
+            int prevSelectionStart = TBConsole.SelectionStart;
+            TBConsole.Text += s;
+            TBConsole.SelectionStart = prevSelectionStart + s.Length + 2;
+        }
+        private void ConsoleWriteLine(string s) => ConsoleWrite($"{s}\n");
+        private void ConsoleClear() => TBConsole.Text = "";
 
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -213,7 +225,7 @@ namespace ConsoleCMD
             if (_commandExecuted)
             {
                 _commandExecuted = false;
-                TBConsole.Text = "";
+                ConsoleClear();
                 return;
             }
 

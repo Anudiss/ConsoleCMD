@@ -12,7 +12,7 @@ namespace ConsoleCMD.Applications
             Success = 0, Error
         }
 
-        public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\w+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
+        public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
 
         public static Dictionary<string[], Command> CommandNames = new Dictionary<string[], Command>
         {
@@ -31,13 +31,13 @@ namespace ConsoleCMD.Applications
                 new Command(
                     description: "Изменяет фоновый цвет консоли.",
                     usage: "set_background_color <color>\nПример: set_background_color white",
-                    invalidArgsMessage: "Команда принимает ровно один аргумент.",
+                    invalidArgsMessage: "Команда принимает ровно один аргумент",
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
                         if (!MainWindow.ConsoleSupportedColors.Contains(color))
                         {
-                            return (ReturnCode.Error, "Неверно указан цвет.");
+                            return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
                         MainWindow.AppWindow.ConsoleBackgroundColor = brush;
@@ -49,13 +49,13 @@ namespace ConsoleCMD.Applications
                 new Command(
                     description: "Изменяет цвет текста консоли.",
                     usage: "set_foreground_color <color>\nПример: set_foreground_color black",
-                    invalidArgsMessage: "Команда принимает ровно один аргумент.",
+                    invalidArgsMessage: "Команда принимает ровно один аргумент",
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
                         if (!MainWindow.ConsoleSupportedColors.Contains(color))
                         {
-                            return (ReturnCode.Error, "Неверно указан цвет.");
+                            return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
                         MainWindow.AppWindow.ConsoleForegroundColor = brush;
@@ -72,9 +72,9 @@ namespace ConsoleCMD.Applications
                     executor: (args) => (ReturnCode.Success, string.Join(" ", args))
                 )
             },
-            { new[] { "clearhistory", "clearh", "ch" },
+            { new[] { "clear_history", "clr_hist", "c_h" },
                 new Command(
-                    description: "Отчищает историю ввода",
+                    description: "Очищает историю ввода",
                     usage: "clearhistory",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
