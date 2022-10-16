@@ -57,6 +57,12 @@ namespace ConsoleCMD
         {
             DDM.MaxHeight = TBConsole.ActualHeight;
             DDM.PlacementTarget = TBConsole;
+
+            CommandHistory.OnHistoryLineChanged += (historyLine) =>
+            {
+                TBConsole.Text = historyLine;
+                TBConsole.CaretIndex = TBConsole.Text.Length;
+            };
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) => InitializeDropDownMenu();
@@ -103,10 +109,13 @@ namespace ConsoleCMD
         private void SubstituteCommand()
         {
             (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
-
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
             if (!match.Success)
             {
+                int lastPosition = TBConsole.SelectionStart;
+                string value = DDM.LB.SelectedValue as string;
+                TBConsole.Text = TBConsole.Text.Insert(lastPosition, value);
+                TBConsole.SelectionStart = lastPosition + value.Length + 1;
                 DDM.IsOpen = false;
                 return;
             }
@@ -122,6 +131,10 @@ namespace ConsoleCMD
         private string[] GetHints()
         {
             (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
+            if (editingCommandWithArgs.Trim() == "")
+                return Command.CommandNames.Keys.Select(keys => keys.First())
+                                                .ToArray();
+
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
             if (!match.Success)
             {
@@ -150,6 +163,8 @@ namespace ConsoleCMD
         {
             _commandExecuted = true;
             string[] commands = TBConsole.Text.Split(';');
+            CommandHistory.AddHistoryLine(TBConsole.Text);
+            CommandHistory.Reset();
             foreach (string command in commands)
             {
                 Match match = Command.CommandRegex.Match(command);
@@ -174,8 +189,13 @@ namespace ConsoleCMD
             (Command.ReturnCode code, string output) = command.Execute(args);
             if (code == Command.ReturnCode.Error)
                 output = $"Ошибка: {output}";
+            if (output.Trim() == string.Empty)
+            {
+                TBConsole.Text = "";
+                return;
+            }
             int prevSelectionStart = TBConsole.SelectionStart;
-            TBConsole.Text += $"\n{output}\n";
+            TBConsole.Text += $"\n{output}";
             TBConsole.SelectionStart = prevSelectionStart + output.Length + 2;
         }
 
@@ -201,14 +221,24 @@ namespace ConsoleCMD
                     break;
                 case Key.Tab:
                     StatusLine.Text = "";
-                    OpenDropdownMenu();
                     if (DDM.IsOpen)
                         DDM.SelectedItemIndex += isShiftPressed ? -1 : 1;
+                    OpenDropdownMenu();
                     e.Handled = true;
                     break;
                 case Key.Escape:
                     StatusLine.Text = "";
                     DDM.IsOpen = false;
+                    break;
+                case Key.Up:
+                    if (CommandHistory.SelectedLine == 0)
+                        CommandHistory.SetCurrentHistoryLine(TBConsole.Text);
+                    CommandHistory.MoveNext();
+                    e.Handled = true;
+                    break;
+                case Key.Down:
+                    CommandHistory.MovePrevious();
+                    e.Handled = true;
                     break;
             }
         }

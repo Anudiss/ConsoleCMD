@@ -35,6 +35,8 @@ namespace ConsoleCMD
             get => LB.SelectedIndex;
             set
             {
+                if (Items == null)
+                    return;
                 if (value > Items.Length - 1)
                     LB.SelectedIndex = value % Items.Length;
                 else if (value < 0)

@@ -68,6 +68,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Command.cs" />
+    <Compile Include="CommandHistory.cs" />
     <Compile Include="DropdownMenu.xaml.cs">
       <DependentUpon>DropdownMenu.xaml</DependentUpon>
     </Compile>
