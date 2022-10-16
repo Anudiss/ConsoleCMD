@@ -124,7 +124,7 @@ namespace ConsoleCMD
 
             string selectedCommand = DDM.LB.SelectedValue as string,
                 saved = TBConsole.Text.Substring(0, index + command.Index);
-            TBConsole.Text = saved + Regex.Replace(TBConsole.Text, $"{saved}{command.Value}", selectedCommand);
+            TBConsole.Text = saved + Regex.Replace(TBConsole.Text, $"^({saved}){command.Value}", selectedCommand);
             TBConsole.SelectionStart = saved.Length + selectedCommand.Length + 1;
         }
 
