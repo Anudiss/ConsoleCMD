@@ -59,7 +59,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DropdownMenu.xaml">
+    <Page Include="HintsBoxComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -76,8 +76,8 @@
     <Compile Include="ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DropdownMenu.xaml.cs">
-      <DependentUpon>DropdownMenu.xaml</DependentUpon>
+    <Compile Include="HintsBoxComponent.xaml.cs">
+      <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -101,6 +101,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

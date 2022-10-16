@@ -14,7 +14,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Frame x:Name="MainFrame" Grid.Row="0" Margin="5"/>
-        <local:ConsoleComponent Grid.Row="1" x:Name="Console"/>
-        <TextBox Text="{Binding Path=StatusText, ElementName=Console}" Grid.Row="2" Margin="5,0,5,5" IsReadOnly="True"/>
+        <local:ConsoleComponent x:Name="Console" Grid.Row="1"/>
+        <TextBlock x:Name="StatusLine" Text="{Binding Path=StatusText, ElementName=Console}" Grid.Row="2" Margin="5,0,5,5"/>
     </Grid>
 </Window>

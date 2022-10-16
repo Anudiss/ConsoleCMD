@@ -6,9 +6,9 @@ using System.Windows.Controls.Primitives;
 namespace ConsoleCMD
 {
     /// <summary>
-    /// Логика взаимодействия для DropdownMenu.xaml
+    /// Логика взаимодействия для HintsBoxComponent.xaml
     /// </summary>
-    public partial class DropdownMenu : Popup
+    public partial class HintsBoxComponent : Popup
     {
         public string[] Items
         {
@@ -17,7 +17,7 @@ namespace ConsoleCMD
         }
 
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(string[]), typeof(DropdownMenu), new PropertyMetadata(null));
+            DependencyProperty.Register("Items", typeof(string[]), typeof(HintsBoxComponent), new PropertyMetadata(null));
 
         public int SelectedItemIndex
         {
@@ -48,25 +48,25 @@ namespace ConsoleCMD
         }
 
         public static readonly DependencyProperty RectangleProperty =
-            DependencyProperty.Register("Bounds", typeof(Rect), typeof(DropdownMenu), new PropertyMetadata(Rect.Empty));
+            DependencyProperty.Register("Bounds", typeof(Rect), typeof(HintsBoxComponent), new PropertyMetadata(Rect.Empty));
 
         public new double Width
         {
             get => LB.ActualWidth + SystemParameters.VerticalScrollBarWidth;
         }
 
-        public DropdownMenu(ConsoleComponent console)
+        public HintsBoxComponent()
         {
             InitializeComponent();
+        }
 
-            MaxHeight = console.ActualHeight;
-            PlacementTarget = console;
-
-            CommandHistory.OnHistoryLineChanged += (historyLine) =>
-            {
-                console.Clear();
-                console.Write(historyLine);
-            };
+        public void Open()
+        {
+            IsOpen = true;
+        }
+        public void Close()
+        {
+            IsOpen = false;
         }
 
         private void LB_SelectionChanged(object sender, SelectionChangedEventArgs e)

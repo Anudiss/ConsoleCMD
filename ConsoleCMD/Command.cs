@@ -15,6 +15,9 @@ namespace ConsoleCMD.Applications
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
 
+
+        // TODO: добавить флаги
+
         public static Dictionary<string[], Command> CommandNames = new Dictionary<string[], Command>
         {
             { new[] { "help", "h" },
@@ -30,18 +33,18 @@ namespace ConsoleCMD.Applications
             },
             { new[] { "set_background_color", "set_bg_color", "set_bg_col" },
                 new Command(
-                    description: "Изменяет фоновый цвет консоли.",
+                    description: "Изменяет фоновый цвет консоли",
                     usage: "set_background_color <color>\nПример: set_background_color white",
                     invalidArgsMessage: "Команда принимает ровно один аргумент",
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.SupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        ConsoleComponent.Instance.ConsoleBackgroundColor = brush;
+                        ConsoleComponent.Instance.BackgroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
@@ -54,20 +57,20 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.SupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        ConsoleComponent.Instance.ConsoleForegroundColor = brush;
+                        ConsoleComponent.Instance.ForegroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
             },
             { new[] { "echo" },
                 new Command(
-                    description: "Просто выводит переданный(е) аргумент(ы).",
-                    usage: "echo [<arg1>,<arg2>,...,<argn>]\nПример: echo Hello, world!",
+                    description: "Просто выводит переданный(е) аргумент(ы)",
+                    usage: "echo arg1, arg2, ... , argN\nПример: echo Hello, world!",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => (ReturnCode.Success, string.Join(" ", args))

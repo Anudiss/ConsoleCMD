@@ -15,26 +15,10 @@ namespace ConsoleCMD
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow AppWindow;
-
         public MainWindow()
         {
             InitializeComponent();
-            AppWindow = this;
-
-        }
-
-        private void InitializeDropDownMenu()
-        {
-            
-        }
-
-
-        
-
-        private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
+            Console.Focus();
         }
     }
 }
