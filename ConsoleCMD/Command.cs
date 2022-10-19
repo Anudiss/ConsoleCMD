@@ -141,7 +141,7 @@ namespace ConsoleCMD.Applications
 
         private Regex AssemblePattern()
         {
-
+            throw new NotImplementedException();
         }
 
         private bool ValidateArguments((Argument argument, object value)[] arguments)
@@ -149,15 +149,16 @@ namespace ConsoleCMD.Applications
             throw new NotImplementedException();
         }
 
-        public (ReturnCode, string) Execute(string[] args)
+        public (ReturnCode, string) Execute()
         {
-            if (args.Length > 0 && (args.Contains("--help") || args.Contains("-h")))
-            {
-                return (ReturnCode.Success, Description + "\n" + Usage);
-            }
-            if (!ArgsValidator.Invoke(args))
-                return (ReturnCode.Error, InvalidArgsMessage);
-            return Executor.Invoke(args);
+            //if (args.Length > 0 && (args.Contains("--help") || args.Contains("-h")))
+            //{
+            //    return (ReturnCode.Success, Description + "\n" + Usage);
+            //}
+            //if (!ArgsValidator.Invoke(args))
+            //    return (ReturnCode.Error, InvalidArgsMessage);
+            //return Executor.Invoke(args);
+            throw new NotImplementedException();
         }
 
         public (Argument argument, object value) ParseArguments()
@@ -170,12 +171,14 @@ namespace ConsoleCMD.Applications
     {
         public ArgumentType Type { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public bool IsRequired { get; set; }
         
-        public Argument(ArgumentType type, string name, bool isRequired)
+        public Argument(ArgumentType type, string name, string description, bool isRequired)
         {
             Type = type;
             Name = name;
+            Description = description;
             IsRequired = isRequired;
         }
     }
@@ -185,12 +188,14 @@ namespace ConsoleCMD.Applications
         public ArgumentType Type { get; set; }
         public string ShortName{ get; set; }
         public string FullName { get; set; }
+        public string Description { get; set; }
 
-        public Flag(ArgumentType type, string shortName, string fullName)
+        public Flag(ArgumentType type, string shortName, string fullName, string description)
         {
             Type = type;
             ShortName = shortName;
             FullName = fullName;
+            Description = description;
         }
     }
 
