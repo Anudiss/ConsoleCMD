@@ -14,14 +14,15 @@ namespace ConsoleCMD.Applications
             Special, Success, Error
         }
 
-        public static readonly Dictionary<ArgumentType, string> ArgumentRegex = new Dictionary<ArgumentType, string>()
+        public static readonly Dictionary<ArgumentType, ArgumentData> ArgumentDataSet = new Dictionary<ArgumentType, ArgumentData>()
         {
-            { ArgumentType.Int, @"(\d+)" },
-            { ArgumentType.Double, @"(\d+)([,\.]\d+)?" },
-            { ArgumentType.String, @"(\S+)" },
-            { ArgumentType.Bool, @"([10]|(true)|(false)|(yes)|(no))|(y)|(n)" },
-            { ArgumentType.Color, $@"(?<Name>{string.Join("|", ConsoleComponent.SupportedColors)})|(#(?<HEX>[0-9A-Fa-f]{{6}}))" },
-            { ArgumentType.Path, @"(\d+)" }
+            { ArgumentType.Int, new ArgumentData( @"(\d+)", (value) => int.Parse(value)) },
+            { ArgumentType.Double, new ArgumentData( @"(\d+)([,\.]\d+)?", (value) => double.Parse(value)) },
+            { ArgumentType.String, new ArgumentData( @"(\S+)", (value) => value) },
+            { ArgumentType.Bool, new ArgumentData( @"([10]|(true)|(false)|(yes)|(no))|(y)|(n)", (value) => new[] { "1", "true", "y", "yes" }.Contains(value)) },
+            { ArgumentType.Color, new ArgumentData( $@"(?<Name>{string.Join("|", ConsoleComponent.SupportedColors)})|(#(?<HEX>[0-9A-Fa-f]{{6}}))", 
+                                                    (value) => ColorConverter.ConvertFromString(value)) },
+            { ArgumentType.Path, new ArgumentData( @"(\d+)", (value) => value) }
         };
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
@@ -103,6 +104,7 @@ namespace ConsoleCMD.Applications
 
         public delegate (ReturnCode, string) CommandExecutor(string[] args);
         public delegate bool CommandArgsValidator(string[] args);
+        public delegate object ArgumentParser(string value);
 
         public string[] Names { get; }
         public string Description { get; }
@@ -147,32 +149,33 @@ namespace ConsoleCMD.Applications
             if (arguments == null)
                 return new Regex(pattern, RegexOptions.Compiled);
 
-            pattern += string.Join(@"\s+", arguments.Select(arg => $"(?<{arg.Name}>{ArgumentRegex[arg.Type]})"));
+            pattern += string.Join(@"\s+", arguments.Select(arg => $"(?<{arg.Name}>{ArgumentDataSet[arg.Type].Pattern})"));
 
             return new Regex(pattern, RegexOptions.Compiled);
         }
 
-        private bool ValidateArguments((Argument argument, object value)[] arguments)
-        {
-            throw new NotImplementedException();
-        }
+        private bool ValidateCommand(string input) => Pattern.IsMatch(input);
+        private bool ValidateCommand(string input, out Match match) => (match = Pattern.Match(input)).Success;
 
         public (ReturnCode, string) Execute()
         {
-            //if (args.Length > 0 && (args.Contains("--help") || args.Contains("-h")))
-            //{
-            //    return (ReturnCode.Success, Description + "\n" + Usage);
-            //}
-            //if (!ArgsValidator.Invoke(args))
-            //    return (ReturnCode.Error, InvalidArgsMessage);
-            //return Executor.Invoke(args);
-            throw new NotImplementedException();
+            
         }
 
-        public (Argument argument, object value) ParseArguments()
+        public (Argument argument, object value)[] ParseArguments(string input)
         {
-            throw new NotImplementedException();
+            if (ValidateCommand(input, out Match match) == false)
+                return null;
+
+            var values = new List<(Argument argument, object value)>();
+
+            foreach (var arg in Arguments)
+                values.Add((arg, ParseArgument(arg, match.Groups[arg.Name].Value)));
+
+            return values.ToArray();
         }
+
+        private object ParseArgument(Argument argument, string value) => ArgumentDataSet[argument.Type].ArgumentParser(value);
     }
 
     public struct Argument
@@ -210,5 +213,23 @@ namespace ConsoleCMD.Applications
     public enum ArgumentType
     {
         Int, Double, String, Bool, Color, Path
+    }
+
+    public struct ArgumentData
+    {
+        public string Pattern { get; set; }
+        public Command.ArgumentParser ArgumentParser { get; set; }
+
+        public ArgumentData(string pattern, Command.ArgumentParser argumentParser)
+        {
+            Pattern = pattern;
+            ArgumentParser = argumentParser;
+        }
+
+        public void Deconstruct(out string pattern, out Command.ArgumentParser argumentParser)
+        {
+            pattern = Pattern;
+            argumentParser = ArgumentParser;
+        }
     }
 }
