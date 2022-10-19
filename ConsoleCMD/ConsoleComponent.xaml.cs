@@ -181,7 +181,7 @@ namespace ConsoleCMD
         {
             (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
             if (string.IsNullOrWhiteSpace(editingCommandWithArgs))
-                return Command.CommandNames.Select(cmd => cmd.Names[0])
+                return Command.Commands.Select(cmd => cmd.Names[0])
                                            .ToArray();
 
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
@@ -191,7 +191,7 @@ namespace ConsoleCMD
                 return null;
             }
             string command = match.Groups["command"].Value;
-            return Command.CommandNames.Where(cmd => cmd.Names.Any(name => Regex.IsMatch(name, $"^({command}).*")))
+            return Command.Commands.Where(cmd => cmd.Names.Any(name => Regex.IsMatch(name, $"^({command}).*")))
                                        .Select(cmd => cmd.Names[0])
                                        .ToArray();
         }
@@ -240,7 +240,7 @@ namespace ConsoleCMD
 
         private void ExecuteCommand(Command command, string[] args)
         {
-            (Command.ReturnCode code, string output) = command.Execute();
+            (Command.ReturnCode code, string output) = command.Execute("");
             if (code == Command.ReturnCode.Special)
             {
                 if (output == "shutdown")
@@ -263,19 +263,23 @@ namespace ConsoleCMD
 
             isCommandExecuted = true;
 
-            List<(string, string[])> commandsAndArgs = ParseAndGetCommandsAndArgs();
+            string[] splittedCommands = Regex.Split(TBConsole.Text.Trim(), ";");
+            
+            foreach (var splittedCommand in splittedCommands)
+            {
+                Match match = Command.CommandRegex.Match(splittedCommand);
+                string commandName = match.Groups["command"].Value;
+                if (Command.IsCommandExist(commandName) == false)
+                {
+                    MessageBox.Show($"Такой команды не существует {commandName}");
+                    continue;
+                }
 
-            if (commandsAndArgs is null)
-                return;
+                Command command = Command.GetCommand(commandName);
+                var result = command.Execute(splittedCommand);
+            }
 
             Clear();
-
-            commandsAndArgs.ForEach(pair =>
-            {
-                Command command = Command.GetCommand(pair.Item1);
-                string[] args = pair.Item2;
-                ExecuteCommand(command, args);
-            });
         }
 
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)

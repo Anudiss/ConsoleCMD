@@ -1,5 +1,6 @@
 ﻿using ConsoleCMD.Applications;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace ConsoleCMD

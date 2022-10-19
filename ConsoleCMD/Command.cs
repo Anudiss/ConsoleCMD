@@ -1,9 +1,13 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Hosting;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Xml.Linq;
 
 namespace ConsoleCMD.Applications
 {
@@ -11,18 +15,18 @@ namespace ConsoleCMD.Applications
     {
         public enum ReturnCode
         {
-            Special, Success, Error
+            Special, Success, Error, InvalidArguments
         }
 
-        public static readonly Dictionary<ArgumentType, ArgumentData> ArgumentDataSet = new Dictionary<ArgumentType, ArgumentData>()
+        public static readonly Dictionary<ArgumentType, ArgumentDataSetValue> ArgumentDataSet = new Dictionary<ArgumentType, ArgumentDataSetValue>()
         {
-            { ArgumentType.Int, new ArgumentData( @"(\d+)", (value) => int.Parse(value)) },
-            { ArgumentType.Double, new ArgumentData( @"(\d+)([,\.]\d+)?", (value) => double.Parse(value)) },
-            { ArgumentType.String, new ArgumentData( @"(\S+)", (value) => value) },
-            { ArgumentType.Bool, new ArgumentData( @"([10]|(true)|(false)|(yes)|(no))|(y)|(n)", (value) => new[] { "1", "true", "y", "yes" }.Contains(value)) },
-            { ArgumentType.Color, new ArgumentData( $@"(?<Name>{string.Join("|", ConsoleComponent.SupportedColors)})|(#(?<HEX>[0-9A-Fa-f]{{6}}))", 
+            { ArgumentType.Int, new ArgumentDataSetValue( @"(\d+)", (value) => int.Parse(value)) },
+            { ArgumentType.Double, new ArgumentDataSetValue( @"(\d+)([,\.]\d+)?", (value) => double.Parse(value.Replace('.', ','))) },
+            { ArgumentType.String, new ArgumentDataSetValue( @"(\S+)", (value) => value) },
+            { ArgumentType.Bool, new ArgumentDataSetValue( @"([10]|(true)|(false)|(yes)|(no))|(y)|(n)", (value) => new[] { "1", "true", "y", "yes" }.Contains(value)) },
+            { ArgumentType.Color, new ArgumentDataSetValue( $@"(?<Name>{string.Join("|", ConsoleComponent.SupportedColors)})|(#(?<HEX>[0-9A-Fa-f]{{6}}))", 
                                                     (value) => ColorConverter.ConvertFromString(value)) },
-            { ArgumentType.Path, new ArgumentData( @"(\d+)", (value) => value) }
+            { ArgumentType.Path, new ArgumentDataSetValue( @"(\d+)", (value) => value) }
         };
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
@@ -30,79 +34,39 @@ namespace ConsoleCMD.Applications
         // Flags will be arguments, starting with -- or short -
         // There are ReturnCode.Special. We can do side actions when get this code
 
-        public static List<Command> CommandNames = new List<Command>
+        public static List<Command> Commands = new List<Command>
         {
             new Command(
-                new[] { "help", "h" },
-                description: "Выводит список доступных команд",
-                executor: (args) => {
-                    return (ReturnCode.Success, string.Join("\n", CommandNames.Select(command => $"{command.Names[0]} - {command.Description}")));
-                },
-                arguments: null,
-                flags: null
-            ),
-            new Command(
-                new[] { "set_background_color", "set_bg_color", "set_bg_col" },
-                description: "Изменяет фоновый цвет консоли",
-                executor: (args) => {
-                    string color = args[0].ToLower();
-                    if (!ConsoleComponent.SupportedColors.Contains(color))
+                    names: new[] { "bg", "set_bg", "set_background_color" },
+                    description: "Устанавливает цвет фона консоли",
+                    executor: (args) =>
                     {
-                        return (ReturnCode.Error, "Неверно указан цвет");
-                    }
-                    Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                    ConsoleComponent.Instance.BackgroundColor = brush;
-                    return (ReturnCode.Success, "");
-                },
-                arguments: null,
-                flags: null
-            ),
+                        ConsoleComponent.Instance.BackgroundColor = new SolidColorBrush((Color)args["Color"]);
+                        return (ReturnCode.Success, "");
+                    },
+                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Background color", true) },
+                    flags: null
+                ),
             new Command(
-                new[] { "set_foreground_color", "set_fg_color", "set_fg_col" },
-                description: "Изменяет цвет текста консоли.",
-                executor: (args) => {
-                    string color = args[0].ToLower();
-                    if (!ConsoleComponent.SupportedColors.Contains(color))
+                    names: new[] { "fg", "set_fg", "set_foreground_color" },
+                    description: "Устанавливает цвет текста консоли",
+                    executor: (args) =>
                     {
-                        return (ReturnCode.Error, "Неверно указан цвет");
-                    }
-                    Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                    ConsoleComponent.Instance.ForegroundColor = brush;
-                    return (ReturnCode.Success, "");
-                },
-                arguments: null,
-                flags: null
-            ),
-            new Command(
-                new[] { "echo" },
-                description: "Просто выводит переданный(е) аргумент(ы)",
-                executor: (args) => (ReturnCode.Success, string.Join(" ", args)),
-                arguments: null,
-                flags: null
-            ),
-            new Command(
-                new[] { "clear_history", "clr_hist", "c_h" },
-                description: "Очищает историю ввода",
-                executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Success, ""); },
-                arguments: null,
-                flags: null
-            ),
-            new Command(
-                new[] { "exit", "quit", "close", "shutdown" },
-                description: "Очищает историю ввода",
-                executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Special, "shutdown"); },
-                arguments: null,
-                flags: null
-            )
+                        ConsoleComponent.Instance.ForegroundColor = new SolidColorBrush((Color)args["Color"]);
+                        return (ReturnCode.Success, "");
+                    },
+                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Foreground color", true) },
+                    flags: null
+                )
         };
 
         public static bool IsCommandExist(string commandName) =>
-            CommandNames.Any(command => command.Names.Contains(commandName));
+            Commands.Any(command => command.Names.Contains(commandName));
 
         public static Command GetCommand(string commandName) =>
-            CommandNames.First(command => command.Names.Contains(commandName));
+            Commands.First(command => command.Names.Contains(commandName));
 
-        public delegate (ReturnCode, string) CommandExecutor(string[] args);
+        public delegate (ReturnCode, string) CommandExecutor(Arguments arguments);
         public delegate bool CommandArgsValidator(string[] args);
         public delegate object ArgumentParser(string value);
 
@@ -111,7 +75,8 @@ namespace ConsoleCMD.Applications
         public string Usage { get; }
         public Argument[] Arguments { get; } 
         public Flag[] Flags { get; }
-        public Regex Pattern { get; }
+        public Regex FullCommandPattern { get; }
+        public Regex ArgumentsPattern { get; }
         public CommandExecutor Executor { get; }
 
         public Command(string[] names, string description, CommandExecutor executor, Argument[] arguments, Flag[] flags)
@@ -119,7 +84,7 @@ namespace ConsoleCMD.Applications
             Names = names;
             Description = description;
             Usage = AssembleUsage(arguments, flags);
-            Pattern = AssemblePattern(arguments);
+            FullCommandPattern = AssemblePattern(arguments);
             Arguments = arguments;
             Flags = flags;
             Executor = executor;
@@ -145,7 +110,7 @@ namespace ConsoleCMD.Applications
 
         private Regex AssemblePattern(Argument[] arguments)
         {
-            string pattern = $@"(?<CommandName>{string.Join("|", Names)})\s*";
+            string pattern = $@"(?<CommandName>{string.Join("|", Names)})\s+";
             if (arguments == null)
                 return new Regex(pattern, RegexOptions.Compiled);
 
@@ -154,23 +119,30 @@ namespace ConsoleCMD.Applications
             return new Regex(pattern, RegexOptions.Compiled);
         }
 
-        private bool ValidateCommand(string input) => Pattern.IsMatch(input);
-        private bool ValidateCommand(string input, out Match match) => (match = Pattern.Match(input)).Success;
+        private bool ValidateCommand(string input) => FullCommandPattern.IsMatch(input);
+        private bool ValidateCommand(string input, out Match match) => (match = FullCommandPattern.Match(input)).Success;
 
-        public (ReturnCode, string) Execute()
+        public (ReturnCode, string) Execute(string input)
         {
-            
+            if (ValidateCommand(input) == false)
+                return (ReturnCode.InvalidArguments, "Неверно введены аргументы");
+
+            Arguments arguments = new Arguments()
+            {
+                Data = ParseArguments(input).ToArray()
+            };
+            return ((ReturnCode, string))(Executor?.Invoke(arguments));
         }
 
-        public (Argument argument, object value)[] ParseArguments(string input)
+        private (Argument argument, object value)[] ParseArguments(string input)
         {
-            if (ValidateCommand(input, out Match match) == false)
-                return null;
-
+            Match match = FullCommandPattern.Match(input);
             var values = new List<(Argument argument, object value)>();
 
             foreach (var arg in Arguments)
-                values.Add((arg, ParseArgument(arg, match.Groups[arg.Name].Value)));
+                values.Add((arg, ParseArgument(arg, 
+                                               match.Groups[arg.Name].Value))
+                                               );
 
             return values.ToArray();
         }
@@ -191,6 +163,22 @@ namespace ConsoleCMD.Applications
             Name = name;
             Description = description;
             IsRequired = isRequired;
+        }
+
+        public static bool operator ==(Argument arg1, Argument arg2)
+        {
+            return arg1.Type == arg2.Type &&
+                   arg1.Name == arg2.Name &&
+                   arg1.Description == arg2.Description &&
+                   arg1.IsRequired == arg2.IsRequired;
+        }
+
+        public static bool operator !=(Argument arg1, Argument arg2)
+        {
+            return arg1.Type != arg2.Type ||
+                   arg1.Name != arg2.Name ||
+                   arg1.Description != arg2.Description ||
+                   arg1.IsRequired != arg2.IsRequired;
         }
     }
 
@@ -215,21 +203,25 @@ namespace ConsoleCMD.Applications
         Int, Double, String, Bool, Color, Path
     }
 
-    public struct ArgumentData
+    public struct ArgumentDataSetValue
     {
         public string Pattern { get; set; }
         public Command.ArgumentParser ArgumentParser { get; set; }
 
-        public ArgumentData(string pattern, Command.ArgumentParser argumentParser)
+        public ArgumentDataSetValue(string pattern, Command.ArgumentParser argumentParser)
         {
             Pattern = pattern;
             ArgumentParser = argumentParser;
         }
+    }
 
-        public void Deconstruct(out string pattern, out Command.ArgumentParser argumentParser)
-        {
-            pattern = Pattern;
-            argumentParser = ArgumentParser;
-        }
+    public struct Arguments
+    {
+        public (Argument argument, object value)[] Data { get; set; }
+
+        public Arguments(params (Argument, object)[] values) => Data = values;
+
+        public object this[string argumentName] => Data.First(e => e.argument.Name == argumentName).value;
+        public object this[Argument arg] => Data.First(e => e.argument == arg).value;
     }
 }
