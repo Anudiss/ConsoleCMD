@@ -27,7 +27,7 @@ namespace ConsoleCMD
 
         public static void AddHistoryLine(string historyLine)
         {
-            if (historyLine.Trim() == string.Empty)
+            if (string.IsNullOrEmpty(historyLine))
                 return;
             _history.Insert(1, historyLine);
             Reset();

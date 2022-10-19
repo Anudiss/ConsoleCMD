@@ -1,4 +1,5 @@
 ﻿using ConsoleCMD.Applications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,28 +15,21 @@ namespace ConsoleCMD
     /// </summary>
     public partial class ConsoleComponent : UserControl
     {
-        public Brush ConsoleBackgroundColor
+        public Brush BackgroundColor
         {
-            get { return (Brush)GetValue(ConsoleBackgroundProperty); }
-            set { SetValue(ConsoleBackgroundProperty, value); }
+            get { return (Brush)GetValue(BackgroundColorProperty); }
+            set { SetValue(BackgroundColorProperty, value); }
         }
-        public static readonly DependencyProperty ConsoleBackgroundProperty =
-            DependencyProperty.Register("ConsoleBackgroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.Black));
+        public static readonly DependencyProperty BackgroundColorProperty =
+            DependencyProperty.Register("BackgroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.Black));
 
-        public Brush ConsoleForegroundColor
+        public Brush ForegroundColor
         {
-            get { return (Brush)GetValue(ConsoleForegroundProperty); }
-            set { SetValue(ConsoleForegroundProperty, value); }
+            get { return (Brush)GetValue(ForegroundColorProperty); }
+            set { SetValue(ForegroundColorProperty, value); }
         }
-        public static readonly DependencyProperty ConsoleForegroundProperty =
-            DependencyProperty.Register("ConsoleForegroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.White));
-
-        public static readonly string[] ConsoleSupportedColors =
-            typeof(Brushes).GetProperties()
-                            .Select(p => new { p.Name, Brush = p.GetValue(null) as Brush })
-                            .ToArray()
-                            .Select(v => v.Name.ToLower())
-                            .ToArray();
+        public static readonly DependencyProperty ForegroundColorProperty =
+            DependencyProperty.Register("ForegroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.White));
 
         public string StatusText
         {
@@ -44,22 +38,23 @@ namespace ConsoleCMD
         }
 
         public static readonly DependencyProperty StatusTextProperty =
-            DependencyProperty.Register("StatusText", typeof(string), typeof(ConsoleComponent), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("StatusText", typeof(string), typeof(ConsoleComponent), new PropertyMetadata(""));
 
-        private bool _commandExecuted = false;
+        public static readonly string[] SupportedColors =
+            typeof(Brushes).GetProperties()
+                            .Select(p => new { p.Name, Brush = p.GetValue(null) as Brush })
+                            .ToArray()
+                            .Select(v => v.Name.ToLower())
+                            .ToArray();
+
+        private bool isCommandExecuted = false;
 
         public static ConsoleComponent Instance;
-        public DropdownMenu DDM { get; private set; }
-
+        
         public ConsoleComponent()
         {
             InitializeComponent();
             Instance = this;
-
-            ConsoleBackgroundColor = Brushes.Black;
-            ConsoleForegroundColor = Brushes.White;
-
-            TBConsole.Focus();
         }
 
         public void Write(string s)
@@ -68,42 +63,48 @@ namespace ConsoleCMD
             TBConsole.Text += s;
             TBConsole.SelectionStart = prevSelectionStart + s.Length + 2;
         }
-        public void WriteLine(string s) => Write($"{s}\n");
+        public void WriteLine(string s) => Write(s + "\n");
         public void Clear() => TBConsole.Text = "";
         public bool IsEmpty() => string.IsNullOrWhiteSpace(TBConsole.Text);
 
+        public new bool Focus()
+        {
+            return TBConsole.Focus();
+        }
+
         private void TBConsole_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            bool isShiftPressed = Keyboard.Modifiers == ModifierKeys.Shift;
-            if (_commandExecuted)
+            if (isCommandExecuted)
             {
-                _commandExecuted = false;
+                isCommandExecuted = false;
                 Clear();
                 return;
             }
-
-            if (new[] { Key.Enter, Key.Tab, Key.Escape, Key.Up, Key.Down }.Contains(e.Key) == false)
-                return;
+            
+            if (e.Key != Key.Enter
+                && e.Key != Key.Tab
+                && e.Key != Key.Escape
+                && e.Key != Key.Up
+                && e.Key != Key.Down) return;
 
             StatusText = "";
             e.Handled = true;
 
+            bool isShiftPressed = Keyboard.Modifiers == ModifierKeys.Shift;
             switch (e.Key)
             {
                 case Key.Enter:
-                    if (DDM.IsOpen)
-                        SubstituteCommand();
-                    else
-                        TryParseAndExecuteCommands();
-                    DDM.IsOpen = false;
+                    if (HintsBox.IsOpen) SubstituteCommand();
+                    else TryParseAndExecuteCommands();
+                    HintsBox.Close();
                     break;
                 case Key.Tab:
-                    if (DDM.IsOpen)
-                        DDM.SelectedItemIndex += isShiftPressed ? -1 : 1;
-                    OpenDropdownMenu();
+                    if (HintsBox.IsOpen)
+                        HintsBox.SelectedItemIndex += isShiftPressed ? -1 : 1;
+                    else OpenHintsBox();
                     break;
                 case Key.Escape:
-                    DDM.IsOpen = false;
+                    if (HintsBox.IsOpen) HintsBox.Close();
                     break;
                 case Key.Up:
                     if (CommandHistory.SelectedLine == 0)
@@ -114,35 +115,33 @@ namespace ConsoleCMD
                     CommandHistory.MovePrevious();
                     break;
             }
-
         }
 
-        private void OpenDropdownMenu()
+        private void OpenHintsBox()
         {
-            int selectedIndex = DDM.SelectedItemIndex;
+            int selectedIndex = HintsBox.SelectedItemIndex;
             LoadHints();
-            if (DDM.Items is null)
+            if (HintsBox.Items is null)
             {
-                DDM.SelectedItemIndex = 0;
+                HintsBox.SelectedItemIndex = 0;
                 return;
             }
-            DDM.SelectedItemIndex = selectedIndex;
-            MoveDropdownMenu();
-            DDM.IsOpen = true;
+            HintsBox.SelectedItemIndex = selectedIndex;
+            MoveHintsBox();
+            HintsBox.Open();
             StatusText = "";
         }
 
-        private void MoveDropdownMenu()
+        private void MoveHintsBox()
         {
-            if (!DDM.IsOpen) return;
             Rect rect = TBConsole.GetRectFromCharacterIndex(TBConsole.CaretIndex);
-            if (rect.X + DDM.Width >= ActualWidth)
-                DDM.Position = new Point(ActualWidth - DDM.Width + 6, 0);
+            if (rect.X + HintsBox.Width >= ActualWidth)
+               HintsBox.Position = new Point(ActualWidth - HintsBox.Width + 6, 0);
             else
-                DDM.Position = new Point(rect.X, 0);
+               HintsBox.Position = HintsBox.Position = new Point(rect.X, 0);
         }
 
-        private (int, string) GetEditingCommandWithArgs()
+        private (int, string) GetCommandWithArgsCurrentlyBeingEdited()
         {
             string[] commands = TBConsole.Text.Split(';');
             int offset = 0;
@@ -158,21 +157,21 @@ namespace ConsoleCMD
 
         private void SubstituteCommand()
         {
-            (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
+            (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
             if (!match.Success)
             {
                 int lastPosition = TBConsole.SelectionStart;
-                string value = DDM.LB.SelectedValue as string;
+                string value = HintsBox.LB.SelectedValue as string;
                 TBConsole.Text = TBConsole.Text.Insert(lastPosition, value);
                 TBConsole.SelectionStart = lastPosition + value.Length + 1;
-                DDM.IsOpen = false;
+                HintsBox.Close();
                 return;
             }
 
             Group command = match.Groups["command"];
 
-            string selectedCommand = DDM.LB.SelectedValue as string,
+            string selectedCommand = HintsBox.LB.SelectedValue as string,
                 saved = TBConsole.Text.Substring(0, index + command.Index);
             TBConsole.Text = saved + Regex.Replace(TBConsole.Text, $"^({saved}){command.Value}", selectedCommand);
             TBConsole.SelectionStart = saved.Length + selectedCommand.Length + 1;
@@ -180,15 +179,15 @@ namespace ConsoleCMD
 
         private string[] GetHints()
         {
-            (int index, string editingCommandWithArgs) = GetEditingCommandWithArgs();
-            if (editingCommandWithArgs.Trim() == "")
+            (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
+            if (string.IsNullOrWhiteSpace(editingCommandWithArgs))
                 return Command.CommandNames.Keys.Select(keys => keys.First())
                                                 .ToArray();
 
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
             if (!match.Success)
             {
-                DDM.IsOpen = false;
+                HintsBox.Close();
                 return null;
             }
             string command = match.Groups["command"].Value;
@@ -201,18 +200,18 @@ namespace ConsoleCMD
             string[] hints = GetHints();
             if (hints is null || hints.Length == 0)
             {
-                DDM.IsOpen = false;
-                StatusText = $"Нет подсказок";
+                HintsBox.Close();
+                StatusText = "Нет подсказок";
                 return;
             }
-            DDM.Items = hints;
+            HintsBox.Items = hints;
             StatusText = "";
         }
 
         private List<(string, string[])> ParseAndGetCommandsAndArgs()
         {
             string[] commandsWithArgs = TBConsole.Text.Split(';');
-            if (commandsWithArgs.Last() == string.Empty)
+            if (string.IsNullOrWhiteSpace(commandsWithArgs.Last()))
                 commandsWithArgs = commandsWithArgs.Take(commandsWithArgs.Length - 1).ToArray();
 
             CommandHistory.AddHistoryLine(TBConsole.Text);
@@ -241,7 +240,14 @@ namespace ConsoleCMD
         private void ExecuteCommand(Command command, string[] args)
         {
             (Command.ReturnCode code, string output) = command.Execute(args);
-            if (code == Command.ReturnCode.Error)
+            if (code == Command.ReturnCode.Special)
+            {
+                if (output == "shutdown")
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+            else if (code == Command.ReturnCode.Error)
                 WriteLine("Ошибка: " + output);
             else if (!string.IsNullOrWhiteSpace(output))
                 WriteLine(output);
@@ -254,7 +260,7 @@ namespace ConsoleCMD
             if (IsEmpty())
                 return;
 
-            _commandExecuted = true;
+            isCommandExecuted = true;
 
             List<(string, string[])> commandsAndArgs = ParseAndGetCommandsAndArgs();
 
@@ -262,6 +268,7 @@ namespace ConsoleCMD
                 return;
 
             Clear();
+
             commandsAndArgs.ForEach(pair =>
             {
                 Command command = Command.GetCommand(pair.Item1);
@@ -272,13 +279,24 @@ namespace ConsoleCMD
 
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
         {
-            MoveDropdownMenu();
-            if (DDM.IsOpen) LoadHints();
+            if (HintsBox.IsOpen)
+            {
+                MoveHintsBox();
+                LoadHints();
+            }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void ConsoleComponent_Loaded(object sender, RoutedEventArgs e)
         {
-            DDM = new DropdownMenu(this);
+            HintsBox.MaxHeight = ActualHeight;
+            HintsBox.PlacementTarget = this;
+            
+            CommandHistory.OnHistoryLineChanged += (historyLine) =>
+            {
+                Clear();
+                Write(historyLine);
+            };
         }
+
     }
 }

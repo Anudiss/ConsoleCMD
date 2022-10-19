@@ -10,38 +10,41 @@ namespace ConsoleCMD.Applications
     {
         public enum ReturnCode
         {
-            Success = 0, Error
+            Special, Success, Error
         }
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
+
+        // Flags will be arguments, starting with -- or short -
+        // There are ReturnCode.Special. We can do side actions when get this code
 
         public static Dictionary<string[], Command> CommandNames = new Dictionary<string[], Command>
         {
             { new[] { "help", "h" },
                 new Command(
                     description: "Выводит список доступных команд",
-                    usage: "help\n",
+                    usage: "help",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => {
-                        return (ReturnCode.Success, string.Join("\n", CommandNames.Select(keyPair => $"{keyPair.Key[0]} {keyPair.Value.Description}")));
+                        return (ReturnCode.Success, string.Join("\n", CommandNames.Select(keyPair => $"{keyPair.Key[0]} - {keyPair.Value.Description}")));
                     }
                 )
             },
             { new[] { "set_background_color", "set_bg_color", "set_bg_col" },
                 new Command(
-                    description: "Изменяет фоновый цвет консоли.",
+                    description: "Изменяет фоновый цвет консоли",
                     usage: "set_background_color <color>\nПример: set_background_color white",
                     invalidArgsMessage: "Команда принимает ровно один аргумент",
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.SupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        ConsoleComponent.Instance.ConsoleBackgroundColor = brush;
+                        ConsoleComponent.Instance.BackgroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
@@ -54,20 +57,20 @@ namespace ConsoleCMD.Applications
                     argsValidator: (args) => args.Length == 1,
                     executor: (args) => {
                         string color = args[0].ToLower();
-                        if (!ConsoleComponent.ConsoleSupportedColors.Contains(color))
+                        if (!ConsoleComponent.SupportedColors.Contains(color))
                         {
                             return (ReturnCode.Error, "Неверно указан цвет");
                         }
                         Brush brush = new BrushConverter().ConvertFromString(color) as Brush;
-                        ConsoleComponent.Instance.ConsoleForegroundColor = brush;
+                        ConsoleComponent.Instance.ForegroundColor = brush;
                         return (ReturnCode.Success, "");
                     }
                 )
             },
             { new[] { "echo" },
                 new Command(
-                    description: "Просто выводит переданный(е) аргумент(ы).",
-                    usage: "echo [<arg1>,<arg2>,...,<argn>]\nПример: echo Hello, world!",
+                    description: "Просто выводит переданный(е) аргумент(ы)",
+                    usage: "echo arg1, arg2, ... , argN\nПример: echo Hello, world!",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => (ReturnCode.Success, string.Join(" ", args))
@@ -76,12 +79,21 @@ namespace ConsoleCMD.Applications
             { new[] { "clear_history", "clr_hist", "c_h" },
                 new Command(
                     description: "Очищает историю ввода",
-                    usage: "clearhistory",
+                    usage: "clear_history",
                     invalidArgsMessage: "",
                     argsValidator: (args) => true,
                     executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Success, ""); }
                 )
-            }
+            },
+            { new[] { "exit", "quit", "close", "shutdown" },
+                new Command(
+                    description: "Очищает историю ввода",
+                    usage: "clear_history",
+                    invalidArgsMessage: "",
+                    argsValidator: (args) => true,
+                    executor: (args) => { CommandHistory.Clear(); return (ReturnCode.Special, "shutdown"); }
+                )
+            },
         };
 
         public static bool IsCommandExist(string commandName) =>
@@ -111,9 +123,9 @@ namespace ConsoleCMD.Applications
 
         public (ReturnCode, string) Execute(string[] args)
         {
-            if (args.Length > 0 && (args[0].ToLower() == "help" || args[0].ToLower() == "h"))
+            if (args.Length > 0 && (args.Contains("--help") || args.Contains("-h")))
             {
-                return (ReturnCode.Success, Usage);
+                return (ReturnCode.Success, Description + "\n" + Usage);
             }
             if (!ArgsValidator.Invoke(args))
                 return (ReturnCode.Error, InvalidArgsMessage);
