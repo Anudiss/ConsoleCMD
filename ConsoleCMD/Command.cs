@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -105,20 +106,47 @@ namespace ConsoleCMD.Applications
         public delegate (ReturnCode, string) CommandExecutor(string[] args);
         public delegate bool CommandArgsValidator(string[] args);
 
+        public string[] Names { get; }
         public string Description { get; }
         public string Usage { get; }
-        public string InvalidArgsMessage { get; }
+        public Argument[] Arguments { get; } 
+        public Flag[] Flags { get; }
+        public Regex Pattern { get; }
         public CommandExecutor Executor { get; }
-        public CommandArgsValidator ArgsValidator { get; }
 
-        public Command(string description, string usage, string invalidArgsMessage,
-            CommandExecutor executor, CommandArgsValidator argsValidator)
+        public Command(string[] names, string description, CommandExecutor executor, Argument[] arguments, Flag[] flags)
         {
+            Names = names;
             Description = description;
-            Usage = usage;
-            InvalidArgsMessage = invalidArgsMessage;
+            Usage = AssembleUsage(arguments);
+            Arguments = arguments;
+            Flags = flags;
             Executor = executor;
-            ArgsValidator = argsValidator;
+        }
+
+        private string AssembleUsage(Argument[] arguments, Flag[] flags)
+        {
+            string command = $"{Names[0]}";
+            foreach (var flag in flags)
+            {
+                command += $" -{flag.Name}:{flag.Type}";
+            }
+            foreach (var argument in arguments)
+            {
+                string arg = $"{argument.Name}:{argument.Type}";
+                command += argument.IsRequired ? $" {arg}" : $" [{arg}]";
+            }
+            return command;
+        }
+
+        private Regex AssemblePattern()
+        {
+
+        }
+
+        private bool ValidateArguments((Argument argument, object value)[] arguments)
+        {
+            throw new NotImplementedException();
         }
 
         public (ReturnCode, string) Execute(string[] args)
@@ -131,5 +159,43 @@ namespace ConsoleCMD.Applications
                 return (ReturnCode.Error, InvalidArgsMessage);
             return Executor.Invoke(args);
         }
+
+        public (Argument argument, object value) ParseArguments()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public struct Argument
+    {
+        public ArgumentType Type { get; set; }
+        public string Name { get; set; }
+        public bool IsRequired { get; set; }
+        
+        public Argument(ArgumentType type, string name, bool isRequired)
+        {
+            Type = type;
+            Name = name;
+            IsRequired = isRequired;
+        }
+    }
+
+    public struct Flag
+    {
+        public ArgumentType Type { get; set; }
+        public string ShortName{ get; set; }
+        public string FullName { get; set; }
+
+        public Flag(ArgumentType type, string shortName, string fullName)
+        {
+            Type = type;
+            ShortName = shortName;
+            FullName = fullName;
+        }
+    }
+
+    public enum ArgumentType
+    {
+        Int, Double, String, Bool, Color, Path
     }
 }
