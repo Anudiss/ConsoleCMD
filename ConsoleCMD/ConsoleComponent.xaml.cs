@@ -278,8 +278,6 @@ namespace ConsoleCMD
                 Command command = Command.GetCommand(commandName);
                 var result = command.Execute(splittedCommand);
             }
-
-            Clear();
         }
 
         private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)

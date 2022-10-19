@@ -30,6 +30,7 @@ namespace ConsoleCMD.Applications
         };
 
         public static readonly Regex CommandRegex = new Regex(@"\s*(?<command>\S+)\s*(?<args>.+)?\s*", RegexOptions.Compiled);
+        public static readonly Regex FlagRegex = new Regex(@"\-{1,2}(?<flagName>\S+)", RegexOptions.Compiled);
 
         // Flags will be arguments, starting with -- or short -
         // There are ReturnCode.Special. We can do side actions when get this code
@@ -77,16 +78,18 @@ namespace ConsoleCMD.Applications
         public Flag[] Flags { get; }
         public Regex FullCommandPattern { get; }
         public Regex ArgumentsPattern { get; }
+        public Regex FlagPattern { get; }
         public CommandExecutor Executor { get; }
 
         public Command(string[] names, string description, CommandExecutor executor, Argument[] arguments, Flag[] flags)
         {
             Names = names;
             Description = description;
-            Usage = AssembleUsage(arguments, flags);
-            FullCommandPattern = AssemblePattern(arguments);
             Arguments = arguments;
             Flags = flags;
+            Usage = AssembleUsage(arguments, flags);
+            FullCommandPattern = AssemblePattern(arguments);
+            FlagPattern = AssembleFlags(flags);
             Executor = executor;
         }
 
@@ -118,6 +121,9 @@ namespace ConsoleCMD.Applications
 
             return new Regex(pattern, RegexOptions.Compiled);
         }
+
+        private Regex AssembleFlags(Flag[] flags) => 
+            new Regex(string.Join("|", flags.Select(flag => $@"(?<{flag.FullName}>\-{flag.ShortName}|\-{{2}}{flag.FullName})")));
 
         private bool ValidateCommand(string input) => FullCommandPattern.IsMatch(input);
         private bool ValidateCommand(string input, out Match match) => (match = FullCommandPattern.Match(input)).Success;
