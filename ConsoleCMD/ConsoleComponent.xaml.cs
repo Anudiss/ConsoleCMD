@@ -43,7 +43,6 @@ namespace ConsoleCMD
             set { SetValue(StatusTextProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for StatusText.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StatusTextProperty =
             DependencyProperty.Register("StatusText", typeof(string), typeof(ConsoleComponent), new PropertyMetadata(string.Empty));
 
