@@ -181,8 +181,8 @@ namespace ConsoleCMD
         {
             (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
             if (string.IsNullOrWhiteSpace(editingCommandWithArgs))
-                return Command.CommandNames.Keys.Select(keys => keys.First())
-                                                .ToArray();
+                return Command.CommandNames.Select(cmd => cmd.Names[0])
+                                           .ToArray();
 
             Match match = Command.CommandRegex.Match(editingCommandWithArgs);
             if (!match.Success)
@@ -191,8 +191,9 @@ namespace ConsoleCMD
                 return null;
             }
             string command = match.Groups["command"].Value;
-            return Command.CommandNames.Keys.Where(keys => keys.Any(key => Regex.IsMatch(key, $"^({command}).*")))
-                                            .Select(keys => keys.First()).ToArray();
+            return Command.CommandNames.Where(cmd => cmd.Names.Any(name => Regex.IsMatch(name, $"^({command}).*")))
+                                       .Select(cmd => cmd.Names[0])
+                                       .ToArray();
         }
 
         private void LoadHints()
@@ -239,7 +240,7 @@ namespace ConsoleCMD
 
         private void ExecuteCommand(Command command, string[] args)
         {
-            (Command.ReturnCode code, string output) = command.Execute(args);
+            (Command.ReturnCode code, string output) = command.Execute();
             if (code == Command.ReturnCode.Special)
             {
                 if (output == "shutdown")

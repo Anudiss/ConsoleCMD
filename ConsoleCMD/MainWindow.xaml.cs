@@ -1,12 +1,5 @@
 ﻿using ConsoleCMD.Applications;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace ConsoleCMD
 {
@@ -18,6 +11,16 @@ namespace ConsoleCMD
         public MainWindow()
         {
             InitializeComponent();
+
+            Command command = new Command(
+                    names: new[] { "set_bg", "bg", "set_background_color" },
+                    description: "Выдаёт инфорофыовфцвд",
+                    executor: (args) => (Command.ReturnCode.Success, ""),
+                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Просто да", true),
+                                       new Argument(ArgumentType.Bool, "Replace", "", true)},
+                    flags: null
+                );
+            Console.WriteLine($"{command.Pattern}");
             Console.Focus();
         }
     }
