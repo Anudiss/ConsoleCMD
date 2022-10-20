@@ -38,25 +38,31 @@ namespace ConsoleCMD.Applications
         public static List<Command> Commands = new List<Command>
         {
             new Command(
-                    names: new[] { "bg", "set_bg", "set_background_color" },
+                    names: new[] { "set_background_color", "bg", "set_bg" },
                     description: "Устанавливает цвет фона консоли",
-                    executor: (args) =>
+                    executor: (args, flags) =>
                     {
+                        if (flags != null)
+                        {
+                            MessageBox.Show(string.Join(", ", flags.Select(flag => flag.FullName)));
+                        }
+
                         ConsoleComponent.Instance.BackgroundColor = new SolidColorBrush((Color)args["Color"]);
+
                         return (ReturnCode.Success, "");
                     },
-                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Background color", true) },
-                    flags: null
+                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Background color") },
+                    flags: new[] { new Flag("h", "help", "jasdjajwjda") }
                 ),
             new Command(
-                    names: new[] { "fg", "set_fg", "set_foreground_color" },
+                    names: new[] { "set_foreground_color", "fg", "set_fg" },
                     description: "Устанавливает цвет текста консоли",
-                    executor: (args) =>
+                    executor: (args, flags) =>
                     {
                         ConsoleComponent.Instance.ForegroundColor = new SolidColorBrush((Color)args["Color"]);
                         return (ReturnCode.Success, "");
                     },
-                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Foreground color", true) },
+                    arguments: new[] { new Argument(ArgumentType.Color, "Color", "Foreground color") },
                     flags: null
                 )
         };
@@ -67,7 +73,7 @@ namespace ConsoleCMD.Applications
         public static Command GetCommand(string commandName) =>
             Commands.First(command => command.Names.Contains(commandName));
 
-        public delegate (ReturnCode, string) CommandExecutor(Arguments arguments);
+        public delegate (ReturnCode, string) CommandExecutor(Arguments arguments, Flag[] flags);
         public delegate bool CommandArgsValidator(string[] args);
         public delegate object ArgumentParser(string value);
 
@@ -77,7 +83,6 @@ namespace ConsoleCMD.Applications
         public Argument[] Arguments { get; } 
         public Flag[] Flags { get; }
         public Regex FullCommandPattern { get; }
-        public Regex ArgumentsPattern { get; }
         public Regex FlagPattern { get; }
         public CommandExecutor Executor { get; }
 
@@ -98,16 +103,13 @@ namespace ConsoleCMD.Applications
             string command = $"{Names[0]}";
             if (flags != null)
                 foreach (var flag in flags)
-                    command += $" -{flag.FullName}:{flag.Type}";
+                    command += $" --{flag.FullName}";
             
             if (arguments == null)
                 return command;
 
             foreach (var argument in arguments)
-            {
-                string arg = $"{argument.Name}:{argument.Type}";
-                command += argument.IsRequired ? $" {arg}" : $" [{arg}]";
-            }
+                command += $"{argument.Name}:{argument.Type}";
             return command;
         }
 
@@ -122,23 +124,58 @@ namespace ConsoleCMD.Applications
             return new Regex(pattern, RegexOptions.Compiled);
         }
 
-        private Regex AssembleFlags(Flag[] flags) => 
-            new Regex(string.Join("|", flags.Select(flag => $@"(?<{flag.FullName}>\-{flag.ShortName}|\-{{2}}{flag.FullName})")));
+        private Regex AssembleFlags(Flag[] flags)
+        {
+            if (flags == null)
+                return null;
+            return new Regex(string.Join("|", flags.Select(flag => $@"(?<{flag.FullName}>\-{flag.ShortName}|\-{{2}}{flag.FullName})")));
+        }
 
         private bool ValidateCommand(string input) => FullCommandPattern.IsMatch(input);
         private bool ValidateCommand(string input, out Match match) => (match = FullCommandPattern.Match(input)).Success;
 
         public (ReturnCode, string) Execute(string input)
         {
+            Flag[] flags = ParseFlags(input);
+
             if (ValidateCommand(input) == false)
                 return (ReturnCode.InvalidArguments, "Неверно введены аргументы");
 
-            Arguments arguments = new Arguments()
-            {
-                Data = ParseArguments(input).ToArray()
-            };
-            return ((ReturnCode, string))(Executor?.Invoke(arguments));
+            var arguments = ParseCommand(input);
+            return ((ReturnCode, string))(Executor?.Invoke(arguments, flags));
         }
+
+        private Arguments ParseCommand(string input)
+        {
+            return new Arguments(ParseArguments(input).ToArray());
+        }
+
+        private string RemoveFlag(string input, Match match)
+        {
+            List<char> newString = input.ToList();
+            newString.RemoveRange(match.Index, match.Length);
+            return new string(newString.ToArray());
+        }
+
+        private Flag[] ParseFlags(string input)
+        {
+            if (FlagPattern == null) return null;
+            
+            var flags = new List<Flag>();
+
+            for (int i = 0; i < Flags.Length; i++)
+            {
+                Match match = FlagPattern.Match(input);
+                input = RemoveFlag(input, match);
+                flags.Add(ParseFlag(match.Groups[Flags[i].FullName]));
+            }
+                
+
+            return flags.ToArray();
+        }
+        
+        private Flag ParseFlag(Group group) =>
+            Flags.First(flag => group.Name == flag.FullName);
 
         private (Argument argument, object value)[] ParseArguments(string input)
         {
@@ -161,43 +198,37 @@ namespace ConsoleCMD.Applications
         public ArgumentType Type { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsRequired { get; set; }
         
-        public Argument(ArgumentType type, string name, string description, bool isRequired)
+        public Argument(ArgumentType type, string name, string description)
         {
             Type = type;
             Name = name;
             Description = description;
-            IsRequired = isRequired;
         }
 
         public static bool operator ==(Argument arg1, Argument arg2)
         {
             return arg1.Type == arg2.Type &&
                    arg1.Name == arg2.Name &&
-                   arg1.Description == arg2.Description &&
-                   arg1.IsRequired == arg2.IsRequired;
+                   arg1.Description == arg2.Description;
         }
 
         public static bool operator !=(Argument arg1, Argument arg2)
         {
             return arg1.Type != arg2.Type ||
                    arg1.Name != arg2.Name ||
-                   arg1.Description != arg2.Description ||
-                   arg1.IsRequired != arg2.IsRequired;
+                   arg1.Description != arg2.Description;
         }
     }
 
     public struct Flag
     {
-        public ArgumentType Type { get; set; }
         public string ShortName{ get; set; }
         public string FullName { get; set; }
         public string Description { get; set; }
 
-        public Flag(ArgumentType type, string shortName, string fullName, string description)
+        public Flag(string shortName, string fullName, string description)
         {
-            Type = type;
             ShortName = shortName;
             FullName = fullName;
             Description = description;

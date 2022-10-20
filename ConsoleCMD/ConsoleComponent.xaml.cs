@@ -192,8 +192,8 @@ namespace ConsoleCMD
             }
             string command = match.Groups["command"].Value;
             return Command.Commands.Where(cmd => cmd.Names.Any(name => Regex.IsMatch(name, $"^({command}).*")))
-                                       .Select(cmd => cmd.Names[0])
-                                       .ToArray();
+                                   .Select(cmd => cmd.Names[0])
+                                   .ToArray();
         }
 
         private void LoadHints()
@@ -263,7 +263,7 @@ namespace ConsoleCMD
 
             isCommandExecuted = true;
 
-            string[] splittedCommands = Regex.Split(TBConsole.Text.Trim(), ";");
+            string[] splittedCommands = TBConsole.Text.Trim().Split(';');
             
             foreach (var splittedCommand in splittedCommands)
             {
@@ -277,6 +277,7 @@ namespace ConsoleCMD
 
                 Command command = Command.GetCommand(commandName);
                 var result = command.Execute(splittedCommand);
+                MessageBox.Show($"{result}");
             }
         }
 
