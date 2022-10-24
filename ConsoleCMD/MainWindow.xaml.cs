@@ -3,6 +3,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 
+using ConsoleCMD.Pages;
+
 namespace ConsoleCMD
 {
     /// <summary>
@@ -14,7 +16,7 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            Console.Focus();
+            MainFrame.Navigate(new DesktopPage());
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConsoleCMD"
         mc:Ignorable="d"
-        Title="Система" Height="600" Width="1000" FontFamily="Times New Roman" FontSize="14"
+        Title="Система" Height="600" Width="1000" Style="{StaticResource CommonStyle}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid x:Name="Grid">
         <Grid.RowDefinitions>

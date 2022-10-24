@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +56,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ApplicationComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CategoryComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ConsoleComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -71,6 +80,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ApplicationComponent.xaml.cs">
+      <DependentUpon>ApplicationComponent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CategoryComponent.xaml.cs">
+      <DependentUpon>CategoryComponent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="CommandHistory.cs" />
     <Compile Include="ConsoleComponent.xaml.cs">
@@ -83,8 +98,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\DesktopPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\DesktopPage.xaml.cs">
+      <DependentUpon>DesktopPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -113,6 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Applications\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="empty_file.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="folder.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

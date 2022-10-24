@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="ConsoleCMD.ApplicationComponent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ConsoleCMD"
+             mc:Ignorable="d" Style="{StaticResource CommonStyle}">
+    <StackPanel>
+        <StackPanel>
+            <Image Name="Icon" Source="\empty_file.ico" Width="25" Height="25"/>
+            <Label Target="{Binding ElementName=Icon}" Content="Название приложения" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
