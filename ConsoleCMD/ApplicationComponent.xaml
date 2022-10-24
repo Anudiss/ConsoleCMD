@@ -4,11 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ConsoleCMD"
-             mc:Ignorable="d" Style="{StaticResource CommonStyle}">
+             mc:Ignorable="d" Style="{StaticResource CommonStyle}"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel>
-        <StackPanel>
-            <Image Name="Icon" Source="\empty_file.ico" Width="25" Height="25"/>
-            <Label Target="{Binding ElementName=Icon}" Content="Название приложения" HorizontalAlignment="Center"/>
-        </StackPanel>
+        <Image Source="{Binding IconPath}" Width="25" Height="25"/>
+        <Label Content="{Binding Name}" HorizontalAlignment="Center"/>
     </StackPanel>
 </UserControl>

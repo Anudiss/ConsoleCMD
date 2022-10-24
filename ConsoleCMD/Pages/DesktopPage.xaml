@@ -6,20 +6,29 @@
       xmlns:local="clr-namespace:ConsoleCMD"
       mc:Ignorable="d"
       Title="DesktopPage" Background="White" FontFamily="Cambria" FontSize="16">
-    <Grid>
+    <Grid Name="Grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="Categories" Grid.Column="0" BorderThickness="1" BorderBrush="Black">
-            <TextBlock Text="Категории приложений"/>
-            <Separator />
-            <ListBoxItem>
-                <local:CategoryComponent />
-            </ListBoxItem>
-        </ListBox>
-        <WrapPanel Name="Applications" Grid.Column="1">
-            
-        </WrapPanel>
+        <Border BorderBrush="Black" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Категории приложений" Margin="5"/>
+                <ListBox Name="Categories" Grid.Column="0" Margin="5" BorderThickness="0" SelectionChanged="LBCategories_SelectionChanged">
+                </ListBox>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Margin="5,0,0,0">
+            <StackPanel>
+                <TextBlock Text="Приложения" Margin="5"/>
+                <ListBox Name="Applications" Margin="5" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

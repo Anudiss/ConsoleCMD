@@ -20,8 +20,26 @@ namespace ConsoleCMD
     /// </summary>
     public partial class ApplicationComponent : UserControl
     {
-        public ApplicationComponent()
+        public new string Name
         {
+            get { return (string)GetValue(NameProperty); }
+            set { SetValue(NameProperty, value); }
+        }
+        public new static readonly DependencyProperty NameProperty =
+            DependencyProperty.Register("Name", typeof(string), typeof(ApplicationComponent), new PropertyMetadata(""));
+
+        public string IconPath
+        {
+            get { return (string)GetValue(IconPathProperty); }
+            set { SetValue(IconPathProperty, value); }
+        }
+        public static readonly DependencyProperty IconPathProperty =
+            DependencyProperty.Register("IconPath", typeof(string), typeof(ApplicationComponent), new PropertyMetadata(""));
+
+        public ApplicationComponent(string name, string iconPath)
+        {
+            Name = name;
+            IconPath = iconPath;
             InitializeComponent();
         }
     }
