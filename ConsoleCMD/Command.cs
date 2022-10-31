@@ -213,11 +213,23 @@ namespace ConsoleCMD.Applications
                    arg1.Description == arg2.Description;
         }
 
-        public static bool operator !=(Argument arg1, Argument arg2)
+        public static bool operator !=(Argument arg1, Argument arg2) => !(arg1 == arg2);
+
+        public override bool Equals(object obj)
         {
-            return arg1.Type != arg2.Type ||
-                   arg1.Name != arg2.Name ||
-                   arg1.Description != arg2.Description;
+            return obj is Argument argument &&
+                   Type == argument.Type &&
+                   Name == argument.Name &&
+                   Description == argument.Description;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -265539140;
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Description);
+            return hashCode;
         }
     }
 

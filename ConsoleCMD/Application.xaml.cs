@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ConsoleCMD.Pages
+namespace ConsoleCMD
 {
     /// <summary>
-    /// Логика взаимодействия для DesktopPage.xaml
+    /// Логика взаимодействия для Application.xaml
     /// </summary>
-    public partial class DesktopPage : Page
+    public partial class Application : FileSystemObject
     {
-        public DesktopPage()
+        public Application()
         {
             InitializeComponent();
         }

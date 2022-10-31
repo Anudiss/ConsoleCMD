@@ -245,7 +245,7 @@ namespace ConsoleCMD
             {
                 if (output == "shutdown")
                 {
-                    Application.Current.Shutdown();
+                    System.Windows.Application.Current.Shutdown();
                 }
             }
             else if (code == Command.ReturnCode.Error)

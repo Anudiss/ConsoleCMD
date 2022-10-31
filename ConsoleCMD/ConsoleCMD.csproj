@@ -71,15 +71,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="ApplicationComponent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CategoryComponent.xaml">
+    <Page Include="Application.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConsoleComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Directory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="File.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -95,17 +99,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ApplicationComponent.xaml.cs">
-      <DependentUpon>ApplicationComponent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CategoryComponent.xaml.cs">
-      <DependentUpon>CategoryComponent.xaml</DependentUpon>
+    <Compile Include="Application.xaml.cs">
+      <DependentUpon>Application.xaml</DependentUpon>
     </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="CommandHistory.cs" />
     <Compile Include="ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Directory.xaml.cs">
+      <DependentUpon>Directory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="File.xaml.cs">
+      <DependentUpon>File.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileSystemObject.cs" />
     <Compile Include="HintsBoxComponent.xaml.cs">
       <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
     </Compile>
@@ -148,17 +156,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="Resources\Icons\Applications\placeholder.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\Icons\Categories\placeholder.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
@@ -170,6 +167,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Files\default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Applications\default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\directory.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
