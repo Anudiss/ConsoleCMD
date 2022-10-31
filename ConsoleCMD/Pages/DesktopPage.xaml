@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ConsoleCMD"
       mc:Ignorable="d"
-      Title="DesktopPage" Background="White" FontFamily="Cambria" FontSize="16">
+      Title="DesktopPage" Style="{StaticResource CommonStyle}">
     <WrapPanel x:Name="WP">
         <local:Application Title="Some application"/>
         <local:Directory Title="Some directory"/>
