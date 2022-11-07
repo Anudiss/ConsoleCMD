@@ -20,9 +20,29 @@ namespace ConsoleCMD
     /// </summary>
     public partial class Directory : FileSystemObject
     {
+        private List<FileSystemObject> _children = new List<FileSystemObject>();
+        public List<FileSystemObject> Children
+        {
+            get { return _children; }
+            set { _children = value; }
+        }
+
         public Directory()
         {
             InitializeComponent();
+        }
+
+        public Directory(string title)
+        {
+            InitializeComponent();
+            Title = title;
+        }
+
+        public Directory(string title, FileSystemObject[] children)
+        {
+            InitializeComponent();
+            Title = title;
+            children.ToList().ForEach(child => _children.Add(child));
         }
     }
 }

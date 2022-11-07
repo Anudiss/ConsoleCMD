@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ConsoleCMD" Style="{StaticResource CommonStyle}"
              mc:Ignorable="d" Width="100" DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <StackPanel>
-        <Image Width="25" Height="25">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Width="25" Height="25" Grid.Row="0">
             <Image.Source>
                 <Binding Path="IconSource">
                     <Binding.TargetNullValue>
@@ -15,6 +19,6 @@
                 </Binding>
             </Image.Source>
         </Image>
-        <TextBlock Text="{Binding Title}" TextAlignment="Center" TextWrapping="Wrap"/>
-    </StackPanel>
+        <TextBlock Text="{Binding Title}" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1"/>
+    </Grid>
 </local:FileSystemObject>
