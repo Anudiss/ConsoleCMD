@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}" Loaded="ConsoleComponent_Loaded">
     <Grid>
-        <TextBox Name="TBConsole" TextChanged="TBConsole_TextChanged" Padding="5" Margin="5,0,5,5"
+        <TextBox Name="TBConsole" TextChanged="TBConsole_TextChanged" Padding="5"
                  Background="{Binding Path=BackgroundColor}" Foreground="{Binding Path=ForegroundColor}"
                  FontFamily="Consolas" TextWrapping="Wrap" Focusable="True"
                  VerticalScrollBarVisibility="Visible" PreviewKeyDown="TBConsole_PreviewKeyDown"/>

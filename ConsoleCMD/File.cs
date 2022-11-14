@@ -20,9 +20,13 @@ namespace ConsoleCMD
     /// </summary>
     public partial class File : FileSystemObject
     {
-        public File()
+        public File(string title = "", ImageSource iconSource = null)
         {
-            InitializeComponent();
+            Title = title;
+            if (iconSource == null)
+                IconSource = new BitmapImage(new Uri("/Resources/Files/default.png", UriKind.Relative));
+            else
+                IconSource = iconSource;
         }
     }
 }

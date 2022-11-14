@@ -26,23 +26,16 @@ namespace ConsoleCMD
             get { return _children; }
             set { _children = value; }
         }
-
-        public Directory()
+        
+        public Directory(string title = "", ImageSource iconSource = null, FileSystemObject[] children = null)
         {
-            InitializeComponent();
-        }
-
-        public Directory(string title)
-        {
-            InitializeComponent();
             Title = title;
-        }
-
-        public Directory(string title, FileSystemObject[] children)
-        {
-            InitializeComponent();
-            Title = title;
-            children.ToList().ForEach(child => _children.Add(child));
+            if (iconSource == null)
+                IconSource = new BitmapImage(new Uri("/Resources/Icons/directory.png", UriKind.Relative));
+            else
+                IconSource = iconSource;
+            if (children != null)
+                children.ToList().ForEach(child => _children.Add(child));
         }
     }
 }

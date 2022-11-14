@@ -71,19 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Application.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ConsoleComponent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Directory.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="File.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -99,20 +87,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Application.xaml.cs">
-      <DependentUpon>Application.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Application.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandHistory.cs" />
     <Compile Include="ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Directory.xaml.cs">
-      <DependentUpon>Directory.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="File.xaml.cs">
-      <DependentUpon>File.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Directory.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="FileSystemObject.cs" />
     <Compile Include="HintsBoxComponent.xaml.cs">
       <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
@@ -121,14 +103,21 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\DesktopPage.xaml">
+    <Page Include="DesktopComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pages\DesktopPage.xaml.cs">
-      <DependentUpon>DesktopPage.xaml</DependentUpon>
+    <Compile Include="DesktopComponent.xaml.cs">
+      <DependentUpon>DesktopComponent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationComponent.xaml.cs">
+      <DependentUpon>NavigationComponent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

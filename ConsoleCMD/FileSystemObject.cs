@@ -9,22 +9,20 @@ using System.Windows;
 
 namespace ConsoleCMD
 {
-    public abstract class FileSystemObject : UserControl
+    public abstract class FileSystemObject
     {
+        private string _title;
         public string Title
         {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get { return _title; }
+            set { _title = value; }
         }
-        public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(FileSystemObject), new PropertyMetadata(""));
-
+        
+        private ImageSource _iconSource;
         public ImageSource IconSource
         {
-            get { return (ImageSource)GetValue(IconSourceproperty); }
-            set { SetValue(IconSourceproperty, value); }
+            get { return _iconSource; }
+            set { _iconSource = value; }
         }
-        public static readonly DependencyProperty IconSourceproperty =
-            DependencyProperty.Register("IconSource", typeof(ImageSource), typeof(FileSystemObject));
     }
 }
