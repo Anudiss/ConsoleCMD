@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandParser">
+      <HintPath>..\..\CommandParser\CommandParser\bin\Debug\CommandParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -88,14 +91,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Application.cs" />
-    <Compile Include="Command.cs" />
     <Compile Include="CommandHistory.cs" />
+    <Compile Include="CommandResources\Arguments.cs" />
+    <Compile Include="CommandResources\Commands.cs" />
     <Compile Include="ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Directory.cs" />
     <Compile Include="File.cs" />
     <Compile Include="FileSystemObject.cs" />
+    <Compile Include="HintColorScheme.cs" />
     <Compile Include="HintsBoxComponent.xaml.cs">
       <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
     </Compile>

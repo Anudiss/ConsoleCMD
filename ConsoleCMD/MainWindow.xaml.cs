@@ -1,9 +1,5 @@
-﻿using ConsoleCMD.Applications;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 using System.Windows;
-
-using System.Collections.Generic;
 
 namespace ConsoleCMD
 {

@@ -1,8 +1,6 @@
-﻿using ConsoleCMD.Applications;
+﻿using ConsoleCMD.CommandResources;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +13,7 @@ namespace ConsoleCMD
     /// </summary>
     public partial class ConsoleComponent : UserControl
     {
+        #region BackgroundColor
         public Brush BackgroundColor
         {
             get { return (Brush)GetValue(BackgroundColorProperty); }
@@ -22,7 +21,8 @@ namespace ConsoleCMD
         }
         public static readonly DependencyProperty BackgroundColorProperty =
             DependencyProperty.Register("BackgroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.Black));
-
+        #endregion
+        #region ForegroundColor
         public Brush ForegroundColor
         {
             get { return (Brush)GetValue(ForegroundColorProperty); }
@@ -30,7 +30,8 @@ namespace ConsoleCMD
         }
         public static readonly DependencyProperty ForegroundColorProperty =
             DependencyProperty.Register("ForegroundColor", typeof(Brush), typeof(ConsoleComponent), new PropertyMetadata(Brushes.White));
-
+        #endregion
+        #region StatusText
         public string StatusText
         {
             get { return (string)GetValue(StatusTextProperty); }
@@ -46,6 +47,7 @@ namespace ConsoleCMD
                             .ToArray()
                             .Select(v => v.Name.ToLower())
                             .ToArray();
+        #endregion
 
         private bool isCommandExecuted = false;
 
@@ -94,9 +96,7 @@ namespace ConsoleCMD
             switch (e.Key)
             {
                 case Key.Enter:
-                    if (HintsBox.IsOpen) SubstituteCommand();
-                    else TryParseAndExecuteCommands();
-                    HintsBox.Close();
+                    
                     break;
                 case Key.Tab:
                     if (HintsBox.IsOpen)
@@ -104,32 +104,38 @@ namespace ConsoleCMD
                     else OpenHintsBox();
                     break;
                 case Key.Escape:
-                    if (HintsBox.IsOpen) HintsBox.Close();
+                    CloseHintsBox();
                     break;
                 case Key.Up:
-                    if (CommandHistory.SelectedLine == 0)
-                        CommandHistory.SetCurrentHistoryLine(TBConsole.Text);
-                    CommandHistory.MoveNext();
+                    ShowPreviousHistoryLine();
                     break;
                 case Key.Down:
-                    CommandHistory.MovePrevious();
+                    ShowNextHitstoryLine();
                     break;
             }
         }
-
+        #region History
+        private void ShowNextHitstoryLine()
+        {
+            CommandHistory.MovePrevious();
+        }
+        private void ShowPreviousHistoryLine()
+        {
+            if (CommandHistory.SelectedLine == 0)
+                CommandHistory.SetCurrentHistoryLine(TBConsole.Text);
+            CommandHistory.MoveNext();
+        }
+        #endregion
+        #region Hints box
         private void OpenHintsBox()
         {
-            int selectedIndex = HintsBox.SelectedItemIndex;
-            LoadHints();
-            if (HintsBox.Items is null)
-            {
-                HintsBox.SelectedItemIndex = 0;
-                return;
-            }
-            HintsBox.SelectedItemIndex = selectedIndex;
-            MoveHintsBox();
+            ChangeHints();
             HintsBox.Open();
-            StatusText = "";
+        }
+
+        private void CloseHintsBox()
+        {
+            if (HintsBox.IsOpen) HintsBox.Close();
         }
 
         private void MoveHintsBox()
@@ -141,7 +147,16 @@ namespace ConsoleCMD
                HintsBox.Position = HintsBox.Position = new Point(rect.X, 0);
         }
 
-        private (int, string) GetCommandWithArgsCurrentlyBeingEdited()
+        private void ChangeHints()
+        {
+            string editingCommand = GetCommandWithArgsCurrentlyBeingEdited();
+            string commandName = editingCommand.Trim().ToLower().Split(' ')[0];
+            HintsBox.Items = Commands.CommandEntities.Where(entity => entity.Synonyms.Any(synonym => synonym.ToLower().StartsWith(commandName)))
+                                                     .ToArray();
+        }
+        #endregion
+
+        private string GetCommandWithArgsCurrentlyBeingEdited()
         {
             string[] commands = TBConsole.Text.Split(';');
             int offset = 0;
@@ -149,148 +164,22 @@ namespace ConsoleCMD
             {
                 int length = commands[i].Length;
                 if (TBConsole.CaretIndex >= offset && TBConsole.CaretIndex <= offset + length)
-                    return (offset, commands[i]);
+                    return commands[i];
                 offset += length + 1;
             }
-            return (0, "");
+            return "";
         }
 
-        private void SubstituteCommand()
-        {
-            (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
-            Match match = Command.CommandRegex.Match(editingCommandWithArgs);
-            if (!match.Success)
-            {
-                int lastPosition = TBConsole.SelectionStart;
-                string value = HintsBox.LB.SelectedValue as string;
-                TBConsole.Text = TBConsole.Text.Insert(lastPosition, value);
-                TBConsole.SelectionStart = lastPosition + value.Length + 1;
-                HintsBox.Close();
-                return;
-            }
-
-            Group command = match.Groups["command"];
-
-            string selectedCommand = HintsBox.LB.SelectedValue as string,
-                saved = TBConsole.Text.Substring(0, index + command.Index);
-            TBConsole.Text = saved + Regex.Replace(TBConsole.Text, $"^({saved}){command.Value}", selectedCommand);
-            TBConsole.SelectionStart = saved.Length + selectedCommand.Length + 1;
-        }
-
-        private string[] GetHints()
-        {
-            (int index, string editingCommandWithArgs) = GetCommandWithArgsCurrentlyBeingEdited();
-            if (string.IsNullOrWhiteSpace(editingCommandWithArgs))
-                return Command.Commands.Select(cmd => cmd.Names[0])
-                                           .ToArray();
-
-            Match match = Command.CommandRegex.Match(editingCommandWithArgs);
-            if (!match.Success)
-            {
-                HintsBox.Close();
-                return null;
-            }
-            string command = match.Groups["command"].Value;
-            return Command.Commands.Where(cmd => cmd.Names.Any(name => Regex.IsMatch(name, $"^({command}).*")))
-                                   .Select(cmd => cmd.Names[0])
-                                   .ToArray();
-        }
-
-        private void LoadHints()
-        {
-            string[] hints = GetHints();
-            if (hints is null || hints.Length == 0)
-            {
-                HintsBox.Close();
-                StatusText = "Нет подсказок";
-                return;
-            }
-            HintsBox.Items = hints;
-            StatusText = "";
-        }
-
-        private List<(string, string[])> ParseAndGetCommandsAndArgs()
-        {
-            string[] commandsWithArgs = TBConsole.Text.Split(';');
-            if (string.IsNullOrWhiteSpace(commandsWithArgs.Last()))
-                commandsWithArgs = commandsWithArgs.Take(commandsWithArgs.Length - 1).ToArray();
-
-            CommandHistory.AddHistoryLine(TBConsole.Text);
-
-            List<(string, string[])> commandsAndArgs = new List<(string, string[])>();
-            foreach (string command in commandsWithArgs)
-            {
-                Match match = Command.CommandRegex.Match(command);
-                if (!match.Success)
-                {
-                    WriteLine($"Ошибка: команды \"{command}\" не существует.");
-                    continue;
-                }
-                string commandName = match.Groups["command"].Value;
-                if (!Command.IsCommandExist(commandName))
-                {
-                    WriteLine($"Ошибка: команды \"{commandName}\" не существует.");
-                    continue;
-                }
-                string[] commandArgs = match.Groups["args"].Success ? match.Groups["args"].Value.Trim().Split(' ') : new string[] { };
-                commandsAndArgs.Add((commandName, commandArgs));
-            }
-            return commandsAndArgs.Count == 0 ? null : commandsAndArgs;
-        }
-
-        private void ExecuteCommand(Command command, string[] args)
-        {
-            (Command.ReturnCode code, string output) = command.Execute("");
-            if (code == Command.ReturnCode.Special)
-            {
-                if (output == "shutdown")
-                {
-                    System.Windows.Application.Current.Shutdown();
-                }
-            }
-            else if (code == Command.ReturnCode.Error)
-                WriteLine("Ошибка: " + output);
-            else if (!string.IsNullOrWhiteSpace(output))
-                WriteLine(output);
-        }
-
-        private void TryParseAndExecuteCommands()
-        {
-            if (string.IsNullOrWhiteSpace(TBConsole.Text))
-                Clear();
-            if (IsEmpty())
-                return;
-
-            isCommandExecuted = true;
-
-            string[] splittedCommands = TBConsole.Text.Trim().Split(';');
-            
-            foreach (var splittedCommand in splittedCommands)
-            {
-                Match match = Command.CommandRegex.Match(splittedCommand);
-                string commandName = match.Groups["command"].Value;
-                if (Command.IsCommandExist(commandName) == false)
-                {
-                    MessageBox.Show($"Такой команды не существует {commandName}");
-                    continue;
-                }
-
-                Command command = Command.GetCommand(commandName);
-                var result = command.Execute(splittedCommand);
-                MessageBox.Show($"{result}");
-            }
-        }
-
-        private void TBConsole_TextChanged(object sender, TextChangedEventArgs e)
+        private void OnConsoleTextChanged(object sender, TextChangedEventArgs e)
         {
             if (HintsBox.IsOpen)
             {
+                ChangeHints();
                 MoveHintsBox();
-                LoadHints();
             }
         }
 
-        private void ConsoleComponent_Loaded(object sender, RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             HintsBox.MaxHeight = ActualHeight;
             HintsBox.PlacementTarget = this;
