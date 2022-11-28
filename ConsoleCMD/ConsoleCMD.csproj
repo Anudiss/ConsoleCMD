@@ -78,6 +78,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Console\ConsoleComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HintsBoxComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +99,9 @@
     <Compile Include="CommandResources\Arguments.cs" />
     <Compile Include="CommandResources\Commands.cs" />
     <Compile Include="ConsoleComponent.xaml.cs">
+      <DependentUpon>ConsoleComponent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Console\ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Directory.cs" />

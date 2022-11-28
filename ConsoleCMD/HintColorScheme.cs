@@ -8,10 +8,11 @@ namespace ConsoleCMD
     {
         public static readonly Dictionary<HintPart, SolidColorBrush> ColorScheme = new Dictionary<HintPart, SolidColorBrush>()
         {
-            { HintPart.CommandName, new SolidColorBrush(Colors.Black) },
+            { HintPart.CommandName, new SolidColorBrush(Colors.LavenderBlush) },
             { HintPart.RequiredArgument, new SolidColorBrush(Colors.Blue) },
             { HintPart.NotRequiredArgument, new SolidColorBrush(Colors.LightBlue) },
-            { HintPart.ArgumentType, new SolidColorBrush(Colors.IndianRed) }
+            { HintPart.ArgumentType, new SolidColorBrush(Colors.IndianRed) },
+            { HintPart.Flag, new SolidColorBrush(Colors.DarkOliveGreen) }
         };
     }
 }
