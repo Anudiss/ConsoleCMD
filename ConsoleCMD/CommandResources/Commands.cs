@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Array = CommandParser.Command.Array;
+using Tuple = CommandParser.Command.TupleType;
 
 namespace ConsoleCMD.CommandResources
 {
@@ -17,13 +19,13 @@ namespace ConsoleCMD.CommandResources
                     new Argument()
                     {
                         Name = "text",
-                        ArgumentType = Arguments.String,
+                        ArgumentType = BaseArgumentTypes.String,
                         IsRequired = true
                     }
                 },
                 CommandExecutor = (args, flags) =>
                 {
-                    MessageBox.Show($"{string.Join(", ", args.Select(arg => arg.Value))}");
+                    MessageBox.Show($"print: {string.Join(", ", args.Select(arg => arg.Value))}");
                 }
             },
             new CommandEntity()
@@ -34,13 +36,15 @@ namespace ConsoleCMD.CommandResources
                     new Argument()
                     {
                         Name = "Da",
-                        ArgumentType = Arguments.Int,
-                        IsRequired = false
+                        ArgumentType = new Array(BaseArgumentTypes.Int)
+                        {
+                            Name = "IntArray"
+                        }
                     }
                 },
                 CommandExecutor = (args, flags) =>
                 {
-                    MessageBox.Show($"{string.Join(", ", args.Select(arg => arg.Value))}");
+                    MessageBox.Show($"print123: {string.Join(", ", args.Select(arg => arg.Value))}");
                 }
             }
         };
