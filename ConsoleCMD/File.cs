@@ -23,10 +23,7 @@ namespace ConsoleCMD
         public File(string title = "", ImageSource iconSource = null)
         {
             Title = title;
-            if (iconSource == null)
-                IconSource = new BitmapImage(new Uri("/Resources/Files/default.png", UriKind.Relative));
-            else
-                IconSource = iconSource;
+            IconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/Files/default.png", UriKind.Relative));
         }
     }
 }

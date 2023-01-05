@@ -9,11 +9,12 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid x:Name="Grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -22,11 +23,13 @@
             <TextBlock x:Name="TBStatusBar"/>
         </Border>-->
 
-        <local:NavigationComponent x:Name="Navigation" Grid.Row="0" Grid.Column="0" Margin="5"/>
+        <local:NavigationComponent x:Name="Navigation" Grid.Row="0" Grid.Column="0" Margin="5,5,0,5"/>
 
-        <local:DesktopComponent x:Name="Desktop" Grid.Row="0" Grid.Column="1" Margin="0,5,5,5"/>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Margin="5" Background="Gainsboro" Width="5" ShowsPreview="True" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
 
-        <local:ConsoleComponent x:Name="Console" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,0,5,5"/>
+        <local:DesktopComponent x:Name="Desktop" Grid.Row="0" Grid.Column="2" Margin="0,5,5,5"/>
+
+        <local:ConsoleComponent x:Name="Console" Grid.Row="1" Grid.ColumnSpan="3" Margin="5,0,5,5"/>
         
         <TextBlock x:Name="StatusLine" Text="{Binding Path=StatusText, ElementName=Console}" Grid.Row="2" Grid.ColumnSpan="2" Margin="5,0,5,5"/>
     </Grid>

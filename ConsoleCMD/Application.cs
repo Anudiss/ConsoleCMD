@@ -23,10 +23,7 @@ namespace ConsoleCMD
         public Application(string title = "", ImageSource iconSource = null)
         {
             Title = title;
-            if (iconSource == null)
-                IconSource = new BitmapImage(new Uri("/Resources/Applications/default.png", UriKind.Relative));
-            else
-                IconSource = iconSource;
+            IconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/Applications/default.png", UriKind.Relative));
         }
     }
 }

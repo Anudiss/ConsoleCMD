@@ -16,59 +16,75 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            var categoryHierarchyRoot =
-               new Directory("Корень", null, new Directory[]
-               {
-                    new Directory("Ветка 1", null, new Directory[]
+            var rootCategory = new Directory("Корень", null, new Directory[] {
+                new Directory("Ветвь 1", null, new Directory[]
+                {
+                    new Directory("Подветвь 1", null, new Directory[]
                     {
-                        new Directory("Подветка 1", null, new FileSystemObject[]
+                        new Directory("Подподветвь 1", null, new FileSystemObject[]
                         {
                             new Application("Приложение 1"),
-                            new File("Файл 1"),
+                            new File("Файл 1")
+                        }),
+                        new Directory("Подподветвь 2", null, new Directory[]
+                        {
 
-                        })
+                        }),
+                        new Directory("Подподветвь 3", null, new Directory[]
+                        {
+
+                        }),
                     }),
-                    new Directory("Ветка 2", null, new Directory[]
+                    new Directory("Подветвь 2", null, new FileSystemObject[]
                     {
-                        new Directory("Подветка 2")
+                        new Application("Приложение 1"),
+                        new File("Файл 1")
                     }),
-                    new Directory("Ветка 3", null, new Directory[]
+                    new Directory("Подветвь 3", null, new Directory[]
                     {
-                        new Directory("Подветка 3")
-                    })
-               });
 
-            Navigation.DirectoryHierarchy.Add(
-                CopyOnlyDirectoryHierarchy(categoryHierarchyRoot)
-            );
+                    }),
+                }),
+                new Directory("Ветвь 2", null, new Directory[]
+                {
+                }),
+                new Directory("Ветвь 3", null, new Directory[]
+                {
+                }),
+            });
 
-            Navigation.SelectedEndNode += (directory) =>
+            Navigation.RootNode = NodeFromDirectory(rootCategory);
+
+            Navigation.SelectedEndNode += selectedNode =>
             {
-                var sourceDirectory = FindDirectoryByTitleInHierarchy(categoryHierarchyRoot, directory.Title);
-                if (sourceDirectory == null)
-                    return;
+                var category = FindAmongChildren(rootCategory, selectedNode.Title);
+                
                 Desktop.FileSystemObjects.Clear();
-                sourceDirectory.Children.ForEach(fsobject => Desktop.FileSystemObjects.Add(fsobject));
+                foreach (var fsobject in category.Children)
+                    Desktop.FileSystemObjects.Add(fsobject);
             };
         }
 
-        private Directory CopyOnlyDirectoryHierarchy(Directory root)
+        private Node NodeFromDirectory(Directory dir)
         {
-            var rootCopy = new Directory();
-            rootCopy.Title = root.Title;
-            rootCopy.IconSource = root.IconSource;
-            rootCopy.Children = new List<FileSystemObject>();
-            root.Children.ForEach(fsobject => {
-                if (!(fsobject is Directory directory))
-                    return;
-                rootCopy.Children.Add(
-                    CopyOnlyDirectoryHierarchy(directory)
-                );
-            });
-            return rootCopy;
+            var node = new Node
+            {
+                Title = dir.Title,
+                IconSource = dir.IconSource
+            };
+
+            var nodeChildren = new List<Node>(dir.Children.Length);
+            
+            foreach(var fsobject in dir.Children)
+                if (fsobject is Directory childDir)
+                    nodeChildren.Add(NodeFromDirectory(childDir));
+            
+            node.Children = nodeChildren.ToArray();
+            
+            return node;
         }
 
-        private Directory FindDirectoryByTitleInHierarchy(Directory root, string title)
+        private Directory FindAmongChildren(Directory root, string title)
         {
             if (root.Title == title)
                 return root;
@@ -76,7 +92,7 @@ namespace ConsoleCMD
             {
                 if (!(fsobject is Directory directory))
                     continue;
-                var foundDirectory = FindDirectoryByTitleInHierarchy(directory, title);
+                var foundDirectory = FindAmongChildren(directory, title);
                 if (foundDirectory == null)
                     continue;
                 return foundDirectory;

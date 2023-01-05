@@ -17,7 +17,7 @@ namespace ConsoleCMD
             get { return _title; }
             set { _title = value; }
         }
-        
+
         private ImageSource _iconSource;
         public ImageSource IconSource
         {

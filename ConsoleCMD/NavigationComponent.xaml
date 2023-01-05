@@ -4,16 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ConsoleCMD"
-             mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <TreeView x:Name="TW" Padding="5" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Path=DirectoryHierarchy}" SelectedItemChanged="TW_SelectedItemChanged">
+             mc:Ignorable="d" Name="Root">
+    <TreeView x:Name="NavigationTreeView" Padding="5" Grid.Row="1" Grid.Column="0"
+              ItemsSource="{Binding Path=RootNode, ElementName=Root}"
+              SelectedItemChanged="NavigationTreeView_SelectedItemChanged">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <Image Source="{Binding Path=IconSource}" Width="25" Height="25" Grid.Row="0" Margin="0,0,5,0"/>
-                    <TextBlock Text="{Binding Path=Title}"/>
+                    <Image Source="{Binding Path=IconSource}" Width="25" Height="25" Grid.Row="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Center"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="Visibility" Value="Visible"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                        <Setter Property="IsExpanded" Value="True"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                        <Setter Property="IsExpanded" Value="False"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsVisible}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </TreeView.ItemContainerStyle>
     </TreeView>
 </UserControl>
