@@ -119,7 +119,7 @@ namespace ConsoleCMD.Console
                 if (command.Trim() == string.Empty)
                     continue;
 
-                yield return Commands.CommandEntities.ParseCommand(command); ;
+                yield return Commands.CommandEntities.ParseCommand(command);
             }
         }
         #endregion
@@ -136,7 +136,7 @@ namespace ConsoleCMD.Console
                 Clear();
                 CloseHintsBox();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
             }
@@ -156,7 +156,7 @@ namespace ConsoleCMD.Console
 
         private void PreviewConsoleKeyDown(object sender, KeyEventArgs e)
         {
-            
+
         }
 
         private void OnConsoleTextChanged(object sender, TextChangedEventArgs e) =>
