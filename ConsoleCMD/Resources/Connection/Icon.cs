@@ -12,24 +12,20 @@ namespace ConsoleCMD.Resources.Connection
     using System;
     using System.Collections.Generic;
     
-    public partial class Directory
+    public partial class Icon
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Directory()
+        public Icon()
         {
-            this.Directory1 = new HashSet<Directory>();
+            this.Directory = new HashSet<Directory>();
             this.File = new HashSet<File>();
         }
     
         public int ID { get; set; }
-        public string Name { get; set; }
-        public Nullable<int> Parent { get; set; }
-        public Nullable<int> Icon_id { get; set; }
+        public byte[] Data { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Directory> Directory1 { get; set; }
-        public virtual Directory Directory2 { get; set; }
-        public virtual Icon Icon { get; set; }
+        public virtual ICollection<Directory> Directory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<File> File { get; set; }
     }

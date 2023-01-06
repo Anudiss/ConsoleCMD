@@ -18,7 +18,9 @@ namespace ConsoleCMD.Resources.Connection
         public string Name { get; set; }
         public string Extension { get; set; }
         public int Parent { get; set; }
+        public Nullable<int> Icon_id { get; set; }
     
         public virtual Directory Directory { get; set; }
+        public virtual Icon Icon { get; set; }
     }
 }

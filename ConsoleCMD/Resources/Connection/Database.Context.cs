@@ -27,6 +27,7 @@ namespace ConsoleCMD.Resources.Connection
     
         public virtual DbSet<Directory> Directory { get; set; }
         public virtual DbSet<File> File { get; set; }
+        public virtual DbSet<Icon> Icon { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

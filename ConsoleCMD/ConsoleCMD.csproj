@@ -105,6 +105,9 @@
     <Compile Include="Resources\Connection\File.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Connection\Icon.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Connection\sysdiagrams.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
@@ -128,7 +131,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Application.cs" />
+    <Compile Include="FileSystem\Application.cs" />
     <Compile Include="CommandHistory.cs" />
     <Compile Include="CommandResources\Arguments.cs" />
     <Compile Include="CommandResources\Commands.cs" />
@@ -138,9 +141,9 @@
     <Compile Include="Console\ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Directory.cs" />
-    <Compile Include="File.cs" />
-    <Compile Include="FileSystemObject.cs" />
+    <Compile Include="FileSystem\Directory.cs" />
+    <Compile Include="FileSystem\File.cs" />
+    <Compile Include="FileSystem\FileSystemObject.cs" />
     <Compile Include="HintColorScheme.cs" />
     <Compile Include="HintsBoxComponent.xaml.cs">
       <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
@@ -165,7 +168,7 @@
     <Compile Include="NavigationComponent.xaml.cs">
       <DependentUpon>NavigationComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Node.cs" />
+    <Compile Include="FileSystem\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
