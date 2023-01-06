@@ -40,14 +40,6 @@ namespace ConsoleCMD
         {
             if (e.Key != Key.Enter)
                 return;
-
-            //var fileSystemObject = LBFileSystemObjects.SelectedItem as FileSystemObject;
-            //if (fileSystemObject is Directory)
-            //{
-            //    var directory = fileSystemObject as Directory;
-            //    if (directory.Children.Count > 0)
-            //        CategoriesList = directory.Children;
-            //}
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,32 +19,53 @@ using System.Windows.Shapes;
 namespace ConsoleCMD
 {
     /// <summary>
-    /// Логика взаимодействия для NavigationComponent.xaml
+    /// Панель навигации на основе иерархии директорий
     /// </summary>
     public partial class NavigationComponent : UserControl
     {
-        public ObservableCollection<Directory> DirectoryHierarchy
+        /// <summary>
+        /// Корневой узел дервеа навигации
+        /// </summary>
+        private Node[] _rootNodes = new Node[1] { null };
+        public Node RootNode
         {
-            get { return (ObservableCollection<Directory>)GetValue(DirectoryHierarchyProperty); }
-            private set { SetValue(DirectoryHierarchyProperty, value); }
+            get { return _rootNodes[0]; }
+            set { _rootNodes[0] = value; }
         }
-        public static readonly DependencyProperty DirectoryHierarchyProperty =
-            DependencyProperty.Register("DirectoryHierarchy", typeof(ObservableCollection<Directory>), typeof(NavigationComponent), new PropertyMetadata(new ObservableCollection<Directory>()));
 
-        public Action<Directory> SelectedEndNode;
-
+        /// <summary>
+        /// Обработчик события, когда выбран конечный узел навигации (тот, который не содержит подузлов)
+        /// </summary>
+        public Action<Node> SelectedEndNode;
+        
         public NavigationComponent()
         {
             InitializeComponent();
+
+            NavigationTreeView.ItemsSource = _rootNodes;
         }
 
-        public new void Focus() => TW.Focus();
-
-        private void TW_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        /// <summary>
+        /// При выборе элемента в дереве, вызывает обработчик SelectedEndNode
+        /// </summary>
+        private void NavigationTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var selectedNode = TW.SelectedItem as Directory;
-            if (selectedNode.Children.Count == 0)
+            var selectedNode = NavigationTreeView.SelectedItem as Node;
+
+            // reset visibility
+            RootNode.ForEachChildren(node => node.IsVisible = true);
+
+            selectedNode.ForEachNeighbour(neighbour => neighbour.IsVisible = false);
+
+            selectedNode.ForEachParent(parent => parent.ForEachNeighbour(neighbour => neighbour.IsVisible = false));
+
+            if (selectedNode.Children.Length == 0)
                 SelectedEndNode?.Invoke(selectedNode);
         }
+
+        /// <summary>
+        /// Передаёет фокус дереву дереву навигации
+        /// </summary>
+        public new void Focus() => NavigationTreeView.Focus();
     }
 }

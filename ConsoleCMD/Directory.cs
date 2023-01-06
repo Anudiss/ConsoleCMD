@@ -20,8 +20,8 @@ namespace ConsoleCMD
     /// </summary>
     public partial class Directory : FileSystemObject
     {
-        private List<FileSystemObject> _children = new List<FileSystemObject>();
-        public List<FileSystemObject> Children
+        private FileSystemObject[] _children;
+        public FileSystemObject[] Children
         {
             get { return _children; }
             set { _children = value; }
@@ -30,12 +30,8 @@ namespace ConsoleCMD
         public Directory(string title = "", ImageSource iconSource = null, FileSystemObject[] children = null)
         {
             Title = title;
-            if (iconSource == null)
-                IconSource = new BitmapImage(new Uri("/Resources/Icons/directory.png", UriKind.Relative));
-            else
-                IconSource = iconSource;
-            if (children != null)
-                children.ToList().ForEach(child => _children.Add(child));
+            IconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/directory.png", UriKind.Relative));
+            _children = children ?? new FileSystemObject[0];
         }
     }
 }
