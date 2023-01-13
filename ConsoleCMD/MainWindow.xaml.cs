@@ -53,16 +53,21 @@ namespace ConsoleCMD
             });*/
 
             Directory rootCategory = FileSystemController.Root;
+
             Navigation.RootNode = NodeFromDirectory(rootCategory);
 
-            Navigation.SelectedEndNode += selectedNode =>
+            Navigation.SelectionChanged += selectedNode =>
             {
                 var category = FindAmongChildren(rootCategory, selectedNode.Title);
                 
                 Desktop.FileSystemObjects.Clear();
                 foreach (var fsobject in category.Children)
-                    Desktop.FileSystemObjects.Add(fsobject);
+                {
+                    if (fsobject is Directory == false)
+                        Desktop.FileSystemObjects.Add(fsobject);
+                }
             };
+
         }
 
         private Node NodeFromDirectory(Directory dir)
@@ -98,6 +103,11 @@ namespace ConsoleCMD
                 return foundDirectory;
             }
             return null;
+        }
+
+        private void Console_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

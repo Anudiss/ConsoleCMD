@@ -22,7 +22,7 @@ namespace ConsoleCMD
         /// <summary>
         /// Обработчик события, когда выбран конечный узел навигации (тот, который не содержит подузлов)
         /// </summary>
-        public Action<Node> SelectedEndNode;
+        public Action<Node> SelectionChanged;
         
         public NavigationComponent()
         {
@@ -45,8 +45,7 @@ namespace ConsoleCMD
 
             selectedNode.ForEachParent(parent => parent.ForEachNeighbour(neighbour => neighbour.IsVisible = false));
 
-            if (selectedNode.Children.Length == 0)
-                SelectedEndNode?.Invoke(selectedNode);
+            SelectionChanged?.Invoke(selectedNode);
         }
 
         /// <summary>

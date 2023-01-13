@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Array = CommandParser.Command.Array;
-using Tuple = CommandParser.Command.Tuple;
+using Tuple = CommandParser.Command.TupleType;
 
 namespace ConsoleCMD.CommandResources
 {
@@ -48,7 +48,17 @@ namespace ConsoleCMD.CommandResources
                     MessageBox.Show($"print123: {string.Join(", ", args.Select(arg => arg.Value))}");
                     return null;
                 }
-            }
+            },
+            new CommandEntity()
+            {
+                Synonyms = new[] { "text_editor" },
+                CommandExecutor = (args, flags) =>
+                {
+                    // something like this
+                    // ApplicationController.Start("TextEditor");
+                    return null;
+                }
+            },
         };
     }
 }

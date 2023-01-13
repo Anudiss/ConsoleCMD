@@ -30,7 +30,7 @@
 
         <local:DesktopComponent x:Name="Desktop" Grid.Row="0" Grid.Column="2" Margin="0,5,5,5"/>
 
-        <console:ConsoleComponent x:Name="Console" Grid.Row="1" Grid.ColumnSpan="3" Margin="5,0,5,5"/>
+        <console:ConsoleComponent x:Name="Console" Grid.Row="1" Grid.ColumnSpan="3" Margin="5,0,5,5" Loaded="Console_Loaded"/>
         
         
     </Grid>

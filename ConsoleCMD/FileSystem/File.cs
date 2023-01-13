@@ -14,7 +14,7 @@ namespace ConsoleCMD
         }
 
         public static File FromDatabaseObject(Resources.Connection.File file) =>
-            new File(file.Name, file.Icon.Data);
+            new File(file.Name, file.Icon?.Data);
 
         public static implicit operator File(Resources.Connection.File file) =>
             File.FromDatabaseObject(file);
