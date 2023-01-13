@@ -1,8 +1,7 @@
-﻿using System;
+﻿using ConsoleCMD.Resources.Connection;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace ConsoleCMD
 {
@@ -18,8 +17,8 @@ namespace ConsoleCMD
             set => _title = value;
         }
 
-        private ImageSource _iconSource;
-        public ImageSource IconSource
+        private byte[] _iconSource;
+        public byte[] IconSource
         {
             get => _iconSource;
             set => _iconSource = value;
@@ -66,8 +65,8 @@ namespace ConsoleCMD
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// Создаёт новый узел
@@ -75,10 +74,10 @@ namespace ConsoleCMD
         /// <param name="title">Название</param>
         /// <param name="iconSource">Изображение</param>
         /// <param name="children">Массив подузлов</param>
-        public Node(string title = "", ImageSource iconSource = null, Node[] children = null)
+        public Node(string title = "", byte[] iconSource = null, Node[] children = null)
         {
             _title = title;
-            _iconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/directory.png", UriKind.Relative));
+            _iconSource = iconSource ?? Icons.DirectoryDefaultIcon;
             _children = children ?? new Node[0];
         }
 
@@ -101,6 +100,7 @@ namespace ConsoleCMD
         {
             if (Parent == null)
                 return;
+
             action(Parent);
             Parent.ForEachParent(action);
         }
@@ -108,11 +108,12 @@ namespace ConsoleCMD
         /// <summary>
         /// Выполняет действие для каждого соседа
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="action">Действие</param>
         public void ForEachNeighbour(Action<Node> action)
         {
             if (Parent == null)
                 return;
+
             foreach (var neighbourNode in Parent._children)
                 if (neighbourNode != this)
                     action(neighbourNode);

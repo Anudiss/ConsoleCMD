@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using ConsoleCMD.Resources.Connection;
 
 namespace ConsoleCMD
 {
@@ -9,10 +7,16 @@ namespace ConsoleCMD
     /// </summary>
     public partial class File : FileSystemObject
     {
-        public File(string title = "", ImageSource iconSource = null)
+        private File(string title = "", byte[] iconSource = null)
         {
             Title = title;
-            IconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/Files/default.png", UriKind.Relative));
+            IconSource = iconSource ?? Icons.FileDefaultIcon;
         }
+
+        public static File FromDatabaseObject(Resources.Connection.File file) =>
+            new File(file.Name, file.Icon.Data);
+
+        public static implicit operator File(Resources.Connection.File file) =>
+            File.FromDatabaseObject(file);
     }
 }

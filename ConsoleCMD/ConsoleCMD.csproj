@@ -83,6 +83,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\Directory.Extension.cs" />
+    <Compile Include="Extensions\Icon.Extension.cs" />
+    <Compile Include="FileSystem\FileSystemController.cs" />
     <Compile Include="Resources\Connection\Database.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -106,9 +109,6 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Resources\Connection\Icon.cs">
-      <DependentUpon>Database.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Resources\Connection\sysdiagrams.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Page Include="ConsoleComponent.xaml">

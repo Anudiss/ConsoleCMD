@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace ConsoleCMD
+﻿namespace ConsoleCMD
 {
     public abstract class FileSystemObject
     {
@@ -11,11 +9,11 @@ namespace ConsoleCMD
             set => _title = value;
         }
 
-        private ImageSource _iconSource;
-        public ImageSource IconSource
+        private byte[] _icon;
+        public byte[] IconSource
         {
-            get => _iconSource;
-            set => _iconSource = value;
+            get => _icon;
+            set => _icon = value;
         }
     }
 }

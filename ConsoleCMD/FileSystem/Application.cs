@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using ConsoleCMD.Resources.Connection;
 
 namespace ConsoleCMD
 {
@@ -20,10 +7,10 @@ namespace ConsoleCMD
     /// </summary>
     public partial class Application : FileSystemObject
     {
-        public Application(string title = "", ImageSource iconSource = null)
+        public Application(string title = "", byte[] iconSource = null)
         {
             Title = title;
-            IconSource = iconSource ?? new BitmapImage(new Uri("/Resources/Icons/Applications/default.png", UriKind.Relative));
+            IconSource = iconSource ?? Icons.ApplicationDefaultIcon;
         }
     }
 }

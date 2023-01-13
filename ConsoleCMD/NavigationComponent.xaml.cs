@@ -1,20 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ConsoleCMD
 {
@@ -24,7 +10,7 @@ namespace ConsoleCMD
     public partial class NavigationComponent : UserControl
     {
         /// <summary>
-        /// Корневой узел дервеа навигации
+        /// Корневой узел дерева навигации
         /// </summary>
         private Node[] _rootNodes = new Node[1] { null };
         public Node RootNode

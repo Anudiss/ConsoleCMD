@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using ConsoleCMD.FileSystem;
+using ConsoleCMD.Resources.Connection;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace ConsoleCMD
@@ -12,7 +15,7 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            var rootCategory = new Directory("Корень", null, new Directory[] {
+            /*var rootCategory = new Directory("Корень", null, new Directory[] {
                 new Directory("Ветвь 1", null, new Directory[]
                 {
                     new Directory("Подветвь 1", null, new Directory[]
@@ -47,8 +50,9 @@ namespace ConsoleCMD
                 new Directory("Ветвь 3", null, new Directory[]
                 {
                 }),
-            });
+            });*/
 
+            Directory rootCategory = FileSystemController.Root;
             Navigation.RootNode = NodeFromDirectory(rootCategory);
 
             Navigation.SelectedEndNode += selectedNode =>
@@ -69,7 +73,7 @@ namespace ConsoleCMD
                 IconSource = dir.IconSource
             };
 
-            var nodeChildren = new List<Node>(dir.Children.Length);
+            var nodeChildren = new List<Node>(dir.Children.Count());
             
             foreach(var fsobject in dir.Children)
                 if (fsobject is Directory childDir)
