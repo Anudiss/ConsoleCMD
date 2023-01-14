@@ -17,16 +17,16 @@ namespace ConsoleCMD.Resources.Connection
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Icon()
         {
-            this.Directory = new HashSet<Directory>();
-            this.File = new HashSet<File>();
+            this.Directories = new HashSet<Directory>();
+            this.Files = new HashSet<File>();
         }
     
-        public int ID { get; set; }
+        public int Id { get; set; }
         public byte[] Data { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Directory> Directory { get; set; }
+        public virtual ICollection<Directory> Directories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<File> File { get; set; }
+        public virtual ICollection<File> Files { get; set; }
     }
 }

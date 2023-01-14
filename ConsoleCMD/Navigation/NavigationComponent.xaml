@@ -16,24 +16,5 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
-        <TreeView.ItemContainerStyle>
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="Visibility" Value="Visible"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsExpanded}" Value="True">
-                        <Setter Property="IsExpanded" Value="True"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsExpanded}" Value="False">
-                        <Setter Property="IsExpanded" Value="False"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsVisible}" Value="True">
-                        <Setter Property="Visibility" Value="Visible"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </TreeView.ItemContainerStyle>
     </TreeView>
 </UserControl>

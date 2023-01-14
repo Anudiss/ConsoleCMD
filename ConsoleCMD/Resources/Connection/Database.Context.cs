@@ -25,8 +25,8 @@ namespace ConsoleCMD.Resources.Connection
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Directory> Directory { get; set; }
-        public virtual DbSet<File> File { get; set; }
-        public virtual DbSet<Icon> Icon { get; set; }
+        public virtual DbSet<Directory> Directories { get; set; }
+        public virtual DbSet<File> Files { get; set; }
+        public virtual DbSet<Icon> Icons { get; set; }
     }
 }

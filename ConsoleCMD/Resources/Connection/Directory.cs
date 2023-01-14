@@ -18,19 +18,19 @@ namespace ConsoleCMD.Resources.Connection
         public Directory()
         {
             this.Directory1 = new HashSet<Directory>();
-            this.File = new HashSet<File>();
+            this.Files = new HashSet<File>();
         }
     
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public Nullable<int> Parent { get; set; }
-        public Nullable<int> Icon_id { get; set; }
+        public Nullable<int> ParentId { get; set; }
+        public Nullable<int> IconId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Directory> Directory1 { get; set; }
         public virtual Directory Directory2 { get; set; }
         public virtual Icon Icon { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<File> File { get; set; }
+        public virtual ICollection<File> Files { get; set; }
     }
 }

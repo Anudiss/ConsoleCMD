@@ -271,7 +271,7 @@ namespace ConsoleCMD.Applications.TextEditor
         private void OpenDocument_Click(object sender, RoutedEventArgs e) => OpenDocument();
         private void SaveDocument_Click(object sender, RoutedEventArgs e) => SaveDocument();
         private void SaveAsDocument_Click(object sender, RoutedEventArgs e) => SaveAsDocument();
-        private void Exit_Click(object sender, RoutedEventArgs e) { } //=> Close();
+        private void Exit_Click(object sender, RoutedEventArgs e) { } // => Close();
         private void Undo_Click(object sender, RoutedEventArgs e) => TB.Undo();
         private void Cut_Click(object sender, RoutedEventArgs e) => TB.Cut();
         private void Copy_Click(object sender, RoutedEventArgs e) => TB.Copy();

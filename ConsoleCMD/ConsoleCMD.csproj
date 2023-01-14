@@ -92,9 +92,7 @@
     <Compile Include="Applications\TextEditor\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Directory.Extension.cs" />
-    <Compile Include="Extensions\Icon.Extension.cs" />
-    <Compile Include="FileSystem\FileSystemController.cs" />
+    <Compile Include="FileSystemManager.cs" />
     <Compile Include="Resources\Connection\Database.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -117,9 +115,12 @@
     <Compile Include="Resources\Connection\File.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Connection\IFileSystemObject.cs" />
     <Compile Include="Resources\Connection\Icon.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Connection\PartialClasses\Directory.Extension.cs" />
+    <Compile Include="Resources\Connection\PartialClasses\File.Extension.cs" />
     <Page Include="Applications\TextEditor\FindWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,15 +129,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ConsoleComponent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Console\ConsoleComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HintsBoxComponent.xaml">
+    <Page Include="Console\HintsBoxComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -148,21 +145,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileSystem\Application.cs" />
-    <Compile Include="CommandHistory.cs" />
-    <Compile Include="CommandResources\Arguments.cs" />
-    <Compile Include="CommandResources\Commands.cs" />
-    <Compile Include="ConsoleComponent.xaml.cs">
-      <DependentUpon>ConsoleComponent.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Console\CommandHistory.cs" />
+    <Compile Include="Console\CommandResources\Arguments.cs" />
+    <Compile Include="Console\CommandResources\Commands.cs" />
     <Compile Include="Console\ConsoleComponent.xaml.cs">
       <DependentUpon>ConsoleComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystem\Directory.cs" />
-    <Compile Include="FileSystem\File.cs" />
-    <Compile Include="FileSystem\FileSystemObject.cs" />
-    <Compile Include="HintColorScheme.cs" />
-    <Compile Include="HintsBoxComponent.xaml.cs">
+    <Compile Include="Console\HintColorScheme.cs" />
+    <Compile Include="Console\HintsBoxComponent.xaml.cs">
       <DependentUpon>HintsBoxComponent.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
@@ -173,7 +163,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="NavigationComponent.xaml">
+    <Page Include="Navigation\NavigationComponent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -182,10 +172,10 @@
     <Compile Include="DesktopComponent.xaml.cs">
       <DependentUpon>DesktopComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NavigationComponent.xaml.cs">
+    <Compile Include="Navigation\NavigationComponent.xaml.cs">
       <DependentUpon>NavigationComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystem\Node.cs" />
+    <Compile Include="Navigation\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -232,18 +222,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\Files\default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\Applications\default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\directory.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\Connection\Database.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

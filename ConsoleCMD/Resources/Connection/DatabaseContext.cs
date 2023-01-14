@@ -10,9 +10,9 @@ namespace ConsoleCMD.Resources.Connection
         {
             Entities = new FileSystemEntities();
 
-            Entities.File.Load();
-            Entities.Directory.Load();
-            Entities.Icon.Load();
+            Entities.Files.Load();
+            Entities.Directories.Load();
+            Entities.Icons.Load();
         }
     }
 }

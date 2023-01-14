@@ -14,11 +14,11 @@ namespace ConsoleCMD.Resources.Connection
     
     public partial class File
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
-        public int Parent { get; set; }
-        public Nullable<int> Icon_id { get; set; }
+        public int ParentId { get; set; }
+        public Nullable<int> IconId { get; set; }
     
         public virtual Directory Directory { get; set; }
         public virtual Icon Icon { get; set; }

@@ -21,8 +21,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Image Source="{Binding Path=IconSource}" Width="25" Height="25" Grid.Row="0"/>
-                            <TextBlock Text="{Binding Path=Title}" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1"/>
+                            <Image Source="{Binding Path=IconOrDefault}" Width="25" Height="25" Grid.Row="0"/>
+                            <TextBlock Text="{Binding Path=Name}" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1"/>
                         </Grid>
                 </DataTemplate>
                 </ListBox.ItemTemplate>

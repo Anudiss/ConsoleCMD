@@ -43,8 +43,9 @@ namespace ConsoleCMD
 
             selectedNode.ForEachNeighbour(neighbour => neighbour.IsVisible = false);
 
-            selectedNode.ForEachParent(parent => parent.ForEachNeighbour(neighbour => neighbour.IsVisible = false));
-
+            selectedNode.ForEachParent(parent
+                => parent.ForEachNeighbour(neighbour
+                    => neighbour.IsVisible = false));
             SelectionChanged?.Invoke(selectedNode);
         }
 

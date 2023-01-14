@@ -15,44 +15,7 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            /*var rootCategory = new Directory("Корень", null, new Directory[] {
-                new Directory("Ветвь 1", null, new Directory[]
-                {
-                    new Directory("Подветвь 1", null, new Directory[]
-                    {
-                        new Directory("Подподветвь 1", null, new FileSystemObject[]
-                        {
-                            new Application("Приложение 1"),
-                            new File("Файл 1")
-                        }),
-                        new Directory("Подподветвь 2", null, new Directory[]
-                        {
-
-                        }),
-                        new Directory("Подподветвь 3", null, new Directory[]
-                        {
-
-                        }),
-                    }),
-                    new Directory("Подветвь 2", null, new FileSystemObject[]
-                    {
-                        new Application("Приложение 1"),
-                        new File("Файл 1")
-                    }),
-                    new Directory("Подветвь 3", null, new Directory[]
-                    {
-
-                    }),
-                }),
-                new Directory("Ветвь 2", null, new Directory[]
-                {
-                }),
-                new Directory("Ветвь 3", null, new Directory[]
-                {
-                }),
-            });*/
-
-            Directory rootCategory = FileSystemController.Root;
+            Directory rootCategory = FileSystemManager.Root;
 
             Navigation.RootNode = NodeFromDirectory(rootCategory);
 
@@ -63,41 +26,35 @@ namespace ConsoleCMD
                 Desktop.FileSystemObjects.Clear();
                 foreach (var fsobject in category.Children)
                 {
-                    if (fsobject is Directory == false)
+                    if (fsobject is File)
                         Desktop.FileSystemObjects.Add(fsobject);
                 }
             };
-
         }
 
         private Node NodeFromDirectory(Directory dir)
         {
-            var node = new Node
-            {
-                Title = dir.Title,
-                IconSource = dir.IconSource
-            };
+            var node = new Node(dir.Name, dir.IconOrDefault);
 
-            var nodeChildren = new List<Node>(dir.Children.Count());
+            var nodeChildren = new List<Node>(dir.SubDirectories.Count());
             
-            foreach(var fsobject in dir.Children)
-                if (fsobject is Directory childDir)
-                    nodeChildren.Add(NodeFromDirectory(childDir));
+            foreach(var childDir in dir.SubDirectories)
+                nodeChildren.Add(NodeFromDirectory(childDir));
             
             node.Children = nodeChildren.ToArray();
             
             return node;
         }
 
-        private Directory FindAmongChildren(Directory root, string title)
+        private Directory FindAmongChildren(Directory root, string name)
         {
-            if (root.Title == title)
+            if (root.Name == name)
                 return root;
-            foreach (var fsobject in root.Children)
+            foreach (var fsobject in root.SubDirectories)
             {
                 if (!(fsobject is Directory directory))
                     continue;
-                var foundDirectory = FindAmongChildren(directory, title);
+                var foundDirectory = FindAmongChildren(directory, name);
                 if (foundDirectory == null)
                     continue;
                 return foundDirectory;

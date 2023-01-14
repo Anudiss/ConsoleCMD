@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace ConsoleCMD
 {
@@ -74,10 +75,10 @@ namespace ConsoleCMD
         /// <param name="title">Название</param>
         /// <param name="iconSource">Изображение</param>
         /// <param name="children">Массив подузлов</param>
-        public Node(string title = "", byte[] iconSource = null, Node[] children = null)
+        public Node(string title, byte[] iconSource, Node[] children = null)
         {
             _title = title;
-            _iconSource = iconSource ?? Icons.DirectoryDefaultIcon;
+            _iconSource = iconSource;
             _children = children ?? new Node[0];
         }
 

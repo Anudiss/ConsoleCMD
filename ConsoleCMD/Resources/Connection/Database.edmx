@@ -7,28 +7,28 @@
     <Schema Namespace="Хранилище FileSystemModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Directory">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Parent" Type="int" />
-          <Property Name="Icon_id" Type="int" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="IconId" Type="int" />
         </EntityType>
         <EntityType Name="File">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Extension" Type="varchar" MaxLength="3" Nullable="false" />
-          <Property Name="Parent" Type="int" Nullable="false" />
-          <Property Name="Icon_id" Type="int" />
+          <Property Name="ParentId" Type="int" Nullable="false" />
+          <Property Name="IconId" Type="int" />
         </EntityType>
         <EntityType Name="Icon">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Data" Type="varbinary(max)" Nullable="false" />
         </EntityType>
         <Association Name="FK_Directory_Directory">
@@ -36,10 +36,10 @@
           <End Role="Directory1" Type="Self.Directory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Directory">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Directory1">
-              <PropertyRef Name="Parent" />
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -48,10 +48,10 @@
           <End Role="Directory" Type="Self.Directory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Icon">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Directory">
-              <PropertyRef Name="Icon_id" />
+              <PropertyRef Name="IconId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -60,10 +60,10 @@
           <End Role="File" Type="Self.File" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Directory">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="File">
-              <PropertyRef Name="Parent" />
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -72,10 +72,10 @@
           <End Role="File" Type="Self.File" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Icon">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="File">
-              <PropertyRef Name="Icon_id" />
+              <PropertyRef Name="IconId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -105,69 +105,69 @@
     <edmx:ConceptualModels>
       <Schema Namespace="FileSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="FileSystemEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Directory" EntityType="FileSystemModel.Directory" />
-          <EntitySet Name="File" EntityType="FileSystemModel.File" />
-          <EntitySet Name="Icon" EntityType="FileSystemModel.Icon" />
+          <EntitySet Name="Directories" EntityType="FileSystemModel.Directory" />
+          <EntitySet Name="Files" EntityType="FileSystemModel.File" />
+          <EntitySet Name="Icons" EntityType="FileSystemModel.Icon" />
           <AssociationSet Name="FK_Directory_Directory" Association="FileSystemModel.FK_Directory_Directory">
-            <End Role="Directory" EntitySet="Directory" />
-            <End Role="Directory1" EntitySet="Directory" />
+            <End Role="Directory" EntitySet="Directories" />
+            <End Role="Directory1" EntitySet="Directories" />
           </AssociationSet>
           <AssociationSet Name="FK_Directory_Icon" Association="FileSystemModel.FK_Directory_Icon">
-            <End Role="Icon" EntitySet="Icon" />
-            <End Role="Directory" EntitySet="Directory" />
+            <End Role="Icon" EntitySet="Icons" />
+            <End Role="Directory" EntitySet="Directories" />
           </AssociationSet>
           <AssociationSet Name="FK_File_Directory" Association="FileSystemModel.FK_File_Directory">
-            <End Role="Directory" EntitySet="Directory" />
-            <End Role="File" EntitySet="File" />
+            <End Role="Directory" EntitySet="Directories" />
+            <End Role="File" EntitySet="Files" />
           </AssociationSet>
           <AssociationSet Name="FK_File_Icon" Association="FileSystemModel.FK_File_Icon">
-            <End Role="Icon" EntitySet="Icon" />
-            <End Role="File" EntitySet="File" />
+            <End Role="Icon" EntitySet="Icons" />
+            <End Role="File" EntitySet="Files" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Directory">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Parent" Type="Int32" />
-          <Property Name="Icon_id" Type="Int32" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="IconId" Type="Int32" />
           <NavigationProperty Name="Directory1" Relationship="FileSystemModel.FK_Directory_Directory" FromRole="Directory" ToRole="Directory1" />
           <NavigationProperty Name="Directory2" Relationship="FileSystemModel.FK_Directory_Directory" FromRole="Directory1" ToRole="Directory" />
           <NavigationProperty Name="Icon" Relationship="FileSystemModel.FK_Directory_Icon" FromRole="Directory" ToRole="Icon" />
-          <NavigationProperty Name="File" Relationship="FileSystemModel.FK_File_Directory" FromRole="Directory" ToRole="File" />
+          <NavigationProperty Name="Files" Relationship="FileSystemModel.FK_File_Directory" FromRole="Directory" ToRole="File" />
         </EntityType>
         <EntityType Name="File">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Extension" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="Parent" Type="Int32" Nullable="false" />
-          <Property Name="Icon_id" Type="Int32" />
+          <Property Name="ParentId" Type="Int32" Nullable="false" />
+          <Property Name="IconId" Type="Int32" />
           <NavigationProperty Name="Directory" Relationship="FileSystemModel.FK_File_Directory" FromRole="File" ToRole="Directory" />
           <NavigationProperty Name="Icon" Relationship="FileSystemModel.FK_File_Icon" FromRole="File" ToRole="Icon" />
         </EntityType>
         <EntityType Name="Icon">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Data" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Directory" Relationship="FileSystemModel.FK_Directory_Icon" FromRole="Icon" ToRole="Directory" />
-          <NavigationProperty Name="File" Relationship="FileSystemModel.FK_File_Icon" FromRole="Icon" ToRole="File" />
+          <NavigationProperty Name="Directories" Relationship="FileSystemModel.FK_Directory_Icon" FromRole="Icon" ToRole="Directory" />
+          <NavigationProperty Name="Files" Relationship="FileSystemModel.FK_File_Icon" FromRole="Icon" ToRole="File" />
         </EntityType>
         <Association Name="FK_Directory_Directory">
           <End Type="FileSystemModel.Directory" Role="Directory" Multiplicity="0..1" />
           <End Type="FileSystemModel.Directory" Role="Directory1" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Directory">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Directory1">
-              <PropertyRef Name="Parent" />
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -176,10 +176,10 @@
           <End Type="FileSystemModel.Directory" Role="Directory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Icon">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Directory">
-              <PropertyRef Name="Icon_id" />
+              <PropertyRef Name="IconId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -188,10 +188,10 @@
           <End Type="FileSystemModel.File" Role="File" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Directory">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="File">
-              <PropertyRef Name="Parent" />
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -200,10 +200,10 @@
           <End Type="FileSystemModel.File" Role="File" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Icon">
-              <PropertyRef Name="ID" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="File">
-              <PropertyRef Name="Icon_id" />
+              <PropertyRef Name="IconId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -213,32 +213,32 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="Хранилище FileSystemModelContainer" CdmEntityContainer="FileSystemEntities">
-          <EntitySetMapping Name="Directory">
+          <EntitySetMapping Name="Directories">
             <EntityTypeMapping TypeName="FileSystemModel.Directory">
               <MappingFragment StoreEntitySet="Directory">
-                <ScalarProperty Name="Icon_id" ColumnName="Icon_id" />
-                <ScalarProperty Name="Parent" ColumnName="Parent" />
+                <ScalarProperty Name="IconId" ColumnName="IconId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="File">
+          <EntitySetMapping Name="Files">
             <EntityTypeMapping TypeName="FileSystemModel.File">
               <MappingFragment StoreEntitySet="File">
-                <ScalarProperty Name="Icon_id" ColumnName="Icon_id" />
-                <ScalarProperty Name="Parent" ColumnName="Parent" />
+                <ScalarProperty Name="IconId" ColumnName="IconId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="Extension" ColumnName="Extension" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Icon">
+          <EntitySetMapping Name="Icons">
             <EntityTypeMapping TypeName="FileSystemModel.Icon">
               <MappingFragment StoreEntitySet="Icon">
                 <ScalarProperty Name="Data" ColumnName="Data" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -256,7 +256,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
