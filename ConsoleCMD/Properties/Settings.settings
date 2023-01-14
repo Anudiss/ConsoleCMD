@@ -2,8 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ConsoleCMD.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="MainDirectory" Type="System.String" Scope="User">
+    <Setting Name="MainDirectoryPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Ильназ\Documents\ToyOS</Value>
+    </Setting>
+    <Setting Name="FileSystemDirectoryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FileSystemRoot</Value>
+    </Setting>
+    <Setting Name="ApplicationsDirectoryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Applications</Value>
     </Setting>
   </Settings>
 </SettingsFile>

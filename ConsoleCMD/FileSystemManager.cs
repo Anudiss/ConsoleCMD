@@ -1,4 +1,5 @@
 ﻿using ConsoleCMD.Resources.Connection;
+using System.IO;
 using System.Linq;
 using SysIO = System.IO;
 
@@ -103,6 +104,40 @@ namespace ConsoleCMD.FileSystem
         //        // File
         //    }
         //}
+
+        public static bool IsMainDirectoryExist()
+        {
+            
+        }
+
+        public static void ValidateMainDirectoryByPath()
+        {
+
+        }
+
+        public void F()
+        {
+            if (Properties.Settings.Default.MainDirectoryPath != null)
+            {
+                var fileSystemDirectoryPath
+                    = Path.Combine(Properties.Settings.Default.MainDirectoryPath,
+                        Properties.Settings.Default.FileSystemDirectoryName);
+
+                var applicationsSystemDirectoryPath
+                    = Path.Combine(Properties.Settings.Default.MainDirectoryPath,
+                        Properties.Settings.Default.ApplicationsDirectoryName);
+
+                SysIO.Directory.CreateDirectory(Properties.Settings.Default.MainDirectoryPath);
+                SysIO.Directory.CreateDirectory(fileSystemDirectoryPath);
+                SysIO.Directory.CreateDirectory(applicationsSystemDirectoryPath);
+            }
+            else
+            {
+                // создание папок
+            }
+        }
+
+
 
         public static bool IsDirectory(string path)
             => (SysIO.File.GetAttributes(path) & SysIO.FileAttributes.Directory) == SysIO.FileAttributes.Directory;

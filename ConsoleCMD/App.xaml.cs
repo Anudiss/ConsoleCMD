@@ -14,5 +14,8 @@ namespace ConsoleCMD
     /// </summary>
     public partial class App : Application
     {
+        static App() {
+
+        }
     }
 }
