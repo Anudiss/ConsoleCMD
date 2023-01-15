@@ -14,15 +14,22 @@
           <Property Name="ParentId" Type="int" />
           <Property Name="IconId" Type="int" />
         </EntityType>
+        <EntityType Name="Extension">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IconId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="File">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Extension" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="ExtensionId" Type="int" Nullable="false" />
           <Property Name="ParentId" Type="int" Nullable="false" />
-          <Property Name="IconId" Type="int" />
         </EntityType>
         <EntityType Name="Icon">
           <Key>
@@ -30,6 +37,16 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Data" Type="varbinary(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <Association Name="FK_Directory_Directory">
           <End Role="Directory" Type="Self.Directory" Multiplicity="0..1" />
@@ -55,6 +72,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Extension_Icon">
+          <End Role="Icon" Type="Self.Icon" Multiplicity="1" />
+          <End Role="Extension" Type="Self.Extension" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Icon">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Extension">
+              <PropertyRef Name="IconId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_File_Directory">
           <End Role="Directory" Type="Self.Directory" Multiplicity="1" />
           <End Role="File" Type="Self.File" Multiplicity="*" />
@@ -67,22 +96,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_File_Icon">
-          <End Role="Icon" Type="Self.Icon" Multiplicity="0..1" />
+        <Association Name="FK_File_Extension">
+          <End Role="Extension" Type="Self.Extension" Multiplicity="1" />
           <End Role="File" Type="Self.File" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Icon">
+            <Principal Role="Extension">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="File">
-              <PropertyRef Name="IconId" />
+              <PropertyRef Name="ExtensionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Хранилище FileSystemModelContainer">
           <EntitySet Name="Directory" EntityType="Self.Directory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Extension" EntityType="Self.Extension" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="File" EntityType="Self.File" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Icon" EntityType="Self.Icon" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Directory_Directory" Association="Self.FK_Directory_Directory">
             <End Role="Directory" EntitySet="Directory" />
             <End Role="Directory1" EntitySet="Directory" />
@@ -91,12 +122,16 @@
             <End Role="Icon" EntitySet="Icon" />
             <End Role="Directory" EntitySet="Directory" />
           </AssociationSet>
+          <AssociationSet Name="FK_Extension_Icon" Association="Self.FK_Extension_Icon">
+            <End Role="Icon" EntitySet="Icon" />
+            <End Role="Extension" EntitySet="Extension" />
+          </AssociationSet>
           <AssociationSet Name="FK_File_Directory" Association="Self.FK_File_Directory">
             <End Role="Directory" EntitySet="Directory" />
             <End Role="File" EntitySet="File" />
           </AssociationSet>
-          <AssociationSet Name="FK_File_Icon" Association="Self.FK_File_Icon">
-            <End Role="Icon" EntitySet="Icon" />
+          <AssociationSet Name="FK_File_Extension" Association="Self.FK_File_Extension">
+            <End Role="Extension" EntitySet="Extension" />
             <End Role="File" EntitySet="File" />
           </AssociationSet>
         </EntityContainer>
@@ -106,8 +141,10 @@
       <Schema Namespace="FileSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="FileSystemEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Directories" EntityType="FileSystemModel.Directory" />
+          <EntitySet Name="Extensions" EntityType="FileSystemModel.Extension" />
           <EntitySet Name="Files" EntityType="FileSystemModel.File" />
           <EntitySet Name="Icons" EntityType="FileSystemModel.Icon" />
+          <EntitySet Name="sysdiagrams" EntityType="FileSystemModel.sysdiagram" />
           <AssociationSet Name="FK_Directory_Directory" Association="FileSystemModel.FK_Directory_Directory">
             <End Role="Directory" EntitySet="Directories" />
             <End Role="Directory1" EntitySet="Directories" />
@@ -120,8 +157,12 @@
             <End Role="Directory" EntitySet="Directories" />
             <End Role="File" EntitySet="Files" />
           </AssociationSet>
-          <AssociationSet Name="FK_File_Icon" Association="FileSystemModel.FK_File_Icon">
+          <AssociationSet Name="FK_Extension_Icon" Association="FileSystemModel.FK_Extension_Icon">
             <End Role="Icon" EntitySet="Icons" />
+            <End Role="Extension" EntitySet="Extensions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_File_Extension" Association="FileSystemModel.FK_File_Extension">
+            <End Role="Extension" EntitySet="Extensions" />
             <End Role="File" EntitySet="Files" />
           </AssociationSet>
         </EntityContainer>
@@ -138,17 +179,26 @@
           <NavigationProperty Name="Icon" Relationship="FileSystemModel.FK_Directory_Icon" FromRole="Directory" ToRole="Icon" />
           <NavigationProperty Name="Files" Relationship="FileSystemModel.FK_File_Directory" FromRole="Directory" ToRole="File" />
         </EntityType>
+        <EntityType Name="Extension">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IconId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Icon" Relationship="FileSystemModel.FK_Extension_Icon" FromRole="Extension" ToRole="Icon" />
+          <NavigationProperty Name="Files" Relationship="FileSystemModel.FK_File_Extension" FromRole="Extension" ToRole="File" />
+        </EntityType>
         <EntityType Name="File">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Extension" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="ExtensionId" Type="Int32" Nullable="false" />
           <Property Name="ParentId" Type="Int32" Nullable="false" />
-          <Property Name="IconId" Type="Int32" />
           <NavigationProperty Name="Directory" Relationship="FileSystemModel.FK_File_Directory" FromRole="File" ToRole="Directory" />
-          <NavigationProperty Name="Icon" Relationship="FileSystemModel.FK_File_Icon" FromRole="File" ToRole="Icon" />
+          <NavigationProperty Name="Extension" Relationship="FileSystemModel.FK_File_Extension" FromRole="File" ToRole="Extension" />
         </EntityType>
         <EntityType Name="Icon">
           <Key>
@@ -157,7 +207,17 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Data" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
           <NavigationProperty Name="Directories" Relationship="FileSystemModel.FK_Directory_Icon" FromRole="Icon" ToRole="Directory" />
-          <NavigationProperty Name="Files" Relationship="FileSystemModel.FK_File_Icon" FromRole="Icon" ToRole="File" />
+          <NavigationProperty Name="Extensions" Relationship="FileSystemModel.FK_Extension_Icon" FromRole="Icon" ToRole="Extension" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <Association Name="FK_Directory_Directory">
           <End Type="FileSystemModel.Directory" Role="Directory" Multiplicity="0..1" />
@@ -195,15 +255,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_File_Icon">
-          <End Type="FileSystemModel.Icon" Role="Icon" Multiplicity="0..1" />
-          <End Type="FileSystemModel.File" Role="File" Multiplicity="*" />
+        <Association Name="FK_Extension_Icon">
+          <End Type="FileSystemModel.Icon" Role="Icon" Multiplicity="1" />
+          <End Type="FileSystemModel.Extension" Role="Extension" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Icon">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="File">
+            <Dependent Role="Extension">
               <PropertyRef Name="IconId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_File_Extension">
+          <End Type="FileSystemModel.Extension" Role="Extension" Multiplicity="1" />
+          <End Type="FileSystemModel.File" Role="File" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Extension">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="File">
+              <PropertyRef Name="ExtensionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -223,12 +295,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Extensions">
+            <EntityTypeMapping TypeName="FileSystemModel.Extension">
+              <MappingFragment StoreEntitySet="Extension">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IconId" ColumnName="IconId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Files">
             <EntityTypeMapping TypeName="FileSystemModel.File">
               <MappingFragment StoreEntitySet="File">
-                <ScalarProperty Name="IconId" ColumnName="IconId" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="Extension" ColumnName="Extension" />
+                <ScalarProperty Name="ExtensionId" ColumnName="ExtensionId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -239,6 +319,17 @@
               <MappingFragment StoreEntitySet="Icon">
                 <ScalarProperty Name="Data" ColumnName="Data" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FileSystemModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

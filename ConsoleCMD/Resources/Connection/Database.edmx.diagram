@@ -5,13 +5,16 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="979c34b7241444c1aceed221ac0e7745" Name="Diagram1">
-        <EntityTypeShape EntityType="FileSystemModel.Directory" Width="1.5" PointX="3" PointY="1" />
-        <EntityTypeShape EntityType="FileSystemModel.File" Width="1.5" PointX="5.25" PointY="1" />
-        <EntityTypeShape EntityType="FileSystemModel.Icon" Width="1.5" PointX="0.75" PointY="1.375" />
+        <EntityTypeShape EntityType="FileSystemModel.Directory" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="FileSystemModel.Extension" Width="1.5" PointX="3" PointY="4.375" />
+        <EntityTypeShape EntityType="FileSystemModel.File" Width="1.5" PointX="5.25" PointY="2.625" />
+        <EntityTypeShape EntityType="FileSystemModel.Icon" Width="1.5" PointX="0.75" PointY="2.875" />
+        <EntityTypeShape EntityType="FileSystemModel.sysdiagram" Width="1.5" PointX="5.75" PointY="5.75" />
         <AssociationConnector Association="FileSystemModel.FK_Directory_Directory" />
         <AssociationConnector Association="FileSystemModel.FK_Directory_Icon" />
         <AssociationConnector Association="FileSystemModel.FK_File_Directory" />
-        <AssociationConnector Association="FileSystemModel.FK_File_Icon" />
+        <AssociationConnector Association="FileSystemModel.FK_Extension_Icon" />
+        <AssociationConnector Association="FileSystemModel.FK_File_Extension" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

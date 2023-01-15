@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ConsoleCMD.Resources.Connection
 {
@@ -13,8 +9,8 @@ namespace ConsoleCMD.Resources.Connection
         public byte[] IconOrDefault {
             get
             {
-                if (Icon != null)
-                    return Icon.Data;
+                if (Extension.Icon != null)
+                    return Extension.Icon.Data;
                 return DatabaseContext.Entities.Icons.Local.First(icon => icon.Id == 2).Data;
             }
         }

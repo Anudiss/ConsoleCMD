@@ -1,5 +1,4 @@
-﻿using ConsoleCMD.Resources.Connection;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -9,7 +8,7 @@ namespace ConsoleCMD
     /// <summary>
     /// Представляет узел панели навигации
     /// </summary>
-    public class Node : INotifyPropertyChanged
+    public class Node : TreeViewItem, INotifyPropertyChanged
     {
         private string _title;
         public string Title
@@ -37,25 +36,14 @@ namespace ConsoleCMD
         }
 
         private Node _parent = null;
-        public Node Parent
+        public new Node Parent
         {
             get => _parent;
             set => _parent = value;
         }
 
-        private bool _isExpanded = false;
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set
-            {
-                _isExpanded = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _isVisible = true;
-        public bool IsVisible
+        public new bool IsVisible
         {
             get => _isVisible;
             set

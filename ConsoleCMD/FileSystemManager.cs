@@ -1,5 +1,4 @@
 ﻿using ConsoleCMD.Resources.Connection;
-using System.IO;
 using System.Linq;
 using SysIO = System.IO;
 
@@ -104,7 +103,7 @@ namespace ConsoleCMD.FileSystem
         //        // File
         //    }
         //}
-
+/*
         public static bool IsMainDirectoryExist()
         {
             
@@ -137,7 +136,7 @@ namespace ConsoleCMD.FileSystem
             }
         }
 
-
+*/
 
         public static bool IsDirectory(string path)
             => (SysIO.File.GetAttributes(path) & SysIO.FileAttributes.Directory) == SysIO.FileAttributes.Directory;
