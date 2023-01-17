@@ -1,146 +1,271 @@
 ﻿using ConsoleCMD.Resources.Connection;
-using System.IO;
+using System;
 using System.Linq;
 using SysIO = System.IO;
+using System.Collections.Generic;
+using CommandParser;
+using System.Windows;
 
-namespace ConsoleCMD.FileSystem
+namespace ConsoleCMD
 {
     public static class FileSystemManager
     {
-        public static Directory Root { get; }
+        public static string WorkingDirectoryName { get; private set; }
+        public static string FileSystemDirectoryName { get; private set; }
+        public static string ApplicationsDirectoryName { get; private set; }
 
-        static FileSystemManager() =>
-            Root = DatabaseContext.Entities.Directories.Local.First(directory => directory.Parent == null);
+        public static string WorkingDirectoryPath { get; private set; }
+        public static string FileSystemDirectoryPath { get; private set; }
+        public static string ApplicationsDirectoryPath { get; private set; }
+
+        public static Directory RootDirectory { get; private set; }
+
+        public static void InitializeFileSystem()
+        {
+            Initialize_Physical_WorkingDirectoryStructure();
+
+            Initialize_DB_RootDirectory();
+
+            ReflectPhysicalFileSystemStructureToDB();
+
+            DatabaseContext.Entities.SaveChanges();
+        }
         
-        //public static void BuildFileSystemTree()
-        //{
-        //    var mainDir = Properties.Settings.Default.MainDirectory;
-
-        //    var fileSystemRootDirPath = Path.Combine(mainDir, "FileSystemRoot");
-
-        //    Walk(fileSystemRootDirPath, null);
-        //}
-
-        //public static void Walk(string dirPath, int? parentDirID)
-        //{
-        //    if (IsDirectory(dirPath))
-        //    {
-        //        // This is dir
-        //        var dirName = Path.GetDirectoryName(dirPath);
-
-        //        foreach (var entry in System.IO.Directory.GetFileSystemEntries(dirPath))
-        //        {
-        //            var entryPath = Path.Combine(dirPath, entry);
-        //            Walk(entryPath, )
-        //        }
-        //        // Check: is dir exist in DB ?
-        //        //if (DatabaseContext.Entities.Directory.Any(f => f.Name == dirName))
-        //        //{
-        //        //    DatabaseContext.Entities.Directory.Add(
-        //        //        new Resources.Connection.Directory
-        //        //        {
-        //        //            Parent =
-        //        //            Name = dirName
-        //        //        }
-        //        //    );
-        //        //}
-        //    }
-        //    else
-        //    {
-        //        // This is file
-        //        var fileName = entry;
-        //        // Check: is file exist in DB?
-
-        //        if (DatabaseContext.Entities.File.Any(f => f.Name == fileName))
-        //        {
-        //            DatabaseContext.Entities.File.Add(
-        //                new Resources.Connection.File
-        //                {
-        //                    Name = fileName,
-        //                    Extension = Path.GetExtension(fileName),
-        //                    Directory =
-
-        //                }
-        //            );
-        //        }
-        //    }
-
-            
-        //}
-
-        //public static void Walk(string dirPath, int? parentDirID)
-        //{
-        //    if(IsDirectory(dirPath))
-        //    {
-        //        if (parentDirID == null)
-        //        {
-        //            // This is root directory
-        //            foreach (var entry in System.IO.Directory.GetFileSystemEntries(dirPath))
-        //            {
-        //                if (entry.)
-        //            }
-        //        }
-
-        //        // Directory
-        //        var dirName = Path.GetDirectoryName(dirPath);
-
-        //        var isDirExist = DatabaseContext.Entities.Directory.Any(d => d.Name == dirName);
-
-        //        if (isDirExist == false)
-        //        {
-        //            var parentDirName = System.IO.Directory.GetParent(dirPath).Name;
-
-        //            var newDir = new Resources.Connection.Directory
-        //            {
-        //                Parent = parentDirID,
-        //                Name = dirName
-        //            };
-
-        //            DatabaseContext.Entities.Directory.Add(newDir);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // File
-        //    }
-        //}
-
-        public static bool IsMainDirectoryExist()
+        private static void Initialize_Physical_WorkingDirectoryStructure()
         {
-            
+            var userDocsDirPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            // Кажется, что это не нужно:
+            // Properties.Settings.Default.UserDocumentsDirectoryPath = userDocsDirPath;
+
+            WorkingDirectoryName = Properties.Settings.Default.WorkingDirectoryName;
+            FileSystemDirectoryName = Properties.Settings.Default.FileSystemDirectoryName;
+            ApplicationsDirectoryName = Properties.Settings.Default.ApplicationsDirectoryName;
+
+            WorkingDirectoryPath = SysIO.Path.Combine(userDocsDirPath, WorkingDirectoryName);
+            FileSystemDirectoryPath = SysIO.Path.Combine(WorkingDirectoryPath, FileSystemDirectoryName);
+            ApplicationsDirectoryPath = SysIO.Path.Combine(WorkingDirectoryPath, ApplicationsDirectoryName);
+
+            SysIO.Directory.CreateDirectory(WorkingDirectoryPath);
+            SysIO.Directory.CreateDirectory(FileSystemDirectoryPath);
+            SysIO.Directory.CreateDirectory(ApplicationsDirectoryPath);
         }
 
-        public static void ValidateMainDirectoryByPath()
+        private static void Initialize_DB_RootDirectory()
         {
-
-        }
-
-        public void F()
-        {
-            if (Properties.Settings.Default.MainDirectoryPath != null)
+            RootDirectory = DatabaseContext.Entities.Directories.Local.FirstOrDefault(d => d.ParentId == null);
+            if (RootDirectory == null)
             {
-                var fileSystemDirectoryPath
-                    = Path.Combine(Properties.Settings.Default.MainDirectoryPath,
-                        Properties.Settings.Default.FileSystemDirectoryName);
+                RootDirectory = new Directory
+                {
+                    Parent = null,
+                    Name = FileSystemDirectoryName
+                };
+                DatabaseContext.Entities.Directories.Local.Add(RootDirectory);
+            }
+            else if (RootDirectory.Name != FileSystemDirectoryName)
+            {
+                RootDirectory.Name = FileSystemDirectoryName;
+            }
+        }
 
-                var applicationsSystemDirectoryPath
-                    = Path.Combine(Properties.Settings.Default.MainDirectoryPath,
-                        Properties.Settings.Default.ApplicationsDirectoryName);
+        private static void ReflectPhysicalFileSystemStructureToDB()
+        {
+            var physicalEntryPaths = GetAllEntryPathsFromPhysicalDirectory(FileSystemDirectoryPath);
+            //MessageBox.Show(string.Join("\n", physicalEntryPaths), "Физические пути");
 
-                SysIO.Directory.CreateDirectory(Properties.Settings.Default.MainDirectoryPath);
-                SysIO.Directory.CreateDirectory(fileSystemDirectoryPath);
-                SysIO.Directory.CreateDirectory(applicationsSystemDirectoryPath);
+            var relativePhysicalEntryPaths = physicalEntryPaths.Select(entryPath =>
+                entryPath.Replace($"{FileSystemDirectoryPath}\\", "")
+            );
+            //MessageBox.Show(string.Join("\n", relativePhysicalEntryPaths), "Относительные физические пути");
+
+            var dbEntryPaths = GetAllEntryPathsFromDBDirectory(RootDirectory);
+            //MessageBox.Show(string.Join("\n", dbEntryPaths), "Пути из БД");
+
+            dbEntryPaths.ForEach(dbEntryPath =>
+            {
+                // Если есть путь в БД, но его нет физически, удалить его из БД
+                if (relativePhysicalEntryPaths.Contains(dbEntryPath) == false)
+                {
+                    var entries = SplitPathToEntries(dbEntryPath);
+
+                    DeleteFileSystemObjectByPathEntriesFromDB(RootDirectory, entries);
+                }
+            });
+            //MessageBox.Show(string.Join("\n", GetAllEntryPathsFromDBDirectory(RootDirectory)), "Пути в БД, после удаления из неё записей, которых нет физически");
+
+
+            relativePhysicalEntryPaths.ForEach(physicalEntryPath =>
+            {
+                // Если есть физический путь, но он не отражён в БД, отразить его в БД
+                if (dbEntryPaths.Contains(physicalEntryPath) == false)
+                {
+                    var entries = SplitPathToEntries(physicalEntryPath);
+
+                    WriteFileSystemObjectByPathEntriesToDB(RootDirectory, entries);
+                }
+            });
+            //MessageBox.Show(string.Join("\n", GetAllEntryPathsFromDBDirectory(RootDirectory)), "Пути в БД, после добавления недостающих физических записей");
+        }
+
+        private static IEnumerable<string> SplitPathToEntries(string path)
+            => path.Split(new char[] { SysIO.Path.DirectorySeparatorChar },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+        private static IEnumerable<string> GetAllEntryPathsFromPhysicalDirectory(string dirPath)
+        {
+            var entryPaths = new List<string>();
+            foreach (var entry in SysIO.Directory.GetFileSystemEntries(dirPath))
+            {
+                var entryPath = SysIO.Path.Combine(dirPath, entry);
+                entryPaths.Add(entryPath);
+
+                // if it is directory
+                if (SysIO.Directory.Exists(entryPath))
+                    entryPaths.AddRange(GetAllEntryPathsFromPhysicalDirectory(entryPath));
+            }
+            return entryPaths;
+        }
+
+        private static IEnumerable<string> GetAllEntryPathsFromDBDirectory(Directory dir)
+        {
+            var paths = new List<string>();
+
+            DatabaseContext.Entities.Files.Local.ForEach(f =>
+            {
+                paths.Add(GetPathFromDirectoryToFileSystemObject(dir, f));
+            });
+
+            var endDirectories = DatabaseContext.Entities.Directories.Local.Where(d => d.Children.Count() == 0);
+            endDirectories.ForEach(d => {
+                if (dir != d)
+                    paths.Add(GetPathFromDirectoryToFileSystemObject(dir, d));
+            });
+
+            return paths;
+        }
+
+        private static string GetPathFromDirectoryToFileSystemObject(Directory fromDir, IFileSystemObject fsObj)
+        {
+            if (fromDir == fsObj)
+            {
+                // TODO:
+                // Возможно, здесь стоит вызвать исключение
+                return "";
+            }
+
+            string name = "";
+            Directory parent = null;
+            
+            if (fsObj is File file)
+            {
+                name = file.FullName;
+                parent = file.Parent;
+            }
+            else if (fsObj is Directory dir)
+            {
+                name = dir.Name;
+                parent = dir.Parent;
+            }
+
+            var path = name;
+            while (parent != null && parent != fromDir)
+            {
+                path = SysIO.Path.Combine(parent.Name, path);
+                parent = parent.Parent;
+            }
+            
+            return path;
+        }
+
+        private static void DeleteFileSystemObjectByPathEntriesFromDB(Directory parentDir, IEnumerable<string> entries)
+        {
+            var childEntry = entries.First();
+
+            if (childEntry.Contains('.'))
+            {
+                // File
+                string fileName = childEntry.Split('.')[0],
+                       fileExtension = childEntry.Split('.')[1];
+
+                var file = DatabaseContext.Entities.Files.Local.First(f => f.ParentId == parentDir.Id
+                                                                     && f.Name == fileName
+                                                                     && f.Extension.Name == fileExtension);
+                DatabaseContext.Entities.Files.Local.Remove(file);
+
+                // Завершить, поскольку, если это файл - это всегда конечная запись в массиве записей
+                return;
             }
             else
             {
-                // создание папок
+                // Directory
+
+                Directory childDir = parentDir.SubDirectories.First(d => d.Name == childEntry);
+
+                // Директорию нужно удалить, только если это конечная директория
+                if (entries.Count() == 1)
+                {
+                    DatabaseContext.Entities.Directories.Local.Remove(childDir);
+                    return;
+                }
+
+                DeleteFileSystemObjectByPathEntriesFromDB(childDir, entries.Skip(1));
             }
         }
+        
+        private static void WriteFileSystemObjectByPathEntriesToDB(Directory parentDir, IEnumerable<string> entries)
+        {
+            var childEntry = entries.First();
+            if (childEntry.Contains('.'))
+            {
+                // File
 
+                string fileName = childEntry.Split('.')[0],
+                       fileExtension = childEntry.Split('.')[1];
 
+                var extension = DatabaseContext.Entities.Extensions.Local.FirstOrDefault(e => e.Name == fileExtension);
+                if (extension == null)
+                {
+                    extension = new Extension
+                    {
+                        Name = fileExtension,
+                        Icon = null
+                    };
+                    DatabaseContext.Entities.Extensions.Local.Add(extension);
+                }
 
-        public static bool IsDirectory(string path)
-            => (SysIO.File.GetAttributes(path) & SysIO.FileAttributes.Directory) == SysIO.FileAttributes.Directory;
-    
+                DatabaseContext.Entities.Files.Local.Add(
+                    new File
+                    {
+                        Parent = parentDir,
+                        Name = fileName,
+                        Extension = extension
+                    }
+                );
+
+                // Завершить, поскольку, если это файл - это всегда конечная запись в массиве записей
+                return;
+            }
+            else
+            {
+                // Directory
+
+                Directory childDir = parentDir.SubDirectories.FirstOrDefault(d => d.Name == childEntry);
+                if (childDir == null)
+                {
+                    childDir = new Directory
+                    {
+                        Parent = parentDir,
+                        Name = childEntry
+                    };
+                    DatabaseContext.Entities.Directories.Local.Add(childDir);
+                }
+
+                if (entries.Count() > 1)
+                {
+                    WriteFileSystemObjectByPathEntriesToDB(childDir, entries.Skip(1));
+                }
+            }
+        }
     }
 }

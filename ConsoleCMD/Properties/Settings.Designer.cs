@@ -25,13 +25,13 @@ namespace ConsoleCMD.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Ильназ\\Documents\\ToyOS")]
-        public string MainDirectoryPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("ToyOS")]
+        public string WorkingDirectoryName {
             get {
-                return ((string)(this["MainDirectoryPath"]));
+                return ((string)(this["WorkingDirectoryName"]));
             }
             set {
-                this["MainDirectoryPath"] = value;
+                this["WorkingDirectoryName"] = value;
             }
         }
         
@@ -56,6 +56,18 @@ namespace ConsoleCMD.Properties {
             }
             set {
                 this["ApplicationsDirectoryName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserDocumentsDirectoryPath {
+            get {
+                return ((string)(this["UserDocumentsDirectoryPath"]));
+            }
+            set {
+                this["UserDocumentsDirectoryPath"] = value;
             }
         }
     }

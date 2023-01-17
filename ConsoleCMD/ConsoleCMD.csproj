@@ -112,6 +112,9 @@
     <Compile Include="Resources\Connection\Directory.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Connection\Extension.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Connection\File.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>

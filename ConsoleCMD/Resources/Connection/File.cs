@@ -16,11 +16,10 @@ namespace ConsoleCMD.Resources.Connection
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Extension { get; set; }
+        public int ExtensionId { get; set; }
         public int ParentId { get; set; }
-        public Nullable<int> IconId { get; set; }
     
         public virtual Directory Directory { get; set; }
-        public virtual Icon Icon { get; set; }
+        public virtual Extension Extension { get; set; }
     }
 }

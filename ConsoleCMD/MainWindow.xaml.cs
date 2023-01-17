@@ -1,21 +1,17 @@
-﻿using ConsoleCMD.FileSystem;
-using ConsoleCMD.Resources.Connection;
+﻿using ConsoleCMD.Resources.Connection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
 namespace ConsoleCMD
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
 
-            Directory rootCategory = FileSystemManager.Root;
+            Directory rootCategory = FileSystemManager.RootDirectory;
 
             Navigation.RootNode = NodeFromDirectory(rootCategory);
 
@@ -24,10 +20,9 @@ namespace ConsoleCMD
                 var category = FindAmongChildren(rootCategory, selectedNode.Title);
                 
                 Desktop.FileSystemObjects.Clear();
-                foreach (var fsobject in category.Children)
+                foreach (var file in category.Files)
                 {
-                    if (fsobject is File)
-                        Desktop.FileSystemObjects.Add(fsobject);
+                    Desktop.FileSystemObjects.Add(file);
                 }
             };
         }
