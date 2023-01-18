@@ -8,7 +8,7 @@ namespace ConsoleCMD.Resources.Connection
 {
     public partial class Directory : IFileSystemObject
     {
-        public Directory Parent => Directory2;
+        public Directory Parent { get => Directory2; set => Directory2 = value; }
 
         public IEnumerable<Directory> SubDirectories => Directory1;
 
