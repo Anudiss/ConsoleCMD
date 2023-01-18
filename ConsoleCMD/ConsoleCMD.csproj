@@ -93,6 +93,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileSystemManager.cs" />
+    <Compile Include="Navigation\DirectoryTree.cs" />
     <Compile Include="Resources\Connection\Database.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -124,6 +125,9 @@
     </Compile>
     <Compile Include="Resources\Connection\PartialClasses\Directory.Extension.cs" />
     <Compile Include="Resources\Connection\PartialClasses\File.Extension.cs" />
+    <Compile Include="Resources\Connection\sysdiagram.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
     <Page Include="Applications\TextEditor\FindWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -167,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Navigation\NavigationComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
