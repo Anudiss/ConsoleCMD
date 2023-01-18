@@ -21,7 +21,7 @@ namespace ConsoleCMD.Resources.Connection
         }
     
         public int Id { get; set; }
-        public int IconId { get; set; }
+        public Nullable<int> IconId { get; set; }
         public string Name { get; set; }
     
         public virtual Icon Icon { get; set; }

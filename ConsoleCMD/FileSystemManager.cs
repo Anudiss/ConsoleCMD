@@ -1,4 +1,5 @@
 ﻿using ConsoleCMD.Resources.Connection;
+using System;
 using System.Linq;
 using SysIO = System.IO;
 using System.Collections.Generic;
@@ -141,17 +142,20 @@ namespace ConsoleCMD
                     paths.Add(GetPathFromDirectoryToFileSystemObject(dir, d));
             });
 
-        //            DatabaseContext.Entities.Directory.Add(newDir);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // File
-        //    }
-        //}
-/*
-        public static bool IsMainDirectoryExist()
+            return paths;
+        }
+
+        private static string GetPathFromDirectoryToFileSystemObject(Directory fromDir, IFileSystemObject fsObj)
         {
+            if (fromDir == fsObj)
+            {
+                // TODO:
+                // Возможно, здесь стоит вызвать исключение
+                return "";
+            }
+
+            string name = "";
+            Directory parent = null;
             
             if (fsObj is File file)
             {
@@ -230,7 +234,21 @@ namespace ConsoleCMD
                     DatabaseContext.Entities.Extensions.Local.Add(extension);
                 }
 
-*/
+                DatabaseContext.Entities.Files.Local.Add(
+                    new File
+                    {
+                        Parent = parentDir,
+                        Name = fileName,
+                        Extension = extension
+                    }
+                );
+
+                // Завершить, поскольку, если это файл - это всегда конечная запись в массиве записей
+                return;
+            }
+            else
+            {
+                // Directory
 
                 Directory childDir = parentDir.SubDirectories.FirstOrDefault(d => d.Name == childEntry);
                 if (childDir == null)

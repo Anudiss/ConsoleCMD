@@ -1,4 +1,10 @@
-﻿namespace ConsoleCMD.Resources.Connection
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleCMD.Resources.Connection
 {
     public interface IFileSystemObject
     {

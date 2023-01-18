@@ -1,7 +1,4 @@
-﻿using ConsoleCMD.FileSystem;
-using System;
-using System.Linq;
-using System.Threading;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -31,13 +28,13 @@ namespace ConsoleCMD
         {
             InitializeComponent();
 
-            /*NavigationTreeView.ItemsSource = _rootNodes;*/
+            NavigationTreeView.ItemsSource = _rootNodes;
         }
 
         /// <summary>
         /// При выборе элемента в дереве, вызывает обработчик SelectedEndNode
         /// </summary>
-        /*private void NavigationTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void NavigationTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var selectedNode = NavigationTreeView.SelectedItem as Node;
 
@@ -50,11 +47,11 @@ namespace ConsoleCMD
                 => parent.ForEachNeighbour(neighbour
                     => neighbour.IsVisible = false));
             SelectionChanged?.Invoke(selectedNode);
-        }*/
+        }
 
         /// <summary>
         /// Передаёет фокус дереву дереву навигации
         /// </summary>
-        /*public new void Focus() => NavigationTreeView.Focus();*/
+        public new void Focus() => NavigationTreeView.Focus();
     }
 }
