@@ -1,4 +1,4 @@
-﻿using ConsoleCMD.Resources.Connection;
+﻿using ConsoleCMD.Resources.Connection.PartialClasses;
 using System;
 using System.Collections.Generic;
 using System.Windows;

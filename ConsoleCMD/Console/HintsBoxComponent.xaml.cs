@@ -1,5 +1,6 @@
 ﻿using CommandParser.Command;
 using CommandParser.Hints;
+using ConsoleCMD.Console;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

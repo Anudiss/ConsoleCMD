@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
-namespace ConsoleCMD
+namespace ConsoleCMD.Navigation
 {
     /// <summary>
     /// Представляет узел панели навигации
@@ -28,7 +28,8 @@ namespace ConsoleCMD
         public Node[] Children
         {
             get => _children;
-            set {
+            set
+            {
                 _children = value;
                 foreach (var child in _children)
                     child._parent = this;

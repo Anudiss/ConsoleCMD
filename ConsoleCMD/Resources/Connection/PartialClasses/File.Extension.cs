@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 
-namespace ConsoleCMD.Resources.Connection
+namespace ConsoleCMD.Resources.Connection.PartialClasses
 {
     public partial class File : IFileSystemObject
     {
         public Directory Parent { get => Directory; set => Directory = value; }
 
-        public byte[] IconOrDefault {
+        public byte[] IconOrDefault
+        {
             get
             {
                 if (Extension.Icon != null)

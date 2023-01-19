@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace ConsoleCMD
+namespace ConsoleCMD.Console
 {
     public static class HintColorScheme
     {

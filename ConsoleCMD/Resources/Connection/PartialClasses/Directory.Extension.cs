@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleCMD.Resources.Connection
+namespace ConsoleCMD.Resources.Connection.PartialClasses
 {
     public partial class Directory : IFileSystemObject
     {

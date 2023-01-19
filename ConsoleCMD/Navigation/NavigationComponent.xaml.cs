@@ -1,5 +1,5 @@
 ﻿using ConsoleCMD.Navigation;
-using ConsoleCMD.Resources.Connection;
+using ConsoleCMD.Resources.Connection.PartialClasses;
 using System;
 using System.ComponentModel;
 using System.Windows.Controls;

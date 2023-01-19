@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConsoleCMD
+namespace ConsoleCMD.Console
 {
     public static class CommandHistory
     {

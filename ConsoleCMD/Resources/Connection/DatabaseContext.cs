@@ -1,19 +1,8 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleCMD.Resources.Connection
 {
-    public static class DatabaseContext
+    public class DatabaseContext : DbContext
     {
-        public static Entities Entities { get; }
-
-        static DatabaseContext()
-        {
-            Entities = new Entities();
-
-            Entities.Icons.Load();
-            Entities.Directories.Load();
-            Entities.Extensions.Load();
-            Entities.Files.Load();
-        }
     }
 }

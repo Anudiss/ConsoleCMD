@@ -1,5 +1,5 @@
 ﻿using CommandParser.Command;
-using ConsoleCMD.CommandResources;
+using ConsoleCMD.Console.CommandResources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
