@@ -7,5 +7,5 @@
              mc:Ignorable="d" Name="Root"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     
-    <nav:DirectoryTree x:Name="DirectroyTrre"/>
+    <nav:DirectoryTree x:Name="DirectroyTree" CurrentDirectory="{Binding CurrentDirectory}"/>
 </UserControl>

@@ -1,10 +1,9 @@
-﻿using ConsoleCMD.Resources.Connection;
+﻿using CommandParser;
+using ConsoleCMD.Resources.Connection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SysIO = System.IO;
-using System.Collections.Generic;
-using CommandParser;
-using System.Windows;
 
 namespace ConsoleCMD
 {
@@ -19,6 +18,11 @@ namespace ConsoleCMD
         public static string ApplicationsDirectoryPath { get; private set; }
 
         public static Directory RootDirectory { get; private set; }
+        public static Directory CurrentDirectory
+        {
+            get => NavigationComponent.CurrentDirectory;
+            set => NavigationComponent.CurrentDirectory = value;
+        }
 
         public static void InitializeFileSystem()
         {
@@ -67,6 +71,8 @@ namespace ConsoleCMD
             {
                 RootDirectory.Name = FileSystemDirectoryName;
             }
+
+            CurrentDirectory = RootDirectory;
         }
 
         private static void ReflectPhysicalFileSystemStructureToDB()
@@ -266,6 +272,11 @@ namespace ConsoleCMD
                     WriteFileSystemObjectByPathEntriesToDB(childDir, entries.Skip(1));
                 }
             }
+        }
+
+        public static void OpenDirectory(string name)
+        {
+
         }
     }
 }

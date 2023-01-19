@@ -119,15 +119,13 @@
     <Compile Include="Resources\Connection\File.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="Resources\Connection\IFileSystemObject.cs" />
     <Compile Include="Resources\Connection\Icon.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Connection\IFileSystemObject.cs" />
     <Compile Include="Resources\Connection\PartialClasses\Directory.Extension.cs" />
     <Compile Include="Resources\Connection\PartialClasses\File.Extension.cs" />
-    <Compile Include="Resources\Connection\sysdiagram.cs">
-      <DependentUpon>Database.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Resources\DefaultIcons.cs" />
     <Page Include="Applications\TextEditor\FindWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -233,12 +231,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\Connection\Database.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Database.Context.cs</LastGenOutput>
       <DependentUpon>Database.edmx</DependentUpon>
+      <LastGenOutput>Database.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Resources\Connection\Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

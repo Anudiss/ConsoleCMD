@@ -13,10 +13,10 @@ namespace ConsoleCMD.Resources.Connection
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class FileSystemEntities : DbContext
+    public partial class Entities : DbContext
     {
-        public FileSystemEntities()
-            : base("name=FileSystemEntities")
+        public Entities()
+            : base("name=Entities")
         {
         }
     
@@ -29,6 +29,5 @@ namespace ConsoleCMD.Resources.Connection
         public virtual DbSet<Extension> Extensions { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Icon> Icons { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

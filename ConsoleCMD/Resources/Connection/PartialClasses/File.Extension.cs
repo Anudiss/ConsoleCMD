@@ -11,7 +11,7 @@ namespace ConsoleCMD.Resources.Connection
             {
                 if (Extension.Icon != null)
                     return Extension.Icon.Data;
-                return DatabaseContext.Entities.Icons.Local.First(icon => icon.Id == 2).Data;
+                return DefaultIcons.FileIcon;
             }
         }
 

@@ -22,7 +22,7 @@ namespace ConsoleCMD.Resources.Connection
             {
                 if (Icon != null)
                     return Icon.Data;
-                return DatabaseContext.Entities.Icons.Local.First(icon => icon.Id == 1).Data;
+                return DefaultIcons.DirectoryIcon;
             }
         }
     }

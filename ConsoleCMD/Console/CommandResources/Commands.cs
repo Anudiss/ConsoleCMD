@@ -45,7 +45,7 @@ namespace ConsoleCMD.CommandResources
                 },
                 CommandExecutor = (args, flags) =>
                 {
-                    MessageBox.Show($"print123: {string.Join(", ", args.Select(arg => arg.Value))}");
+                    MessageBox.Show($"print123: {string.Join(", ", ((object[])args["Da"]).Cast<int>())}");
                     return null;
                 }
             },

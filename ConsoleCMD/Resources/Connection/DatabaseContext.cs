@@ -4,11 +4,11 @@ namespace ConsoleCMD.Resources.Connection
 {
     public static class DatabaseContext
     {
-        public static FileSystemEntities Entities { get; }
+        public static Entities Entities { get; }
 
         static DatabaseContext()
         {
-            Entities = new FileSystemEntities();
+            Entities = new Entities();
 
             Entities.Icons.Load();
             Entities.Directories.Load();
