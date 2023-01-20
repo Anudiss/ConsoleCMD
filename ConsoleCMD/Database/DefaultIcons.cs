@@ -1,21 +1,22 @@
-﻿using ConsoleCMD.Resources.Connection;
+﻿using ConsoleCMD.Database;
+using ConsoleCMD.Database.Models;
 using System.Linq;
 
-namespace ConsoleCMD.Resources
+namespace ConsoleCMD.Database
 {
     public static class DefaultIcons
     {
-        public static readonly byte[] DirectoryIcon   = GetDefaultIcon(IconID.Directory);
-        public static readonly byte[] FileIcon        = GetDefaultIcon(IconID.File);
-        public static readonly byte[] ApplicationIcon = GetDefaultIcon(IconID.Application);
+        public static readonly Icon DirectoryIcon = GetDefaultIcon(IconID.Directory);
+        public static readonly Icon FileIcon = GetDefaultIcon(IconID.File);
+        public static readonly Icon ApplicationIcon = GetDefaultIcon(IconID.Application);
 
         /// <summary>
         /// Метод получения иконки из базы данных
         /// </summary>
         /// <param name="iconID">Иконка по умолчанию</param>
         /// <returns>Иконка byte[]</returns>
-        private static byte[] GetDefaultIcon(IconID iconID) =>
-            DatabaseContext.Entities.Icons.First(icon => icon.Id == (int)iconID).Data;
+        private static Icon GetDefaultIcon(IconID iconID) =>
+            DatabaseContext.Entities.Icons.First(icon => icon.Id == (int)iconID);
 
         /// <summary>
         /// Перечисление иконок по умолчанию

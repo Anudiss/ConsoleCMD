@@ -1,6 +1,6 @@
 ﻿using CommandParser;
-using ConsoleCMD.Resources.Connection;
-using ConsoleCMD.Resources.Connection.PartialClasses;
+using ConsoleCMD.Database;
+using ConsoleCMD.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace ConsoleCMD
 
             DatabaseContext.Entities.SaveChanges();
         }
-        
+
         private static void Initialize_Physical_WorkingDirectoryStructure()
         {
             var userDocsDirPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -144,7 +144,8 @@ namespace ConsoleCMD
             });
 
             var endDirectories = DatabaseContext.Entities.Directories.Local.Where(d => d.Children.Count() == 0);
-            endDirectories.ForEach(d => {
+            endDirectories.ForEach(d =>
+            {
                 if (dir != d)
                     paths.Add(GetPathFromDirectoryToFileSystemObject(dir, d));
             });
@@ -163,7 +164,7 @@ namespace ConsoleCMD
 
             string name = "";
             Directory parent = null;
-            
+
             if (fsObj is File file)
             {
                 name = file.FullName;
@@ -181,7 +182,7 @@ namespace ConsoleCMD
                 path = SysIO.Path.Combine(parent.Name, path);
                 parent = parent.Parent;
             }
-            
+
             return path;
         }
 
@@ -219,7 +220,7 @@ namespace ConsoleCMD
                 DeleteFileSystemObjectByPathEntriesFromDB(childDir, entries.Skip(1));
             }
         }
-        
+
         private static void WriteFileSystemObjectByPathEntriesToDB(Directory parentDir, IEnumerable<string> entries)
         {
             var childEntry = entries.First();

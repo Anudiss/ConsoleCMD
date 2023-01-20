@@ -1,4 +1,4 @@
-﻿using ConsoleCMD.Resources.Connection.PartialClasses;
+﻿using ConsoleCMD.Database.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
