@@ -9,7 +9,15 @@ public partial class File : IFileSystemObject
 
     public string Name { get; set; }
 
-    public string FullName => $"{Name}.{Extension.Name}";
+    public string FullName
+    {
+        get
+        {
+            if (Name != string.Empty && string.IsNullOrEmpty(Extension?.Name) == false)
+                return $"{Name}.{Extension.Name}";
+            return Name != string.Empty ? Name : $".{Extension.Name}";
+        }
+    }
 
     public int ExtensionId { get; set; }
 

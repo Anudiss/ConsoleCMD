@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleCMD": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

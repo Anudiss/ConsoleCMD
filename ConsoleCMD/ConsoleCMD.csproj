@@ -6,7 +6,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +14,9 @@
   <ItemGroup>
     <Reference Include="CommandParser">
       <HintPath>..\..\..\CommandParser\CommandParser\bin\Debug\CommandParser.dll</HintPath>
+    </Reference>
+    <Reference Include="UsefulTools">
+      <HintPath>..\..\..\UsefulTools\bin\Debug\UsefulTools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -25,9 +27,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Database\filesystem.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -38,9 +37,23 @@
   </ItemGroup>
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows10.0.22621.0</TargetFramework>
     <UseWindowsForms>false</UseWindowsForms>
     <UseWPF>True</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <StartupObject>ConsoleCMD.App</StartupObject>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+    <DebugType>full</DebugType>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
 </Project>

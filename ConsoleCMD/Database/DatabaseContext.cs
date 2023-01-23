@@ -1,32 +1,16 @@
 ﻿using ConsoleCMD.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using SysIO = System.IO;
 
 namespace ConsoleCMD.Database;
 
 public partial class DatabaseContext : DbContext
 {
-    public static DatabaseContext Entities { get; } = new();
+    public static DatabaseContext Entities { get; set; }
 
-    //static DatabaseContext()
-    //{
-    //    var paths = new string[]
-    //    {
-    //        "C:\\Users\\Ильназ\\Downloads\\Icons\\letter-d.png",
-    //        "C:\\Users\\Ильназ\\Downloads\\Icons\\letter-f.png",
-    //        "C:\\Users\\Ильназ\\Downloads\\Icons\\letter-a.png"
-    //    };
-
-    //    foreach (var path in paths)
-    //    {
-    //        Entities.Icons.Add(
-    //            new Icon
-    //            {
-    //                Data = System.IO.File.ReadAllBytes(path)
-    //            }    
-    //        );
-    //    }
-    //    Entities.SaveChanges();
-    //}
+    public static void InitializeEntities()
+        => Entities = new();
 
     public DatabaseContext()
     {
@@ -45,9 +29,15 @@ public partial class DatabaseContext : DbContext
 
     public virtual DbSet<Icon> Icons { get; set; }
 
+    // TODO: ...
+    private static readonly string _workingDirectory = SysIO.Directory.GetCurrentDirectory();
+    private static readonly string _projectDirectory = SysIO.Directory.GetParent(_workingDirectory).Parent.Parent.FullName;
+    private static readonly string _dbDirectory = "Database";
+    private static readonly string _dbFileName = "filesystem.db";
+    private static readonly string _dbFilePath = SysIO.Path.Combine(SysIO.Path.Combine(_projectDirectory, _dbDirectory), _dbFileName);
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlite($"Data Source=Database/filesystem.db");
+        => optionsBuilder.UseSqlite($"Data Source={_dbFilePath}");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,7 +55,8 @@ public partial class DatabaseContext : DbContext
 
             entity.HasOne(d => d.Parent).WithMany(p => p.SubDirectories)
                 .HasForeignKey(d => d.ParentId)
-                .HasConstraintName("FK_Directory_Directory");
+                .HasConstraintName("FK_Directory_Directory")
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Extension>(entity =>
@@ -78,7 +69,8 @@ public partial class DatabaseContext : DbContext
 
             entity.HasOne(d => d.Icon).WithMany(p => p.Extensions)
                 .HasForeignKey(d => d.IconId)
-                .HasConstraintName("FK_Extension_Icon");
+                .HasConstraintName("FK_Extension_Icon")
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<File>(entity =>
@@ -86,7 +78,6 @@ public partial class DatabaseContext : DbContext
             entity.ToTable("File");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(100);
 
             entity.HasOne(d => d.Extension).WithMany(p => p.Files)
@@ -97,7 +88,8 @@ public partial class DatabaseContext : DbContext
             entity.HasOne(d => d.Parent).WithMany(p => p.Files)
                 .HasForeignKey(d => d.ParentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_File_Directory");
+                .HasConstraintName("FK_File_Directory")
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Icon>(entity =>

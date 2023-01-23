@@ -14,5 +14,8 @@
     <Setting Name="UserDocumentsDirectoryPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="DefaultExtensionForFileWithoutExtension" Type="System.String" Scope="User">
+      <Value Profile="(Default)">deeffwe</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
