@@ -5,6 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SysIO = System.IO;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Windows;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Threading;
 
 namespace ConsoleCMD.FileSystem
 {
@@ -31,6 +36,8 @@ namespace ConsoleCMD.FileSystem
             InitializePhysicalWorkingDirectoryStructure();
 
             InitializeDbRootDirectory();
+
+            //MeasureFunctionExecutionTimes();
 
             ReflectPhysicalFileSystemStructureToDB();
             
@@ -77,59 +84,69 @@ namespace ConsoleCMD.FileSystem
             CurrentDirectory = RootDirectory;
         }
 
+        private static void MeasureFunctionExecutionTimes()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var physicalPaths = GetAllPathsInPhysicalDirectory(FileSystemDirectoryPath);
+            stopwatch.Stop();
+            MessageBox.Show($"Getting physical paths: {stopwatch.Elapsed.TotalSeconds}, paths count: {physicalPaths.Count()}");
+
+            stopwatch = Stopwatch.StartNew();
+            var dbPaths = GetAllPathsInDbDirectory(RootDirectory);
+            stopwatch.Stop();
+            MessageBox.Show($"Getting db paths: {stopwatch.Elapsed.TotalSeconds}, paths count: {dbPaths.Count()}");
+
+            stopwatch = Stopwatch.StartNew();
+            var dbPathsToDelete = dbPaths.AsParallel().Where(dbPath => physicalPaths.Contains(dbPath) == false);
+            stopwatch.Stop();
+            MessageBox.Show($"Getting db paths to delete: {stopwatch.Elapsed.TotalSeconds}, paths count: {dbPathsToDelete.Count()}");
+
+            stopwatch = Stopwatch.StartNew();
+            var dbPathsToCreate = physicalPaths.AsParallel().Where(physicalPath => dbPaths.Contains(physicalPath) == false);
+            stopwatch.Stop();
+            MessageBox.Show($"Getting db paths to create: {stopwatch.Elapsed.TotalSeconds}, paths count: {dbPathsToCreate.Count()}");
+
+            stopwatch = Stopwatch.StartNew();
+            dbPathsToDelete.ForEach(path => DeleteDbPathInParentDirectory(RootDirectory, path));
+            stopwatch.Stop();
+            MessageBox.Show($"Deleting db paths: {stopwatch.Elapsed.TotalSeconds}, paths deleted: {dbPathsToDelete.Count()}");
+
+            stopwatch = Stopwatch.StartNew();
+            dbPathsToCreate.ForEach(path => BuildDbPathInParentDirectory(RootDirectory, path));
+            stopwatch.Stop();
+            MessageBox.Show($"Creating db paths: {stopwatch.Elapsed.TotalSeconds}, paths created: {dbPathsToCreate.Count()}");
+        }
+
         private static void ReflectPhysicalFileSystemStructureToDB()
         {
-            var physicalPaths = GetAllPathsInPhysicalDirectory(FileSystemDirectoryPath);
-            var relativePhysicalPaths = physicalPaths.Select(path =>
-            {
-                path.Value = path.Value.Replace($"{FileSystemDirectoryPath}", "");
-                return path;
-            });
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Физические пути.txt",
-            //    string.Join("\n", relativePhysicalPaths.Select(p => p.Value)));
+            var task1 = Task.Run(() => GetAllPathsInPhysicalDirectory(FileSystemDirectoryPath));
+            var task2 = Task.Run(() => GetAllPathsInDbDirectory(RootDirectory));
 
-            var dbPaths = GetAllPathsInDbDirectory(RootDirectory);
-            var relativeDbPaths = dbPaths.Select(path =>
-            {
-                path.Value = path.Value.Replace($@"{FileSystemDirectoryName}\", "");
-                return path;
-            });
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Пути в БД.txt",
-            //    string.Join("\n", relativeDbPaths.Select(p => p.Value)));
+            task1.Wait();
+            task2.Wait();
 
-            var dbPathsToDelete = relativeDbPaths.Where(dbPath => relativePhysicalPaths.Contains(dbPath) == false);
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Пути для удаления из БД.txt",
-            //    string.Join("\n", dbPathsToDelete.Select(p => p.Value)));
+            var physicalPaths = task1.Result;
+            var dbPaths = task2.Result;
+
+            var task3 = Task.Run(() =>
+            {
+                var dbPathsToDelete = dbPaths.Where(dbPath => physicalPaths.Contains(dbPath) == false);
+                return dbPathsToDelete;
+            });
+
+            var task4 = Task.Run(() => {
+                var dbPathsToCreate = physicalPaths.Where(physicalPath => dbPaths.Contains(physicalPath) == false);
+                return dbPathsToCreate;
+            });
+
+            task3.Wait();
+            task4.Wait();
+
+            var dbPathsToDelete = task3.Result;
+            var dbPathsToCreate = task4.Result;
+
             dbPathsToDelete.ForEach(path => DeleteDbPathInParentDirectory(RootDirectory, path));
-
-            // Нужно для отладки
-            //DatabaseContext.Entities.SaveChanges();
-
-            var dbPathsAfterDeletion = GetAllPathsInDbDirectory(RootDirectory);
-            var relativeDbPathsAfterDeletion = dbPathsAfterDeletion.Select(path =>
-            {
-                path.Value = path.Value.Replace($@"{FileSystemDirectoryName}\", "");
-                return path;
-            });
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Пути в БД после удаления.txt",
-            //    string.Join("\n", relativeDbPathsAfterDeletion.Select(p => p.Value)));
-
-            var dbPathsToCreate = relativePhysicalPaths.Where(physicalPath => relativeDbPaths.Contains(physicalPath) == false);
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Пути для добавления в БД.txt",
-            //    string.Join("\n", dbPathsToCreate.Select(p => p.Value)));
             dbPathsToCreate.ForEach(path => BuildDbPathInParentDirectory(RootDirectory, path));
-
-            // Нужно для отладки
-            //DatabaseContext.Entities.SaveChanges();
-
-            var dbPathsAfterCreation = GetAllPathsInDbDirectory(RootDirectory);
-            var relativeDbPathsAfterCreation = dbPathsAfterCreation.Select(path =>
-            {
-                path.Value = path.Value.Replace($@"{FileSystemDirectoryName}\", "");
-                return path;
-            });
-            //SysIO.File.WriteAllText(@"C:\Users\Ильназ\Documents\ToyOS\Пути в БД после добавления.txt",
-            //    string.Join("\n", relativeDbPathsAfterCreation.Select(p => p.Value)));
         }
 
         private static IEnumerable<Path> GetAllPathsInPhysicalDirectory(string directoryPath)
@@ -139,7 +156,6 @@ namespace ConsoleCMD.FileSystem
             var childPaths = SysIO.Directory.GetFileSystemEntries(directoryPath);
             childPaths.ForEach(path =>
             {
-
                 PathKind pathKind;
                 if (SysIO.File.Exists(path))
                     pathKind = PathKind.File;
@@ -153,7 +169,8 @@ namespace ConsoleCMD.FileSystem
                         path = path.Replace(fileExtension, fileExtension.ToLower());
                 }
 
-                paths.Add(new Path { Kind = pathKind, Value = path });
+                var relativePath = path.Replace($"{FileSystemDirectoryPath}{SysIO.Path.DirectorySeparatorChar}", "");
+                paths.Add(new Path { Kind = pathKind, Value = relativePath });
 
                 if (pathKind == PathKind.Directory)
                     paths.AddRange(GetAllPathsInPhysicalDirectory(path));
@@ -170,6 +187,7 @@ namespace ConsoleCMD.FileSystem
             {
                 var path = PathFromDbDirectoryToObject(baseDirectory, @object);
 
+                path.Value = path.Value.Replace($"{FileSystemDirectoryName}{SysIO.Path.DirectorySeparatorChar}", "");
                 paths.Add(path);
 
                 if (@object is Directory directory)
@@ -231,7 +249,6 @@ namespace ConsoleCMD.FileSystem
             return new Path { Value = path, Kind = pathKind };
         }
 
-
         private static void DeleteDbPathInParentDirectory(Directory parentDirectory, Path path)
         {
             var headSlice = path.Slices.First();
@@ -253,9 +270,9 @@ namespace ConsoleCMD.FileSystem
                 return;
             }
 
-            var directoryToDelete = parentDirectory.SubDirectories
+            Directory directoryToDelete;
+            directoryToDelete = parentDirectory.SubDirectories
                 .FirstOrDefault(directory => directory.Name == headSlice);
-
             if (directoryToDelete == null)
                 return;
 
@@ -282,6 +299,7 @@ namespace ConsoleCMD.FileSystem
                 fileExtension = fileExtension != string.Empty ? fileExtension[1..] : "";
 
                 Extension extension = null;
+
                 if (fileExtension != null)
                 {
                     extension = DatabaseContext.Entities.Extensions.Local.FirstOrDefault(e => e.Name == fileExtension);
@@ -298,7 +316,7 @@ namespace ConsoleCMD.FileSystem
                 return;
             }
 
-            Directory directory = parentDirectory.SubDirectories.FirstOrDefault(directory => directory.Name == headSlice);
+            var directory = parentDirectory.SubDirectories.FirstOrDefault(directory => directory.Name == headSlice);
             if (directory == null)
             {
                 directory = new Directory { Parent = parentDirectory, Name = headSlice };
