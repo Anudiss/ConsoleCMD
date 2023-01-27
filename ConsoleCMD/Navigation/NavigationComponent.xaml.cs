@@ -10,8 +10,7 @@ namespace ConsoleCMD
     public partial class NavigationComponent : UserControl, INotifyPropertyChanged
     {
         private static NavigationComponent _instance;
-        public static NavigationComponent Instance =>
-            _instance ?? (_instance = new NavigationComponent());
+        public static NavigationComponent Instance => _instance ??= new NavigationComponent();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -23,6 +22,7 @@ namespace ConsoleCMD
             {
                 _currentDirectory = value;
 
+                Instance.DirectroyTree.CurrentDirectory = value;
                 Instance.PropertyChanged?.Invoke(Instance, new PropertyChangedEventArgs(nameof(CurrentDirectory)));
             }
         }

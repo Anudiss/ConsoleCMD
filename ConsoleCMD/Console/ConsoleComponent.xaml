@@ -24,11 +24,11 @@
     </UserControl.InputBindings>
 
     <TextBox x:Name="Console"
-             BorderThickness="0"
+             Background="{DynamicResource ConsoleBackgroundColor}"
+             Foreground="{DynamicResource ConsoleForegroundColor}"
+             CaretBrush="{DynamicResource ConsoleCaretColor}"
              Padding="10"
-             Background="{StaticResource ConsoleBackgroundColor}"
-             Foreground="{StaticResource ConsoleForegroundColor}"
-             CaretBrush="{StaticResource ConsoleCaretColor}"
+             BorderThickness="0"
              TextWrapping="Wrap"
              SelectionChanged="OnCaretPositionChanged"
              PreviewKeyDown="PreviewConsoleKeyDown"

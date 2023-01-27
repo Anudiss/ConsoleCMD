@@ -5,19 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ConsoleCMD"
              mc:Ignorable="d"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             Style="{StaticResource CommonStyle}">
-        <ListBox x:Name="FileSystemObjectList"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <ListBox x:Name="FileSystemObjectList"
                  ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory},
                                        Path=Files}"
+                 Background="{DynamicResource DesktopBackgroundColor}"
+                 Foreground="{DynamicResource DesktopForegroundColor}"
                  BorderThickness="0"
-                 Background="{StaticResource DesktopBackgroundColor}"
                  Padding="10">
-            <ListBox.ItemsPanel>
+
+        <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="100">
@@ -25,16 +28,17 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+                        
                         <Image Source="{Binding Path=IconOrDefault}"
-                               Width="25"
-                               Height="25"
+                               Width="30"
+                               Height="30"
                                Grid.Row="0"/>
                         <TextBlock Text="{Binding Path=FullName}"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
                                    Grid.Row="1"/>
                     </Grid>
-            </DataTemplate>
+                </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 </UserControl>

@@ -20,12 +20,13 @@
                     <StackPanel Orientation="Vertical">
                         <ContentControl Content="{TemplateBinding CurrentDirectory}"/>
                         <ListBox x:Name="PART_ItemsHost"
-                                 Background="Transparent"
                                  Margin="30 0 0 0"
                                  BorderThickness="0"
+                                 Background="Transparent"
+                                 Foreground="{DynamicResource NavigationForegroundColor}"
+                                 ItemContainerStyle="{StaticResource ListBoxContainerStyle}"
                                  ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},
-                                                       Path=CurrentDirectory.SubDirectories}"
-                                 ItemContainerStyle="{StaticResource ListBoxContainerStyle}"/>
+                                                       Path=CurrentDirectory.SubDirectories}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

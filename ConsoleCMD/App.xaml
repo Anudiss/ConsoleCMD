@@ -4,15 +4,18 @@
              xmlns:dbmodels="clr-namespace:ConsoleCMD.Database.Models"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        
-        <Style x:Key="CommonStyle" TargetType="FrameworkElement">z
+
+        <Style x:Key="FontStyle" TargetType="FrameworkElement">
             <Setter Property="Control.FontFamily" Value="Segoe Print"/>
             <Setter Property="Control.FontSize" Value="14"/>
-            <Setter Property="Control.FontWeight" Value="Bold"/>
         </Style>
 
         <SolidColorBrush x:Key="NavigationBackgroundColor" Color="#8d99ae"/>
+        <SolidColorBrush x:Key="NavigationForegroundColor" Color="Black"/>
+
         <SolidColorBrush x:Key="DesktopBackgroundColor" Color="#edf2f4"/>
+        <SolidColorBrush x:Key="DesktopForegroundColor" Color="Black"/>
+
         <SolidColorBrush x:Key="ConsoleBackgroundColor" Color="#2b2d42"/>
         <SolidColorBrush x:Key="ConsoleForegroundColor" Color="White"/>
         <SolidColorBrush x:Key="ConsoleCaretColor" Color="White"/>

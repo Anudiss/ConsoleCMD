@@ -5,31 +5,36 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        xmlns:local="clr-namespace:ConsoleCMD"
        mc:Ignorable="d"
-       StaysOpen="True" IsOpen="False"
+       StaysOpen="True"
+       IsOpen="False"
+       Placement="Top"
+       AllowsTransparency="True"
+       PlacementRectangle="{Binding Path=Bounds}"
        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-       Placement="Top" PlacementRectangle="{Binding Path=Bounds}" AllowsTransparency="True">
+       Style="{DynamicResource FontStyle}">
 
     <Popup.Resources>
         <local:CommandEntityToHintConverter x:Key="CommandEntityToHintConverter"/>
     </Popup.Resources>
     
-    <Border CornerRadius="5 5 0 0"
-            Background="DarkGray">
-        <ListBox x:Name="LB"
-                 ItemsSource="{Binding Path=Items, Converter={StaticResource CommandEntityToHintConverter}}" IsSynchronizedWithCurrentItem="True"
-                 HorizontalAlignment="Left" SelectionChanged="LB_SelectionChanged"
-                 Background="Transparent"
-                 BorderThickness="0">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Gray"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-
-    </Border>
+    <ListBox x:Name="LB"
+                ItemsSource="{Binding Path=Items,
+                                    Converter={StaticResource CommandEntityToHintConverter}}"
+                IsSynchronizedWithCurrentItem="True"
+                HorizontalAlignment="Left"
+                SelectionChanged="LB_SelectionChanged"
+                Background="AntiqueWhite"
+                BorderThickness="0">
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected"
+                                Value="True">
+                        <Setter Property="Background"
+                                Value="AntiqueWhite"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ListBox.ItemContainerStyle>
+    </ListBox>
 </Popup>

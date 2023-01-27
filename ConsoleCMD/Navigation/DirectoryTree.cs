@@ -28,7 +28,8 @@ namespace ConsoleCMD.Navigation
 
         static DirectoryTree()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DirectoryTree), new FrameworkPropertyMetadata(typeof(DirectoryTree)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DirectoryTree),
+                new FrameworkPropertyMetadata(typeof(DirectoryTree)));
 
             CurrentDirectoryProperty = DependencyProperty.Register(
                 name: "CurrentDirectory",
@@ -37,10 +38,7 @@ namespace ConsoleCMD.Navigation
                 typeMetadata: null);
         }
 
-        public override void OnApplyTemplate()
-        {
-            AttachItemsHost();
-        }
+        public override void OnApplyTemplate() => AttachItemsHost();
 
         private void AttachItemsHost() =>
             _itemsHost = (ListBox)GetTemplateChild("PART_ItemsHost");
