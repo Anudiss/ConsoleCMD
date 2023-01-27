@@ -65,7 +65,7 @@ namespace ConsoleCMD.FileSystem
 
         public static bool TryGetFile(string strPath, out File foundFile)
         {
-            TryGetFile(strPath, out var fileSystemObject);
+            TryGetFileSystemObject(strPath, out var fileSystemObject);
 
             foundFile = null;
             if (fileSystemObject is File file)

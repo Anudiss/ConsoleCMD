@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Array = CommandParser.Command.Array;
-using Tuple = CommandParser.Command.Tuple;
+using Tuple = CommandParser.Command.TupleType;
 
 namespace ConsoleCMD.Console.CommandResources
 {
