@@ -47,6 +47,10 @@ namespace ConsoleCMD.FileSystem
 
         #region Interface methods
 
+        
+
+        #region Getting file system object, directory and file
+
         public static bool TryGetDirectory(string strPath, out Directory foundDirectory)
         {
             TryGetFileSystemObject(strPath, out var fileSystemObject);
@@ -108,6 +112,8 @@ namespace ConsoleCMD.FileSystem
 
             return true;
         }
+
+        #endregion Getting file system object, directory and file
 
         #endregion Interface methods
 
