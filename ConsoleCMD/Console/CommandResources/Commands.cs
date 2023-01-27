@@ -27,7 +27,10 @@ namespace ConsoleCMD.Console.CommandResources
                 CommandExecutor = (args, flags) =>
                 {
                     string path = args["DirectoryPath"] as string;
-                    MessageBox.Show(path);
+
+                    if (DatabaseManager.TryGetDirectory(path, out var directory))
+                        NavigationComponent.CurrentDirectory = directory;
+
                     return true;
                 }
             }

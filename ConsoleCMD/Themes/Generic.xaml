@@ -20,7 +20,8 @@
                     <StackPanel Orientation="Vertical">
                         <ContentControl Content="{TemplateBinding CurrentDirectory}"/>
                         <ListBox x:Name="PART_ItemsHost"
-                                 Margin="10 5 0 5"
+                                 Background="Transparent"
+                                 Margin="30 0 0 0"
                                  BorderThickness="0"
                                  ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},
                                                        Path=CurrentDirectory.SubDirectories}"

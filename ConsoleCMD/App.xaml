@@ -4,21 +4,31 @@
              xmlns:dbmodels="clr-namespace:ConsoleCMD.Database.Models"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <Style x:Key="CommonStyle" TargetType="FrameworkElement">
-            <Setter Property="Control.FontFamily" Value="Cambria"/>
-            <Setter Property="Control.FontSize" Value="16"/>
-            <Setter Property="Control.Background" Value="White"/>
+        
+        <Style x:Key="CommonStyle" TargetType="FrameworkElement">z
+            <Setter Property="Control.FontFamily" Value="Segoe Print"/>
+            <Setter Property="Control.FontSize" Value="14"/>
+            <Setter Property="Control.FontWeight" Value="Bold"/>
         </Style>
 
+        <SolidColorBrush x:Key="NavigationBackgroundColor" Color="#8d99ae"/>
+        <SolidColorBrush x:Key="DesktopBackgroundColor" Color="#edf2f4"/>
+        <SolidColorBrush x:Key="ConsoleBackgroundColor" Color="#2b2d42"/>
+        <SolidColorBrush x:Key="ConsoleForegroundColor" Color="White"/>
+        <SolidColorBrush x:Key="ConsoleCaretColor" Color="White"/>
+
         <DataTemplate DataType="{x:Type dbmodels:Directory}">
-            <StackPanel Orientation="Horizontal" Margin="2">
+            <StackPanel Orientation="Horizontal"
+                        Margin="2">
                 <Image Source="{Binding Path=IconOrDefault}"
                        Width="25" Height="25"
                        Grid.Row="0"
                        Margin="0,0,5,0"
                        VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Path=Name}"
+                           VerticalAlignment="Center"/>
             </StackPanel>
         </DataTemplate>
+        
     </Application.Resources>
 </Application>

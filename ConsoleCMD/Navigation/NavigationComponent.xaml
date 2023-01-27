@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:nav="clr-namespace:ConsoleCMD.Navigation"
              mc:Ignorable="d" Name="Root"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Background="{DynamicResource NavigationBackgroundColor}"
+             Padding="10">
     
     <nav:DirectoryTree x:Name="DirectroyTree" CurrentDirectory="{Binding CurrentDirectory}"/>
 </UserControl>

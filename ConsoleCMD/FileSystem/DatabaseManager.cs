@@ -60,7 +60,6 @@ namespace ConsoleCMD.FileSystem
                 foundDirectory = dir;
 
             return foundDirectory != null;
-
         }
 
         public static bool TryGetFile(string strPath, out File foundFile)
@@ -74,39 +73,44 @@ namespace ConsoleCMD.FileSystem
             return foundFile != null;
         }
 
-        public static bool TryGetFileSystemObject(string strPath, out IFileSystemObject foundFsObject)
+        public static bool TryGetFileSystemObject(string strPath, out IFileSystemObject foundFileSystemObject)
         {
             var pathSlices = strPath.Split(PathSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            Directory currentDirectory;
-            if (pathSlices.First() == AbsolutePathBeginning)
-                currentDirectory = RootDirectory;
-            else
-                currentDirectory = CurrentDirectory;
-
-            foundFsObject = null;
-            foreach (var slice in pathSlices.Skip(1)) {
-                if (slice == "..")
+            Directory baseDirectory = CurrentDirectory;
+            
+            foundFileSystemObject = null;
+            
+            foreach (var slice in pathSlices) {
+                if (slice == AbsolutePathBeginning)
                 {
-                    if (currentDirectory.Parent == null)
+                    baseDirectory = RootDirectory;
+                }
+                else if (slice == "..")
+                {
+                    if (baseDirectory.Parent == null)
                     {
-                        foundFsObject = null;
+                        foundFileSystemObject = null;
                         return false;
                     }
-                    currentDirectory = currentDirectory.Parent;
-                    foundFsObject = currentDirectory;
+                    baseDirectory = baseDirectory.Parent;
+                    foundFileSystemObject = baseDirectory;
+                }
+                else if (slice == ".")
+                {
+                    // do nothing; it is here just for clarity
                 }
                 else
                 {
-                    foundFsObject = currentDirectory.Children
+                    foundFileSystemObject = baseDirectory.Children
                         .FirstOrDefault(child => child is Directory dir && dir.Name == slice
                             || child is File file && file.FullName == slice);
                     
-                    if (foundFsObject == null)
+                    if (foundFileSystemObject == null)
                         return false;
 
-                    if (foundFsObject is Directory dir)
-                        currentDirectory = dir;
+                    if (foundFileSystemObject is Directory dir)
+                        baseDirectory = dir;
                 }
             }
 
