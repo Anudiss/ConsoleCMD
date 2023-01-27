@@ -1,0 +1,73 @@
+﻿<Window x:Class="ConsoleCMD.FileSystem.LoadingProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ConsoleCMD.FileSystem"
+        mc:Ignorable="d"
+        Title="Загрузка"
+        Width="400"
+        SizeToContent="WidthAndHeight"
+        FontFamily="Cambria"
+        FontSize="22"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
+        <Style TargetType="ProgressBar">
+            <Setter Property="Height" Value="25"/>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="60,30">
+        <Image x:Name="SpinnerImage"
+               Source="{Binding SpinnerIcon}"
+               Width="50"
+               Height="50"
+               Stretch="Uniform"
+               Margin="0,0,0,20"
+               RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <RotateTransform Angle="0"/>
+            </Image.RenderTransform>
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.Angle"
+                                                                       Duration="0:0:1.5"
+                                                                       RepeatBehavior="Forever">
+                                            <SplineDoubleKeyFrame Value="360"
+                                                                  KeyTime="0:0:1.5"
+                                                                  KeySpline=".42,0,.58,1"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <TextBlock Text="{Binding LoadCompletionPercentage,
+                                  StringFormat='{}Подготовка: {0:g} %'}"
+                   HorizontalAlignment="Center"/>
+
+        <GroupBox Header="{Binding ProgressBarTitle}">
+            <ProgressBar x:Name="PBReceivingPhysicalPaths"
+                         Value="{Binding ProgressBarCurrentValue}"
+                         Minimum="{Binding ProgressBarMinimumValue}"
+                         Maximum="{Binding ProgrssBarMaximumValue}"
+                         Visibility="{Binding ProgressBarVisibility}"/>
+        </GroupBox>
+
+    </StackPanel>
+</Window>

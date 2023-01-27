@@ -9,6 +9,7 @@ namespace ConsoleCMD.Database
         public static readonly Icon DirectoryIcon = GetDefaultIcon(IconID.Directory);
         public static readonly Icon FileIcon = GetDefaultIcon(IconID.File);
         public static readonly Icon ApplicationIcon = GetDefaultIcon(IconID.Application);
+        public static readonly Icon SpinnerIcon = GetDefaultIcon(IconID.Spinner);
 
         /// <summary>
         /// Метод получения иконки из базы данных
@@ -25,7 +26,8 @@ namespace ConsoleCMD.Database
         {
             Directory = 1,
             File,
-            Application
+            Application,
+            Spinner
         }
     }
 }

@@ -4,7 +4,7 @@ using SysIO = System.IO;
 
 namespace ConsoleCMD.FileSystem
 {
-    public struct Path
+    public class Path
     {
         public PathKind Kind { get; set; }
 
@@ -32,6 +32,14 @@ namespace ConsoleCMD.FileSystem
             }
         }
 
+        public Path() { }
+
+        public Path(string value)
+            => Value = value;
+
+        public Path(IEnumerable<string> slices)
+            => Slices = slices;
+
         public override bool Equals(object obj)
         {
             if (obj is Path path == false)
@@ -40,5 +48,11 @@ namespace ConsoleCMD.FileSystem
         }
 
         public override int GetHashCode() => base.GetHashCode();
+
+        public static bool operator== (Path p1, Path p2)
+            => p1.Kind == p2.Kind && p1.Value == p2.Value;
+
+        public static bool operator!= (Path p1, Path p2)
+            => p1.Kind != p2.Kind || p1.Value != p2.Value;
     }
 }

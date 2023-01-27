@@ -8,6 +8,7 @@ namespace ConsoleCMD.FileSystem
 {
     public enum PathKind
     {
-        Directory, File
+        Directory,
+        File
     }
 }

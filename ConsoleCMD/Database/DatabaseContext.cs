@@ -12,14 +12,18 @@ public partial class DatabaseContext : DbContext
     public static void InitializeEntities()
         => Entities = new();
 
-    public DatabaseContext()
+    public static void LoadEntities()
     {
+        DatabaseContext.Entities.Icons.Load();
+        DatabaseContext.Entities.Extensions.Load();
+        DatabaseContext.Entities.Directories.Load();
+        DatabaseContext.Entities.Files.Load();
     }
 
+    public DatabaseContext() { }
+
     public DatabaseContext(DbContextOptions<DatabaseContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Directory> Directories { get; set; }
 
