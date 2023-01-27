@@ -2,6 +2,17 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:nav="clr-namespace:ConsoleCMD.Navigation">
 
+    <Style x:Key="ListBoxContainerStyle"
+           TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <ContentPresenter VerticalAlignment="Center"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style TargetType="{x:Type nav:DirectoryTree}">
         <Setter Property="Template">
             <Setter.Value>
@@ -12,7 +23,8 @@
                                  Margin="10 5 0 5"
                                  BorderThickness="0"
                                  ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},
-                                                       Path=CurrentDirectory.SubDirectories}"/>
+                                                       Path=CurrentDirectory.SubDirectories}"
+                                 ItemContainerStyle="{StaticResource ListBoxContainerStyle}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
