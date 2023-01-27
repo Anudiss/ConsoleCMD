@@ -8,12 +8,13 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <ListBox x:Name="FileSystemObjectList"
-                 ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory},
-                                       Path=Files}"
-                 Background="{DynamicResource DesktopBackgroundColor}"
-                 Foreground="{DynamicResource DesktopForegroundColor}"
-                 BorderThickness="0"
-                 Padding="10">
+             ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory},
+                                   Path=Files}"
+             Background="{DynamicResource DesktopBackgroundColor}"
+             Foreground="{DynamicResource DesktopForegroundColor}"
+             BorderThickness="0"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"   
+             Padding="10">
 
         <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -23,7 +24,7 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Width="100">
+                    <Grid Width="100" Height="100">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
