@@ -12,7 +12,7 @@ namespace ConsoleCMD.Console.CommandResources
             Parse = (input) => input.Trim()
         };
 
-        [GeneratedRegex(@"^(?:(?:(?:\~)[\\\/])?(?:(?:\.{1,2})[\\\/])*)(?:(?:[^\\\/\'\<\>\|\:\?\u0022]+)[\\\/])*(?:[^\\\/\'\<\>\|\:\?\u0022]+)$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"^(?:(?:(?:\~)[\\\/])?(?:(?:\.{1,2})[\\\/])*)(?:(?:[^\\\/\'\<\>\|\:\?\u0022]+)[\\\/])*(?:[^\\\/\'\<\>\|\:\?\u0022]*)$", RegexOptions.Compiled)]
         private static partial Regex PathRegex();
     }
 }
