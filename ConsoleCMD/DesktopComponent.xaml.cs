@@ -25,11 +25,5 @@ namespace ConsoleCMD
 
             FileSystemObjectList.SelectionMode = SelectionMode.Single;
         }
-
-        private void FileSystemObjectList_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key != Key.Enter)
-                return;
-        }
     }
 }

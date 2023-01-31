@@ -13,7 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CommandParser">
-      <HintPath>..\..\CommandParser\CommandParser\bin\Debug\CommandParser.dll</HintPath>
+      <HintPath>..\..\..\CommandParser\CommandParser\bin\Debug\CommandParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

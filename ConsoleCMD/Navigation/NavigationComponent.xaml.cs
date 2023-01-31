@@ -22,6 +22,7 @@ namespace ConsoleCMD
             {
                 _currentDirectory = value;
 
+                Instance.DirectroyTree.CurrentDirectory = value;
                 Instance.PropertyChanged?.Invoke(Instance, new PropertyChangedEventArgs(nameof(CurrentDirectory)));
             }
         }

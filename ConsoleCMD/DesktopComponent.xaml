@@ -4,28 +4,42 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ConsoleCMD"
-             mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             Style="{StaticResource CommonStyle}">
-        <Border BorderBrush="Black" BorderThickness="0.5" Padding="5" Grid.Row="1" Grid.Column="1">
-            <ListBox x:Name="FileSystemObjectList" ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory}, Path=Files}" BorderThickness="0"
-                        PreviewKeyDown="FileSystemObjectList_PreviewKeyDown">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="100">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Image Source="{Binding Path=IconOrDefault}" Width="25" Height="25" Grid.Row="0"/>
-                            <TextBlock Text="{Binding Path=FullName}" TextAlignment="Center" TextWrapping="Wrap" Grid.Row="1"/>
-                        </Grid>
+             mc:Ignorable="d"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <ListBox x:Name="FileSystemObjectList"
+             ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory},
+                                   Path=Files}"
+             Background="{DynamicResource DesktopBackgroundColor}"
+             Foreground="{DynamicResource DesktopForegroundColor}"
+             BorderThickness="0"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"   
+             Padding="10">
+
+        <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="100" Height="100">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Image Source="{Binding Path=IconOrDefault}"
+                               Width="30"
+                               Height="30"
+                               Grid.Row="0"/>
+                        <TextBlock Text="{Binding Path=FullName}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Grid.Row="1"/>
+                    </Grid>
                 </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
+            </ListBox.ItemTemplate>
+        </ListBox>
 </UserControl>

@@ -6,38 +6,30 @@
         xmlns:local="clr-namespace:ConsoleCMD"
         xmlns:console="clr-namespace:ConsoleCMD.Console"
         mc:Ignorable="d"
-        Title="Система" Height="600" Width="1000" Style="{StaticResource CommonStyle}"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Title="Система"
+        Height="600" Width="1000"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Style="{DynamicResource FontStyle}">
+    
     <Grid x:Name="Grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height=".33*"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!--<Border BorderBrush="Black" BorderThickness="0.5" Margin="0,0,0,5" Grid.Row="0" Grid.ColumnSpan="2">
-            <TextBlock x:Name="TBStatusBar"/>
-        </Border>-->
-
-        <ContentControl x:Name="Navigation" Grid.Row="0" Grid.Column="0" Margin="5,5,0,5"
+        <ContentControl x:Name="Navigation"
+                        Grid.Row="0" Grid.Column="0"
                         Content="{x:Static local:NavigationComponent.Instance}"/>
 
-        <GridSplitter Grid.Row="0" Grid.Column="1" Margin="5" Background="Gainsboro" Width="5" ShowsPreview="True" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <local:DesktopComponent x:Name="Desktop"
+                                Grid.Row="0" Grid.Column="1"/>
 
-        <Grid Margin="0,5,5,5" Grid.Row="0" Grid.Column="2">
-            <Grid.RowDefinitions>
-                <!--<RowDefinition Height="*"/>-->
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <local:DesktopComponent x:Name="Desktop"/>
-            <!--<local:ApplicationManagerComponent x:Name="ApplicationManager" Grid.Row="1"/>-->
-        </Grid>
-
-        <console:ConsoleComponent x:Name="Console" Grid.Row="1" Grid.ColumnSpan="3" Margin="5,0,5,5"/>
+        <console:ConsoleComponent x:Name="Console"
+                                  Grid.Row="1" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

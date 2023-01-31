@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:nav="clr-namespace:ConsoleCMD.Navigation"
-             mc:Ignorable="d" Name="Root"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             mc:Ignorable="d"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Background="{DynamicResource NavigationBackgroundColor}"
+             Foreground="{DynamicResource NavigationForegroundColor}">
     
-    <nav:DirectoryTree x:Name="DirectroyTree" CurrentDirectory="{Binding CurrentDirectory}"/>
+    <nav:DirectoryTree x:Name="DirectroyTree" CurrentDirectory="{Binding CurrentDirectory}" Margin="10"/>
 </UserControl>
