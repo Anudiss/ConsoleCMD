@@ -22,14 +22,14 @@ namespace ConsoleCMD.FileSystem
 
         public const string AbsolutePathBeginning = "~";
 
-        public static readonly char PathSeparator = SysIO.Path.DirectorySeparatorChar;
+        public static readonly char[] PathSeparators = new char[] { '/', '\\' };
 
         public static Directory RootDirectory { get; private set; }
 
         public static Directory CurrentDirectory
         {
-            get => NavigationComponent.CurrentDirectory;
-            set => NavigationComponent.CurrentDirectory = value;
+            get => NavigationComponent.Instance.CurrentDirectory;
+            set => NavigationComponent.Instance.CurrentDirectory = value;
         }
 
         #endregion Properties
@@ -75,7 +75,7 @@ namespace ConsoleCMD.FileSystem
 
         public static bool TryGetFileSystemObject(string strPath, out IFileSystemObject foundFileSystemObject)
         {
-            var pathSlices = strPath.Split(PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+            var pathSlices = strPath.ToLower().Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             Directory baseDirectory = CurrentDirectory;
             
@@ -103,8 +103,8 @@ namespace ConsoleCMD.FileSystem
                 else
                 {
                     foundFileSystemObject = baseDirectory.Children
-                        .FirstOrDefault(child => child is Directory dir && dir.Name == slice
-                            || child is File file && file.FullName == slice);
+                        .FirstOrDefault(child => child is Directory dir && dir.Name.ToLower() == slice
+                            || child is File file && file.FullName.ToLower() == slice);
                     
                     if (foundFileSystemObject == null)
                         return false;

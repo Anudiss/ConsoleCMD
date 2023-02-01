@@ -8,12 +8,13 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <ListBox x:Name="FileSystemObjectList"
-             ItemsSource="{Binding Source={x:Static local:NavigationComponent.CurrentDirectory},
-                                   Path=Files}"
+             ItemsSource="{Binding Source={x:Static local:NavigationComponent.Instance},
+                                   Path=CurrentDirectory.Files}"
              Background="{DynamicResource DesktopBackgroundColor}"
              Foreground="{DynamicResource DesktopForegroundColor}"
              BorderThickness="0"
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled"   
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+             SelectionMode="Single"
              Padding="10">
 
         <ListBox.ItemsPanel>

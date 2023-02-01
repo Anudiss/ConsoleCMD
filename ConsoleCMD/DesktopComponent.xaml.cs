@@ -1,4 +1,5 @@
 ﻿using ConsoleCMD.Database.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,19 +12,9 @@ namespace ConsoleCMD
     /// </summary>
     public partial class DesktopComponent : UserControl
     {
-        public ObservableCollection<File> FileSystemObjects
-        {
-            get { return (ObservableCollection<File>)GetValue(FileSystemObjectsProperty); }
-            private set { SetValue(FileSystemObjectsProperty, value); }
-        }
-        public static readonly DependencyProperty FileSystemObjectsProperty =
-            DependencyProperty.Register("FileSystemObjects", typeof(ObservableCollection<File>), typeof(DesktopComponent), new PropertyMetadata(new ObservableCollection<File>()));
-
         public DesktopComponent()
         {
             InitializeComponent();
-
-            FileSystemObjectList.SelectionMode = SelectionMode.Single;
         }
     }
 }

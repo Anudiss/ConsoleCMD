@@ -1,4 +1,5 @@
 ﻿using ConsoleCMD.Database.Models;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 
@@ -14,19 +15,18 @@ namespace ConsoleCMD
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private static Directory _currentDirectory;
-        public static Directory CurrentDirectory
+        private Directory _currentDirectory;
+        public Directory CurrentDirectory
         {
             get => _currentDirectory;
             set
             {
                 _currentDirectory = value;
 
-                Instance.DirectroyTree.CurrentDirectory = value;
-                Instance.PropertyChanged?.Invoke(Instance, new PropertyChangedEventArgs(nameof(CurrentDirectory)));
+                PropertyChanged?.Invoke(this, new (nameof(CurrentDirectory)));
             }
         }
-   
+
         private NavigationComponent()
         {
             InitializeComponent();
